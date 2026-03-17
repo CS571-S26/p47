@@ -17,16 +17,16 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div>
-          <h1>Get started</h1>
+          <h1>SetLog</h1>
           <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+            Capture concerts, relive setlists, and build your personal live music journal.
           </p>
         </div>
         <Button
           className="counter"
           onClick={() => setCount((count) => count + 1)}
         >
-          Count is {count}
+          Shows logged: {count}
         </Button>
       </section>
 
@@ -37,19 +37,19 @@ function App() {
           <svg className="icon" role="presentation" aria-hidden="true">
             <use href="/icons.svg#documentation-icon"></use>
           </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
+          <h2>SetLog Features</h2>
+          <p>A quick look at the experience</p>
           <ul>
             <li>
-              <a href="https://vite.dev/" target="_blank">
+              <a href="https://www.setlist.fm/" target="_blank">
                 <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
+                Import setlists
               </a>
             </li>
             <li>
               <a href="https://react.dev/" target="_blank">
                 <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
+                Track memories
               </a>
             </li>
           </ul>
@@ -58,11 +58,11 @@ function App() {
           <svg className="icon" role="presentation" aria-hidden="true">
             <use href="/icons.svg#social-icon"></use>
           </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
+          <h2>Coming Soon</h2>
+          <p>Planned views for your concert history</p>
           <ul>
             <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
+              <a href="https://github.com/CS571-S26/p47" target="_blank">
                 <svg
                   className="button-icon"
                   role="presentation"
@@ -70,11 +70,11 @@ function App() {
                 >
                   <use href="/icons.svg#github-icon"></use>
                 </svg>
-                GitHub
+                Project repo
               </a>
             </li>
             <li>
-              <a href="https://chat.vite.dev/" target="_blank">
+              <a href="https://www.google.com/maps" target="_blank">
                 <svg
                   className="button-icon"
                   role="presentation"
@@ -82,11 +82,11 @@ function App() {
                 >
                   <use href="/icons.svg#discord-icon"></use>
                 </svg>
-                Discord
+                Venue map
               </a>
             </li>
             <li>
-              <a href="https://x.com/vite_js" target="_blank">
+              <a href="https://www.setlist.fm/" target="_blank">
                 <svg
                   className="button-icon"
                   role="presentation"
@@ -94,11 +94,11 @@ function App() {
                 >
                   <use href="/icons.svg#x-icon"></use>
                 </svg>
-                X.com
+                Setlist lookup
               </a>
             </li>
             <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
+              <a href="https://react-bootstrap.github.io/" target="_blank">
                 <svg
                   className="button-icon"
                   role="presentation"
@@ -106,7 +106,7 @@ function App() {
                 >
                   <use href="/icons.svg#bluesky-icon"></use>
                 </svg>
-                Bluesky
+                Settings page
               </a>
             </li>
           </ul>
