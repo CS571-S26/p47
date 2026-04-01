@@ -17,7 +17,7 @@ export const concerts = [
     rating: 5,
     songCount: 20,
     duration: '3h 10m',
-    image: '',
+    image: 'https://alumni.cornell.edu/cornellians/wp-content/uploads/sites/2/2023/04/RMC2016_0200-A.jpg',
     notes:
       'Arguably the greatest Dead show ever. Scarlet > Fire transition was unreal.',
     setlist: [
@@ -61,7 +61,7 @@ export const concerts = [
     rating: 5,
     songCount: 20,
     duration: '3h 00m',
-    image: '',
+    image: 'https://www.rollingstone.com/wp-content/uploads/2024/05/dead-and-co-at-the-sphere.jpg',
     notes:
       'The Sphere visuals during Space were unreal. Completely immersive experience.',
     setlist: [
@@ -80,10 +80,10 @@ export const concerts = [
     venue: 'The Sylvee',
     city: 'Madison, WI',
     genre: 'Jam Band',
-    rating: 5,
+    rating: 2,
     songCount: 18,
     duration: '2h 45m',
-    image: '',
+    image: 'https://i0.wp.com/liveforlivemusic.com/wp-content/uploads/2022/02/goose-sylvee-madison-ojeda-021022-fbcover.jpg?resize=740%2C390&ssl=1',
     notes:
       'Arcadia jam went deep. Crowd was super into it the whole night.',
     setlist: [
@@ -105,7 +105,7 @@ export const concerts = [
     rating: 5,
     songCount: 19,
     duration: '2h 50m',
-    image: '',
+    image: 'https://jambands.com/wp-content/uploads/2023/10/Screenshot-2023-10-07-at-2.02.40%E2%80%AFPM-700x537.png',
     notes:
       'Perfect weather, insane lights, and a massive Tumble jam to close.',
     setlist: [
