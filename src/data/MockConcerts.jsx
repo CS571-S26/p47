@@ -20,6 +20,7 @@ export const concerts = [
     image: 'https://alumni.cornell.edu/cornellians/wp-content/uploads/sites/2/2023/04/RMC2016_0200-A.jpg',
     notes:
       'Arguably the greatest Dead show ever. Scarlet > Fire transition was unreal.',
+    coords: [42.4459, -76.4807],
     setlist: [
       { title: 'Bertha', length: '6:00' },
       { title: 'Scarlet Begonias', length: '10:20' },
@@ -42,6 +43,30 @@ export const concerts = [
     image: 'https://www.rollingstone.com/wp-content/uploads/2025/05/dead-and-company-tickets.jpg?w=1581&h=1054&crop=1',
     notes:
       'John Mayer absolutely ripped. Crowd energy felt like a celebration the whole night.',
+    coords: [41.9484, -87.6553],
+    setlist: [
+      { title: 'Deal', length: '8:30' },
+      { title: 'Estimated Prophet', length: '11:45' },
+      { title: 'Eyes of the World', length: '14:20' },
+      { title: 'Drums/Space', length: '18:00' },
+      { title: 'Althea', length: '9:10' },
+    ],
+  },
+  {
+    id: '7',
+    date: '2023-06-11',
+    artist: 'Dead & Company',
+    tour: 'Final Tour',
+    venue: 'Wrigley Field',
+    city: 'Chicago, IL',
+    genre: 'Jam Band',
+    rating: 5,
+    songCount: 21,
+    duration: '3h 05m',
+    image: 'https://www.rollingstone.com/wp-content/uploads/2025/05/dead-and-company-tickets.jpg?w=1581&h=1054&crop=1',
+    notes:
+      'John Mayer absolutely ripped. Crowd energy felt like a celebration the whole night.',
+    coords: [41.9484, -87.6553],
     setlist: [
       { title: 'Deal', length: '8:30' },
       { title: 'Estimated Prophet', length: '11:45' },
@@ -64,6 +89,7 @@ export const concerts = [
     image: 'https://www.rollingstone.com/wp-content/uploads/2024/05/dead-and-co-at-the-sphere.jpg',
     notes:
       'The Sphere visuals during Space were unreal. Completely immersive experience.',
+    coords: [36.1213, -115.1635],
     setlist: [
       { title: 'Shakedown Street', length: '10:10' },
       { title: 'Bertha', length: '6:15' },
@@ -86,6 +112,7 @@ export const concerts = [
     image: 'https://i0.wp.com/liveforlivemusic.com/wp-content/uploads/2022/02/goose-sylvee-madison-ojeda-021022-fbcover.jpg?resize=740%2C390&ssl=1',
     notes:
       'Arcadia jam went deep. Crowd was super into it the whole night.',
+    coords: [43.08, -89.37],
     setlist: [
       { title: 'Arcadia', length: '18:30' },
       { title: 'Hungersite', length: '13:10' },
@@ -108,12 +135,37 @@ export const concerts = [
     image: 'https://jambands.com/wp-content/uploads/2023/10/Screenshot-2023-10-07-at-2.02.40%E2%80%AFPM-700x537.png',
     notes:
       'Perfect weather, insane lights, and a massive Tumble jam to close.',
+    coords: [39.6655, -105.2052],
     setlist: [
       { title: 'Tumble', length: '20:10' },
       { title: 'Slow Ready', length: '11:40' },
       { title: 'Creatures', length: '14:00' },
       { title: 'All I Need', length: '15:25' },
       { title: 'Empress of Organos', length: '9:30' },
+    ],
+  },
+  {
+    id: '6',
+    date: '2025-03-28',
+    artist: 'Bruce Springsteen',
+    tour: 'World Tour 2025',
+    venue: 'Madison Square Garden',
+    city: 'New York, NY',
+    genre: 'Rock',
+    rating: 5,
+    highlight: 'Born to Run encore was unreal.',
+    songCount: 27,
+    duration: '3h 01m',
+    image: 'https://picsum.photos/seed/bruce1/320/200',
+    notes:
+      'One of those bucket-list artists that absolutely delivered live. Crowd was locked in all night.',
+    coords: [40.7505, -73.9934],
+    setlist: [
+      { title: 'The Promised Land', length: '5:51' },
+      { title: 'Atlantic City', length: '5:02' },
+      { title: 'Badlands', length: '6:10' },
+      { title: 'Thunder Road', length: '6:18' },
+      { title: 'Born to Run', length: '5:03' },
     ],
   },
 ]

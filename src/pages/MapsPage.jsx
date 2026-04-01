@@ -7,24 +7,24 @@ import './MapsPage.css'
 import MapsMarkerPopup from '../components/MapsMarkerPopup'
 
 function MapsPage() {
-  const [locations, setLocations] = useState([])
+  // const [locations, setLocations] = useState([])
   const [filter, setFilter] = useState("all")
 
-  useEffect(() => {
-    async function loadLocations() {
-      const results = []
+  // useEffect(() => {
+  //   async function loadLocations() {
+  //     const results = []
 
-      for (let concert of concerts) {
-        const coords = await geocodeVenue(concert.venue, concert.city)
+  //     for (let concert of concerts) {
+  //       const coords = await geocodeVenue(concert.venue, concert.city)
 
-        if (coords) {
-          results.push({ ...concert, coords })
-        }
-      }
-      setLocations(results)
-    }
-    loadLocations()
-  }, [])
+  //       if (coords) {
+  //         results.push({ ...concert, coords })
+  //       }
+  //     }
+  //     setLocations(results)
+  //   }
+  //   loadLocations()
+  // }, [])
 
   return (
     <div className="map-page">
@@ -72,13 +72,15 @@ function MapsPage() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {locations.map((concert) => (
-            <Marker key={concert.id} position={concert.coords}>
-              <Popup>
-                <MapsMarkerPopup concert={concert} />
-              </Popup>
-            </Marker>
-          ))}
+          {concerts
+            .filter((concert) => Array.isArray(concert.coords) && concert.coords.length === 2)
+            .map((concert) => (
+              <Marker key={concert.id} position={concert.coords}>
+                <Popup>
+                  <MapsMarkerPopup concert={concert} />
+                </Popup>
+              </Marker>
+            ))}
         </MapContainer>
       </div>
     </div>
