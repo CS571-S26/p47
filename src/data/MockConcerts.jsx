@@ -39,7 +39,7 @@ export const concerts = [
     rating: 5,
     songCount: 21,
     duration: '3h 05m',
-    image: '',
+    image: 'https://www.rollingstone.com/wp-content/uploads/2025/05/dead-and-company-tickets.jpg?w=1581&h=1054&crop=1',
     notes:
       'John Mayer absolutely ripped. Crowd energy felt like a celebration the whole night.',
     setlist: [

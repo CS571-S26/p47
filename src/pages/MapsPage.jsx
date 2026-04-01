@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { concerts } from '../data/MockConcerts'
 import { geocodeVenue } from '../utils/geocode'
 import './MapsPage.css'
+import MapsMarkerPopup from '../components/MapsMarkerPopup'
 
 function MapsPage() {
   const [locations, setLocations] = useState([])
@@ -35,7 +36,11 @@ function MapsPage() {
           />
 
           {locations.map((concert) => (
-            <Marker key={concert.id} position={concert.coords}/>
+            <Marker key={concert.id} position={concert.coords}>
+              <Popup>
+                <MapsMarkerPopup concert={concert} />
+              </Popup>
+            </Marker>
           ))}
         </MapContainer>
       </div>
