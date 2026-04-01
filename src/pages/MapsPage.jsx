@@ -42,6 +42,7 @@ function MapsPage() {
     <div className="map-page">
       <span className="map-title">Concert Map</span>
 
+      {/* TODO: MAKE FILTERS WORK */}
       <div className="map-filter-row">
         <button
           className={filter === "all" ? "map-filter-button-select" : "map-filter-button-unselect"}
