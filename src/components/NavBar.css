@@ -91,6 +91,7 @@
 
 .website-title {
   align-items: center;
+  margin-right: 50px;
   font-weight: 700;   /* bold */
   gap: 10px; /* controls space between logo + text */
 }
