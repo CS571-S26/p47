@@ -1,0 +1,16 @@
+.map-page {
+  padding: 1rem;
+}
+
+.map-box {
+  height: 600px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.map-box .leaflet-container {
+  height: 100%;
+  width: 100%;
+}
