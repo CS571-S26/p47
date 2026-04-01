@@ -1,72 +1,96 @@
-.nav-link {
+.navbar {
+  background: linear-gradient(
+    180deg,
+    #252830 0%,
+    #1a1d23 100%
+  );
+}
+
+.navbar .nav-link {
   color: #cbd5e1 !important;
   font-weight: 500;
+  border-bottom: 3px solid transparent;
+  padding-bottom: 0.5rem !important;
 }
 
-.nav-link.active {
-  color: white !important;
-  border-bottom: 2px solid #3b82f6;
+.navbar .nav-link.active {
+  color: #ffffff !important;
+  border-bottom-color: #0066ff;
 }
 
-.nav-link svg {
-  transition: transform 0.15s ease, color 0.15s ease;
-}
-
-.nav-link:hover svg {
-  transform: scale(1.1);
-}
-
-.nav-link.active svg {
-  color: #3b82f6;
+.navbar .nav-link.active svg {
+  color: #60a5fa;
 }
 
 .search-bar {
-  background-color: #1e293b;
-  border-radius: 8px;
-  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  background-color: #172554;
+  border-radius: 12px;
+  padding: 0.4rem 0.75rem;
+  min-width: 220px;
 }
 
-.search-bar input {
-  outline: none;
-  color: white;
-}
-
-.search-bar input::placeholder {
+.search-icon {
   color: #94a3b8;
+  flex-shrink: 0;
 }
 
-.icon-btn-setlog {
+.search-input {
+  margin-left: 0.5rem;
+  background: transparent !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: none !important;
+}
+
+.search-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+
+.icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
-  padding: 0;
   border: none;
   border-radius: 8px;
   background: transparent;
   color: #9ca3af;
-  text-decoration: none;
-  transition: color 0.15s ease, background 0.15s ease;
+  cursor: pointer;
 }
 
-.avatar-btn-setlog {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+.icon-btn:hover {
   color: #fff;
-  cursor: pointer;
-  transition: border-color 0.15s ease;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.icon-btn-round {
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.nav-item-custom {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  color: #d1d5db !important;
+  font-weight: 600;
+}
+
+.nav-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .logo {
-  width: 48px;
-  height: 48px;
-  padding: 25;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
 }
