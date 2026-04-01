@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { useEffect, useState } from 'react'
 
 import { concerts } from '../data/MockConcerts'
-import { geocodeVenue } from '../utils/geocode'
+// import { geocodeVenue } from '../utils/geocode'
 import './MapsPage.css'
 import MapsMarkerPopup from '../components/MapsMarkerPopup'
 
