@@ -2,24 +2,24 @@ import './MapsMarkerPopup.css'
 
 function MapsMarkerPopup({ concert }) {
   return (
-    <div>
+    <div className="map-popup-card">
       <img
         src={concert.image}
         alt={concert.artist}
         className="map-popup-image"
       />
 
-      <p className="map-popup-date">
+      <span className="map-popup-date">
         {new Date(concert.date).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
           year: "numeric",
         })}
-      </p>
+      </span>
 
-      <h3 className="map-popup-artist">{concert.artist}</h3>
+      <span className="map-popup-artist">{concert.artist}</span>
 
-      <p className="map-popup-venue">{concert.venue}</p>
+      <span className="map-popup-venue">{concert.venue}</span>
 
       <div className="map-popup-rating-row">
         <span className="map-popup-stars">
