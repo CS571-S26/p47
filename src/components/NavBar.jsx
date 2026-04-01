@@ -8,7 +8,7 @@ import './NavBar.css'
 function NavBar() {
   return (
     <Navbar bg="dark" variant="dark" sticky="top" expand="sm" collapseOnSelect>
-      <Container>
+      <Container fluid className="navbar-setlog-inner px-3 px-lg-4">
         <Navbar.Toggle aria-controls="main-nav" />
         <Navbar.Brand as={Link} to="/" className="fw-bold">
           <img src={logo} alt="SetLog Logo" className="logo" />
@@ -36,7 +36,7 @@ function NavBar() {
         <div className="d-flex align-items-center gap-3">
           {/* Search bar */}
           <div className="search-bar d-flex align-items-center px-2">
-            <Search size={16} />
+            <Search size={16} className="text-secondary flex-shrink-0" />
             <FormControl
               type="search"
               placeholder="Search artists, venues..."
@@ -46,9 +46,11 @@ function NavBar() {
         </div>
 
         <button type="button" className="icon-btn-setlog" aria-label="Dark mode">
+            {/* Dark mode toggle */}
             <Moon size={18} />
           </button>
           <button type="button" className="avatar-btn-setlog" aria-label="Profile">
+            {/* Profile button */}
             <User size={18} />
           </button>
       </Container>
