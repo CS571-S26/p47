@@ -1,15 +1,22 @@
 import { concerts } from '../data/MockConcerts'
 import TimelineConcert from '../components/TimelineConcert'
+import TimelineStats from '../components/TimelineStats'
+import { Container, Row, Col } from 'react-bootstrap'
 
 function TimelinePage() {
   return (
-    <section id="center">
-      <div className="timeline-list">
-        {concerts.map((concert) => (
-          <TimelineConcert key={concert.id} concert={concert} />
-        ))}
-      </div>
-    </section>
+    <Container>
+      <Row>
+        <Col md={2}>
+          <TimelineStats />
+        </Col>
+        <Col md={8}>
+          {concerts.map((concert) => (
+            <TimelineConcert key={concert.id} concert={concert} />
+          ))}
+        </Col>
+      </Row>
+    </Container>
   )
 }
 
