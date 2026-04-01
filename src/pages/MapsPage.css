@@ -1,5 +1,11 @@
 .map-page {
-  padding: 1rem;
+  padding: 2rem;
+}
+
+.map-title {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 2.05;
 }
 
 .map-box {
@@ -14,3 +20,42 @@
   height: 100%;
   width: 100%;
 }
+
+.map-filter-row {
+    display: flex;
+    width: 50%;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.map-filter-button-select {
+    width: 100%;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 32px;
+    padding: 6px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.map-filter-button-select:hover {
+    background-color: #155ec0;
+}
+
+.map-filter-button-unselect {
+    width: 100%;
+    background-color: #ffffff;
+    color: #7a7a7a;
+    border: none;
+    border-radius: 32px;
+    padding: 6px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.map-filter-button-unselect:hover {
+    background-color: #d8d8d8;
+}
+

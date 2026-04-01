@@ -8,6 +8,7 @@ import MapsMarkerPopup from '../components/MapsMarkerPopup'
 
 function MapsPage() {
   const [locations, setLocations] = useState([])
+  const [filter, setFilter] = useState("all")
 
   useEffect(() => {
     async function loadLocations() {
@@ -27,7 +28,43 @@ function MapsPage() {
 
   return (
     <div className="map-page">
-      <h1>Map</h1>
+      <span className="map-title">Concert Map</span>
+
+      <div className="map-filter-row">
+        <button
+          className={filter === "all" ? "map-filter-button-select" : "map-filter-button-unselect"}
+          onClick={() => setFilter("all")}
+        >
+          All
+        </button>
+        <button
+          className={filter === "2025" ? "map-filter-button-select" : "map-filter-button-unselect"}
+          onClick={() => setFilter("2025")}
+        >
+          2025
+        </button>
+        <button
+          className={filter === "2024" ? "map-filter-button-select" : "map-filter-button-unselect"}
+          onClick={() => setFilter("2024")}
+        >
+          2024
+        </button>
+        <button
+          className={filter === "Rock" ? "map-filter-button-select" : "map-filter-button-unselect"}
+          onClick={() => setFilter("Rock")}
+        >
+          Rock
+        </button>
+        <button
+          className={filter === "Pop" ? "map-filter-button-select" : "map-filter-button-unselect"}
+          onClick={() => setFilter("Pop")}
+        >
+          Pop
+        </button>
+        <button
+          className="map-filter-button-unselect">More</button>
+      </div>
+
       <div className="map-box">
         <MapContainer center={[39.5, -98.35]} zoom={4} scrollWheelZoom>
           <TileLayer
