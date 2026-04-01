@@ -16,7 +16,10 @@ function MapsMarkerPopup({ concert }) {
       <p className="map-popup-venue">{concert.venue}</p>
 
       <div className="map-popup-rating-row">
-        <span className="map-popup-stars">★★★★★</span>
+        <span className="map-popup-stars">
+          {'★'.repeat(concert.rating)}
+          {'☆'.repeat(5 - concert.rating)}
+        </span>
         <span className="map-popup-rating">{concert.rating}.0</span>
       </div>
 
