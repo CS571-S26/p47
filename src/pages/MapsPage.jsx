@@ -26,6 +26,18 @@ function MapsPage() {
   //   loadLocations()
   // }, [])
 
+  // Group concerts together so they can be viewed via one marker
+  const grouped = {}
+  concerts.forEach((concert) => {
+    const key = concert.coords.join(",")
+
+    if (!grouped[key]) {
+      grouped[key] = []
+    }
+
+    grouped[key].push(concert)
+  })
+
   return (
     <div className="map-page">
       <span className="map-title">Concert Map</span>
@@ -72,15 +84,13 @@ function MapsPage() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {concerts
-            .filter((concert) => Array.isArray(concert.coords) && concert.coords.length === 2)
-            .map((concert) => (
-              <Marker key={concert.id} position={concert.coords}>
-                <Popup>
-                  <MapsMarkerPopup concert={concert} />
-                </Popup>
-              </Marker>
-            ))}
+          {Object.entries(grouped).map(([key, shows]) => (
+            <Marker key={key} position={shows[0].coords}>
+              <Popup>
+                <MapsMarkerPopup concerts={shows} />
+              </Popup>
+            </Marker>
+          ))}
         </MapContainer>
       </div>
     </div>

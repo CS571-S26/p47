@@ -40,7 +40,7 @@ export const concerts = [
     rating: 5,
     songCount: 21,
     duration: '3h 05m',
-    image: 'https://www.rollingstone.com/wp-content/uploads/2025/05/dead-and-company-tickets.jpg?w=1581&h=1054&crop=1',
+    image: 'https://i.scdn.co/image/ab67616d0000b2731da59cb22318483877e16a93',
     notes:
       'John Mayer absolutely ripped. Crowd energy felt like a celebration the whole night.',
     coords: [41.9484, -87.6553],
@@ -60,10 +60,10 @@ export const concerts = [
     venue: 'Wrigley Field',
     city: 'Chicago, IL',
     genre: 'Jam Band',
-    rating: 5,
+    rating: 4,
     songCount: 21,
     duration: '3h 05m',
-    image: 'https://www.rollingstone.com/wp-content/uploads/2025/05/dead-and-company-tickets.jpg?w=1581&h=1054&crop=1',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcZ4M36pV1-mqis4Iadaq7RbAk1yjrjng8yg&s',
     notes:
       'John Mayer absolutely ripped. Crowd energy felt like a celebration the whole night.',
     coords: [41.9484, -87.6553],

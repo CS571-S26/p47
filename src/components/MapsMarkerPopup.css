@@ -70,3 +70,26 @@
 .map-popup-button:hover {
     background-color: #155ec0;
 }
+
+.map-popup-nav {
+  display: flex;
+  justify-content: space-between; /* pushes buttons apart */
+  align-items: center;
+}
+
+.map-popup-nav-button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.map-popup-nav-button:hover {
+    background-color: #303030;
+}
+
+.map-popup-counter {
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
