@@ -3,7 +3,7 @@ import NavBar from './components/NavBar.jsx'
 import MapsPage from './pages/MapsPage.jsx'
 import SettingsPage from './pages/SettingsPage.jsx'
 import TimelinePage from './pages/TimelinePage.jsx'
-import AddConcertPage from './pages/TimelinePage.jsx'
+import AddConcertPage from './pages/AddConcertPage.jsx'
 import './App.css'
 
 function App() {
