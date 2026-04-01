@@ -7,7 +7,7 @@ import './NavBar.css'
 
 function NavBar() {
   return (
-    <Navbar variant="dark" sticky="top" expand="lg">
+    <Navbar variant="dark" sticky="top" expand="sm">
       <Container fluid>
         <Navbar.Brand as={NavLink} to="/">
           <img src={logo} alt="Setlog Logo" className="logo" />
