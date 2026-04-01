@@ -11,12 +11,12 @@ function NavBar() {
       <Container fluid>
         <Navbar.Brand as={NavLink} to="/">
           <img src={logo} alt="Setlog Logo" className="logo" />
-          SetLog
+          <span className="website-title">SetLog</span>
         </Navbar.Brand>
 
         <Navbar.Collapse>
           <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/" end className="nav-item-custom">
+            <Nav.Link as={NavLink} to="/" className="nav-item-custom">
               <List size={18} /> 
               Timeline
             </Nav.Link>
@@ -34,20 +34,20 @@ function NavBar() {
 
           <div className="nav-actions">
             <div className="search-bar">
-              <Search size={16} className="search-icon"/>
-              <FormControl type="search" placeholder="Search..." className="search-input"/>
+              <Search size={24} className="search-icon"/>
+              <FormControl type="search" placeholder="Search artists, venues, cities..." className="search-input"/>
             </div>
 
             <button type="button" className="icon-btn" aria-label="Dark mode">
-              <Moon size={18} />
+              <Moon size={32} />
             </button>
 
             <button type="button" className="icon-btn " aria-label="Settings">
-              <Settings size={18} />
+              <Settings size={32} />
             </button>
-            
+
             <button type="button" className="icon-btn icon-btn-round" aria-label="Profile">
-              <User size={18} />
+              <User size={32} />
             </button>
           </div>
         </Navbar.Collapse>

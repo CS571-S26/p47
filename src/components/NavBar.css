@@ -26,9 +26,9 @@
   display: flex;
   align-items: center;
   background-color: #172554;
-  border-radius: 12px;
-  padding: 0.4rem 0.75rem;
-  min-width: 220px;
+  border-radius: 24px;
+  padding: 0.3rem 0.75rem;
+  min-width: 400px;
 }
 
 .search-icon {
@@ -89,7 +89,14 @@
   gap: 0.75rem;
 }
 
+.website-title {
+  align-items: center;
+  font-weight: 700;   /* bold */
+  gap: 10px; /* controls space between logo + text */
+}
+
 .logo {
+  margin-right: 10px;
   border-radius: 8px;
   width: 40px;
   height: 40px;
