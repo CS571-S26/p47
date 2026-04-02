@@ -72,14 +72,22 @@ function NavBar() {
 
             <Col xs="auto">
               {/* Settings */}
-              <Button variant="dark">
+              <Button
+                as={NavLink}
+                to="/settings"
+                variant="dark"
+              >
                 <Settings size={32} />
               </Button>
             </Col>
 
             <Col xs="auto">
               {/* User Profile */}
-              <Button variant="outline-light">
+              <Button
+                variant="outline-light"
+                as={NavLink}
+                to="/user-profile"
+              >
                 <User size={32} />
               </Button>
             </Col>
