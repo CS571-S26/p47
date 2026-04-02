@@ -1,13 +1,20 @@
-const rootStyles = getComputedStyle(document.documentElement)
-
-const primary = rootStyles.getPropertyValue('--setlog-primary').trim()
-const primaryHover = rootStyles.getPropertyValue('--setlog-primary-hover').trim()
-const navText = rootStyles.getPropertyValue('--setlog-nav-text').trim()
-const white = rootStyles.getPropertyValue('--setlog-white').trim()
+function getCssVar(name) {
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim()
+}
 
 export const colors = {
-  setlogPrimary: primary,
-  setlogPrimaryHover: primaryHover,
-  navText: navText,
-  white: white
+  get setlogPrimary() {
+    return getCssVar('--setlog-primary')
+  },
+  get setlogPrimaryHover() {
+    return getCssVar('--setlog-primary-hover')
+  },
+  get navText() {
+    return getCssVar('--nav-text')
+  },
+  get white() {
+    return getCssVar('--white')
+  }
 }
