@@ -1,8 +1,10 @@
-import { Card, Col, Row } from 'react-bootstrap'
-import { Calendar } from 'lucide-react'
+import { Card } from 'react-bootstrap'
+import { Calendar, Users, MapPin, Star } from 'lucide-react'
 
 import { stats } from '../data/MockConcerts'
 import { colors } from "../data/Colors"
+
+import StatRow from '../components/StatRow'
 
 function TimelineStats() {
 
@@ -16,13 +18,30 @@ function TimelineStats() {
         maxWidth: '320px',
       }}
     >
-      <Col>
-        <div style={{fontSize: "20px", fontWeight: "500", marginBottm: "2px", lineHeight: "1.05"}}>Your Stats</div>
-        <Row>
-          <Calendar style={{color: colors.setlogPrimary}} />
-          <div>gfsdfs</div>
-        </Row>
-      </Col>
+      <div style={{ fontSize: "20px", fontWeight: "500", marginBottom: "16px", lineHeight: "1.05" }}>Your Stats</div>
+      <StatRow
+        icon={<Calendar size={20} color={colors.setlogPrimary} />}
+        value={stats.showsLogged}
+        label="Shows Logged"
+      />
+
+      <StatRow
+        icon={<Users size={20} color={colors.setlogPrimary} />}
+        value={stats.artistsSeen}
+        label="Artist Seen"
+      />
+
+      <StatRow
+        icon={<MapPin size={20} color={colors.setlogPrimary} />}
+        value={stats.showsLogged}
+        label="Cities Visited"
+      />
+
+      <StatRow
+        icon={<Star size={20} color={colors.setlogPrimary} />}
+        value={stats.avgRating}
+        label="Average Rating"
+      />
     </Card>
   )
 }

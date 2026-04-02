@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-bootstrap'
 
 function TimelinePage() {
   return (
-    <Container style={{padding: "1rem"}}>
+    <Container fluid style={{ padding: "1rem" }}>
       <Row>
         <Col md={2}>
           <TimelineStats/>
