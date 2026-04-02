@@ -5,14 +5,14 @@ import { Container, Row, Col } from 'react-bootstrap'
 
 function TimelinePage() {
   return (
-    <Container className="timeline-page">
+    <Container style={{padding: "1rem"}}>
       <Row>
         <Col md={2}>
-          <TimelineStats />
+          <TimelineStats/>
         </Col>
         <Col md={8}>
-        <div className="timeline-title">My Concert Timeline</div>
-        <div className="timeline-subtitle">Your logged shows, newest first</div>
+        <div style={{fontSize: "48px", fontWeight: "700"}}>My Concert Timeline</div>
+        <div style={{fontSize: "24px", fontWeight: "300", marginBottom: "15px"}}>Your logged shows, newest first</div>
           {concerts.map((concert) => (
             <TimelineConcert key={concert.id} concert={concert} />
           ))}
