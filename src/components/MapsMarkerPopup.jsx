@@ -105,7 +105,7 @@ function MapsMarkerPopup({ concerts }) {
             </Col>
 
             <Col xs="auto">
-              <Button variant="secondary" onClick={handlePrev} style={styles.navButtonText}>
+              <Button variant="secondary" onClick={handleNext} style={styles.navButtonText}>
                 →
               </Button>
             </Col>
