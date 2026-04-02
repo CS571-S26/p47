@@ -48,25 +48,25 @@ function MapsMarkerPopup({ concerts }) {
       />
 
       {/* Formatted Date */}
-      <text style={{ fontSize: "0.9rem", color: "gray" }}>
+      <span style={{ fontSize: "0.9rem", color: "gray" }}>
         {new Date(concert.date).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
           year: "numeric",
         })}
-      </text>
+      </span>
 
       {/* Artist */}
-      <text style={{
+      <span style={{
         marginTop: "0.25rem",
         fontSize: "24px",
         fontWeight: 700
       }}>
         {concert.artist}
-      </text>
+      </span>
 
       {/* Venue */}
-      <text style={{
+      <span style={{
         marginBottom: "0.25rem",
         lineHeight: 1.05,
         fontSize: "14px",
@@ -74,18 +74,18 @@ function MapsMarkerPopup({ concerts }) {
         color: "gray"
       }}>
         {concert.venue}
-      </text>
+      </span>
 
       {/* Rating Row */}
       <Row className="align-items-center">
         <Col xs="auto">
-          <text style={{ color: "orange", fontSize: "24px", lineHeight: "1" }}>
+          <span style={{ color: "orange", fontSize: "24px", lineHeight: "1" }}>
             {'★'.repeat(concert.rating)}
             {'☆'.repeat(5 - concert.rating)}
-          </text>
+          </span>
         </Col>
         <Col xs="auto">
-          <text style={{ fontSize: "16px", fontWeight: "700" }}>{concert.rating}.0</text>
+          <span style={{ fontSize: "16px", fontWeight: "700" }}>{concert.rating}.0</span>
         </Col>
       </Row>
 
@@ -113,9 +113,9 @@ function MapsMarkerPopup({ concerts }) {
           </Row>
 
           {concerts.length > 1 && (
-            <text style={{ fontSize: "15px", fontWeight: "600", textAlign: "center" }}>
+            <span style={{ fontSize: "15px", fontWeight: "600", textAlign: "center" }}>
               Show {currentIndex + 1} of {concerts.length}
-            </text>
+            </span>
           )}
         </>
       ) : (

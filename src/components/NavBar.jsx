@@ -35,7 +35,7 @@ function NavBar() {
       <Container fluid>
         <Navbar.Brand as={NavLink} to="/">
           <img src={logo} alt="Setlog Logo" style={{ width: "40px", height: "40px", marginRight: "0.5rem" }} />
-          <text style={{ marginRight: "50px", fontWeight: "700" }}>SetLog</text>
+          <span style={{ marginRight: "50px", fontWeight: "700" }}>SetLog</span>
         </Navbar.Brand>
 
         <Navbar.Collapse>
