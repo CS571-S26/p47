@@ -1,6 +1,5 @@
 import { useState } from 'react'
-
-import './MapsMarkerPopup.css'
+import { Card, Button, Row, Col } from 'react-bootstrap'
 
 function MapsMarkerPopup({ concerts }) {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -19,54 +18,111 @@ function MapsMarkerPopup({ concerts }) {
     )
   }
 
+  const styles = {
+    navButtonText: {
+      padding: "6px 10px",
+      border: "none"
+    },
+    navButton: {
+      width: "100%",
+      padding: "6px",
+      fontSize: "16px",
+      fontWeight: "700",
+      border: "none"
+    }
+  }
+
   return (
-    <div className="map-popup-card">
+    <Card style={{ width: "16rem", padding: "0.75rem" }}>
+      {/* Concert Image */}
       <img
         src={concert.image}
         alt={concert.artist}
-        className="map-popup-image"
+        style={{
+          width: "100%",
+          height: "120px",
+          objectFit: "cover",
+          borderRadius: "0.5rem",
+          marginBottom: "0.5rem"
+        }}
       />
 
-      <span className="map-popup-date">
+      {/* Formatted Date */}
+      <text style={{ fontSize: "0.9rem", color: "gray" }}>
         {new Date(concert.date).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
           year: "numeric",
         })}
-      </span>
+      </text>
 
-      <span className="map-popup-artist">{concert.artist}</span>
+      {/* Artist */}
+      <text style={{
+        marginTop: "0.25rem",
+        fontSize: "24px",
+        fontWeight: 700
+      }}>
+        {concert.artist}
+      </text>
 
-      <span className="map-popup-venue">{concert.venue}</span>
+      {/* Venue */}
+      <text style={{
+        marginBottom: "0.25rem",
+        lineHeight: 1.05,
+        fontSize: "14px",
+        fontStyle: "italic",
+        color: "gray"
+      }}>
+        {concert.venue}
+      </text>
 
-      <div className="map-popup-rating-row">
-        <span className="map-popup-stars">
-          {'★'.repeat(concert.rating)}
-          {'☆'.repeat(5 - concert.rating)}
-        </span>
-        <span className="map-popup-rating">{concert.rating}.0</span>
-      </div>
+      {/* Rating Row */}
+      <Row className="align-items-center">
+        <Col xs="auto">
+          <text style={{ color: "orange", fontSize: "24px", lineHeight: "1" }}>
+            {'★'.repeat(concert.rating)}
+            {'☆'.repeat(5 - concert.rating)}
+          </text>
+        </Col>
+        <Col xs="auto">
+          <text style={{ fontSize: "16px", fontWeight: "700" }}>{concert.rating}.0</text>
+        </Col>
+      </Row>
 
+      {/* Navigation & View Show Buttons */}
       {concerts.length > 1 ? (
         <>
-          <div className="map-popup-nav">
-            <button className="map-popup-nav-button" onClick={handlePrev}>
-              ←
-            </button>
-            <button className="map-popup-button">View Show</button>
-            <button className="map-popup-nav-button" onClick={handleNext}>
-              →
-            </button>
-          </div>
+          <Row className="align-items-center">
+
+            <Col xs="auto">
+              <Button variant="secondary" onClick={handlePrev} style={styles.navButtonText}>
+                ←
+              </Button>
+            </Col>
+
+            <Col>
+              <Button variant="primary" style={styles.navButton}>View Show</Button>
+            </Col>
+
+            <Col xs="auto">
+              <Button variant="secondary" onClick={handlePrev} style={styles.navButtonText}>
+                →
+              </Button>
+            </Col>
+
+          </Row>
+
           {concerts.length > 1 && (
-            <div className="map-popup-counter">
+            <text style={{ fontSize: "15px", fontWeight: "600", textAlign: "center" }}>
               Show {currentIndex + 1} of {concerts.length}
-            </div>
+            </text>
           )}
         </>
-
-      ) : (<button className="map-popup-button">View Show</button>)}
-    </div>
+      ) : (
+        <Button variant="primary" style={styles.navButton}>View Show</Button>
+      )
+      }
+    </Card>
   )
 }
 
