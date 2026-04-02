@@ -2,7 +2,7 @@ import { Card, Col, Row } from 'react-bootstrap'
 import { Calendar } from 'lucide-react'
 
 import { stats } from '../data/MockConcerts'
-import './TimelineStats.css'
+import { colors } from "../data/Colors"
 
 function TimelineStats() {
 
@@ -17,12 +17,11 @@ function TimelineStats() {
       }}
     >
       <Col>
-        <div className="timeline-stats-title">Your Stats</div>
+        <div style={{fontSize: "20px", fontWeight: "500", marginBottm: "2px", lineHeight: "1.05"}}>Your Stats</div>
         <Row>
-          <Calendar className="timeline-stats-icon" />
+          <Calendar style={{color: colors.setlogPrimary}} />
           <div>gfsdfs</div>
         </Row>
-
       </Col>
     </Card>
   )

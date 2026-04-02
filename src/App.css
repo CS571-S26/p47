@@ -1,4 +1,22 @@
+:root {
+  --setlog-primary: #df6c20;
+  --setlog-primary-hover: #b4571a;
+  --nav-text: #cbd5e1;
+  --white: #ffffff;
+}
+
 html, body, #root {
   height: 100%;
   margin: 0;
+}
+
+.btn-primary {
+  background-color: var(--setlog-primary) !important;
+  border-color: var(--setlog-primary) !important;
+  color: var(--white) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--setlog-primary-hover) !important;
+  border-color: var(--setlog-primary-hover) !important;
 }

@@ -1,5 +1,5 @@
 .navbar .nav-link {
-  color: #cbd5e1;
+  color: var(--nav-text);
   font-weight: 500;
   border-bottom: 3px solid transparent;
   padding-bottom: 0.5rem;
@@ -7,10 +7,10 @@
 }
 
 .navbar .nav-link.active {
-  color: #ffffff;
-  border-bottom-color: #0066ff;
+  color: var(--white);
+  border-bottom-color: var(--setlog-primary);
 }
 
 .navbar .nav-link.active svg {
-  color: #60a5fa;
+  color: var(--setlog-primary);
 }
