@@ -7,7 +7,7 @@ import { colors } from "../data/Colors"
 import StatRow from '../components/StatRow'
 
 function TimelineStats() {
-
+  {/* TODO Get real stats data from the user's shows */}
   return (
     <Card
       style={{
