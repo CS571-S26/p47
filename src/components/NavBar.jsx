@@ -31,7 +31,7 @@ function NavBar() {
             </Nav.Link>
 
             <Nav.Link as={NavLink} to="/add-concert">
-              <CirclePlus size={18} /> Add Concert
+              <CirclePlus size={18} /> Log Concert
             </Nav.Link>
           </Nav>
 
