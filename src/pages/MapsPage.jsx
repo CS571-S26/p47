@@ -56,20 +56,13 @@ function MapsPage() {
     },
     unselectedButton: {
       width: '100%',
-      backgroundColor: 'white',
+      backgroundColor: 'lightgray',
       color: 'gray',
       border: 'none',
       borderRadius: '32px',
       padding: '6px',
       fontSize: '13px',
       fontWeight: 700,
-    },
-    mapBox: {
-      height: '70vh',
-      width: '100%',
-      border: '1px solid #ccc',
-      borderRadius: '8px',
-      overflow: 'hidden',
     },
     filterCol: {
       padding: "12px",
@@ -87,6 +80,7 @@ function MapsPage() {
           <Button
             style={getButtonStyle("all")}
             onClick={() => setFilter("all")}
+              variant="light"
           >
             All
           </Button>
@@ -95,6 +89,7 @@ function MapsPage() {
           <Button
             style={getButtonStyle("2025")}
             onClick={() => setFilter("2025")}
+              variant="light"
           >
             2025
           </Button>
@@ -103,6 +98,7 @@ function MapsPage() {
           <Button
             style={getButtonStyle("2024")}
             onClick={() => setFilter("2024")}
+              variant="light"
           >
             2024
           </Button>
@@ -111,6 +107,7 @@ function MapsPage() {
           <Button
             style={getButtonStyle("Rock")}
             onClick={() => setFilter("Rock")}
+              variant="light"
           >
             Rock
           </Button>
@@ -119,6 +116,7 @@ function MapsPage() {
           <Button
             style={getButtonStyle("Pop")}
             onClick={() => setFilter("Pop")}
+              variant="light"
           >
             Pop
           </Button>
