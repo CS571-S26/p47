@@ -1,8 +1,9 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { Button, Row, Col } from 'react-bootstrap'
 
 import { concerts } from '../data/MockConcerts'
-// import { geocodeVenue } from '../utils/geocode'
+import { colors } from "../data/Colors"
 import './MapsPage.css'
 import MapsMarkerPopup from '../components/MapsMarkerPopup'
 
@@ -26,6 +27,11 @@ function MapsPage() {
   //   loadLocations()
   // }, [])
 
+  // Return style of the current button based upon if it's selected
+  function getButtonStyle(value) {
+    return filter === value ? styles.selectedButton : styles.unselectedButton
+  }
+
   // Group concerts together so they can be viewed via one marker
   const grouped = {}
   concerts.forEach((concert) => {
@@ -38,45 +44,92 @@ function MapsPage() {
     grouped[key].push(concert)
   })
 
+  const styles = {
+    selectedButton: {
+      width: '100%',
+      backgroundColor: colors.setlogPrimary,
+      border: 'none',
+      borderRadius: '32px',
+      padding: '6px',
+      fontSize: '13px',
+      fontWeight: 700,
+    },
+    unselectedButton: {
+      width: '100%',
+      backgroundColor: 'white',
+      color: 'gray',
+      border: 'none',
+      borderRadius: '32px',
+      padding: '6px',
+      fontSize: '13px',
+      fontWeight: 700,
+    },
+    mapBox: {
+      height: '70vh',
+      width: '100%',
+      border: '1px solid #ccc',
+      borderRadius: '8px',
+      overflow: 'hidden',
+    },
+    filterCol: {
+      padding: "12px",
+      width: "10%"
+    }
+  }
+
   return (
-    <div className="map-page">
-      <span className="map-title">Concert Map</span>
+    <div style={{ height: "100%", display: "flex", flexDirection: "column", padding: "1rem" }}>
+      <span style={{ fontSize: "48px", fontWeight: "700" }}>Concert Map</span>
 
       {/* TODO: MAKE FILTERS WORK */}
-      <div className="map-filter-row">
-        <button
-          className={filter === "all" ? "map-filter-button-select" : "map-filter-button-unselect"}
-          onClick={() => setFilter("all")}
-        >
-          All
-        </button>
-        <button
-          className={filter === "2025" ? "map-filter-button-select" : "map-filter-button-unselect"}
-          onClick={() => setFilter("2025")}
-        >
-          2025
-        </button>
-        <button
-          className={filter === "2024" ? "map-filter-button-select" : "map-filter-button-unselect"}
-          onClick={() => setFilter("2024")}
-        >
-          2024
-        </button>
-        <button
-          className={filter === "Rock" ? "map-filter-button-select" : "map-filter-button-unselect"}
-          onClick={() => setFilter("Rock")}
-        >
-          Rock
-        </button>
-        <button
-          className={filter === "Pop" ? "map-filter-button-select" : "map-filter-button-unselect"}
-          onClick={() => setFilter("Pop")}
-        >
-          Pop
-        </button>
-        <button
-          className="map-filter-button-unselect">More</button>
-      </div>
+      <Row style={{ gap: '8px' }}>
+        <Col xs="auto" style={styles.filterCol}>
+          <Button
+            style={getButtonStyle("all")}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </Button>
+        </Col>
+        <Col xs="auto" style={styles.filterCol}>
+          <Button
+            style={getButtonStyle("2025")}
+            onClick={() => setFilter("2025")}
+          >
+            2025
+          </Button>
+        </Col>
+        <Col xs="auto" style={styles.filterCol}>
+          <Button
+            style={getButtonStyle("2024")}
+            onClick={() => setFilter("2024")}
+          >
+            2024
+          </Button>
+        </Col>
+        <Col xs="auto" style={styles.filterCol}>
+          <Button
+            style={getButtonStyle("Rock")}
+            onClick={() => setFilter("Rock")}
+          >
+            Rock
+          </Button>
+        </Col>
+        <Col xs="auto" style={styles.filterCol}>
+          <Button
+            style={getButtonStyle("Pop")}
+            onClick={() => setFilter("Pop")}
+          >
+            Pop
+          </Button>
+        </Col>
+        <Col xs="auto" style={styles.filterCol}>
+          <Button
+            style={styles.unselectedButton}>
+            More
+          </Button>
+        </Col>
+      </Row>
 
       <div className="map-box">
         <MapContainer center={[39.5, -98.35]} zoom={4} scrollWheelZoom>
