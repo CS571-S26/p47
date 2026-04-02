@@ -1,4 +1,4 @@
-import { Container, Nav, Navbar, FormControl } from 'react-bootstrap'
+import { Container, Nav, Navbar, FormControl, Row, Col, Form, Button } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
 import { Map, CirclePlus, Settings, List, Search, Moon, User } from 'lucide-react'
 
@@ -6,50 +6,103 @@ import logo from '../assets/setlog_logo.png'
 import './NavBar.css'
 
 function NavBar() {
+  const styles = {
+    navLink: {
+      color: '#cbd5e1',
+      fontWeight: 500,
+      borderBottom: '3px solid transparent',
+      paddingBottom: '0.5rem',
+      marginRight: '15px',
+    },
+
+    navLinkActive: {
+      color: '#ffffff',
+      borderBottomColor: '#0066ff',
+    },
+
+    navLinkIconActive: {
+      color: '#60a5fa',
+    },
+  }
+
   return (
-    <Navbar variant="dark" sticky="top" expand="sm">
+    <Navbar
+      variant="dark"
+      sticky="top" expand="sm"
+      style={{
+        background: 'linear-gradient(180deg, #252830 0%, #1a1d23 100%)',
+      }}>
       <Container fluid>
         <Navbar.Brand as={NavLink} to="/">
-          <img src={logo} alt="Setlog Logo" className="logo" />
-          <span className="website-title">SetLog</span>
+          <img src={logo} alt="Setlog Logo" style={{ width: "40px", height: "40px", marginRight: "0.5rem" }} />
+          <text style={{ marginRight: "50px", fontWeight: "700" }}>SetLog</text>
         </Navbar.Brand>
 
         <Navbar.Collapse>
+          {/* Left Side */}
           <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/" className="nav-item-custom">
-              <List size={18} /> 
-              Timeline
+            <Nav.Link as={NavLink} to="/">
+              <List size={18} /> Timeline
             </Nav.Link>
 
-            <Nav.Link as={NavLink} to="/maps" className="nav-item-custom">
-              <Map size={18} /> 
-              Map
+            <Nav.Link as={NavLink} to="/maps">
+              <Map size={18} /> Map
             </Nav.Link>
 
-            <Nav.Link as={NavLink} to="/add-concert" className="nav-item-custom">
-              <CirclePlus size={18} /> 
-              Add Concert
+            <Nav.Link as={NavLink} to="/add-concert">
+              <CirclePlus size={18} /> Add Concert
             </Nav.Link>
           </Nav>
 
-          <div className="nav-actions">
-            <div className="search-bar">
-              <Search size={24} className="search-icon"/>
-              <FormControl type="search" placeholder="Search artists, venues, cities..." className="search-input"/>
-            </div>
+          {/* Right Side */}
+          <Row className="align-items-center">
 
-            <button type="button" className="icon-btn" aria-label="Dark mode">
-              <Moon size={32} />
-            </button>
+            {/* Search */}
+            <Col xs="auto">
+              <Form>
+                <Row className="align-items-center">
+                  <Col xs="auto">
+                    <Button variant="dark">
+                      <Search size={24} className="search-icon" />
+                    </Button>
+                  </Col>
+                  <Col>
+                    <FormControl
+                      type="search"
+                      placeholder="Search artists, venues, cities..."
+                      style={{
+                        borderRadius: "24px",
+                        padding: "0.3rem 0.75rem",
+                        minWidth: "400px",
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
 
-            <button type="button" className="icon-btn " aria-label="Settings">
-              <Settings size={32} />
-            </button>
+            {/* Icon Buttons */}
+            <Col xs="auto">
+              {/* Dark Mode */}
+              <Button variant="dark">
+                <Moon size={32} />
+              </Button>
+            </Col>
 
-            <button type="button" className="icon-btn icon-btn-round" aria-label="Profile">
-              <User size={32} />
-            </button>
-          </div>
+            <Col xs="auto">
+              {/* Settings */}
+              <Button variant="dark">
+                <Settings size={32} />
+              </Button>
+            </Col>
+
+            <Col xs="auto">
+              {/* User Profile */}
+              <Button variant="outline-light">
+                <User size={32} />
+              </Button>
+            </Col>
+          </Row>
         </Navbar.Collapse>
       </Container>
     </Navbar>
