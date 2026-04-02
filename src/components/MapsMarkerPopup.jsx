@@ -33,7 +33,7 @@ function MapsMarkerPopup({ concerts }) {
   }
 
   return (
-    <Card style={{ width: "16rem", padding: "0.75rem" }}>
+    <Card style={{ width: "16rem", padding: "0.75rem", border: "none" }}>
       {/* Concert Image */}
       <img
         src={concert.image}
