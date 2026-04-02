@@ -1,3 +1,3 @@
 export const colors = {
-    setlogPrimary: '#ff63eb'
+    setlogPrimary: "#2522d3"
 }

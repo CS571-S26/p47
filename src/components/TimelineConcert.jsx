@@ -1,6 +1,8 @@
 import { Clock } from 'lucide-react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 
+import { colors } from "../data/Colors"
+
 function TimelineConcert({ concert }) {
     const date = new Date(concert.date)
 
@@ -29,7 +31,7 @@ function TimelineConcert({ concert }) {
             boxShadow: '0 4px 14px lightgray',
         },
         dateMonth: {
-            background: '#2563eb',
+            background: colors.setlogPrimary,
             color: 'white',
             fontSize: '0.75rem',
             fontWeight: 800,

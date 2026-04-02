@@ -6,25 +6,6 @@ import logo from '../assets/setlog_logo.png'
 import './NavBar.css'
 
 function NavBar() {
-  const styles = {
-    navLink: {
-      color: '#cbd5e1',
-      fontWeight: 500,
-      borderBottom: '3px solid transparent',
-      paddingBottom: '0.5rem',
-      marginRight: '15px',
-    },
-
-    navLinkActive: {
-      color: '#ffffff',
-      borderBottomColor: '#0066ff',
-    },
-
-    navLinkIconActive: {
-      color: '#60a5fa',
-    },
-  }
-
   return (
     <Navbar
       variant="dark"
