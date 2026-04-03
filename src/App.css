@@ -3,11 +3,37 @@
   --setlog-primary-hover: #b4571a;
   --nav-text: #cbd5e1;
   --white: #ffffff;
+  --setlog-page-bg: #f1f5f9;
 }
 
-html, body, #root {
-  min-height: 100%;
+/*
+ * Fill short pages (e.g. Log Concert) without using height:100% on html/body — that caps the
+ * document at one viewport and leaves scrolled areas (Timeline) showing :root’s dark theme bg.
+ */
+html {
+  background-color: var(--setlog-page-bg);
+}
+
+html,
+body {
   margin: 0;
+  min-height: 100dvh;
+}
+
+body {
+  background-color: var(--setlog-page-bg);
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+.app-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
 }
 
 .btn-primary {

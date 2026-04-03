@@ -11,13 +11,15 @@ function App() {
   return (
     <>
       <NavBar />
-      <Routes>
-        <Route path="/" element={<TimelinePage />} />
-        <Route path="/maps" element={<MapsPage />} />
-        <Route path="/add-concert" element={<AddConcertPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/user-profile" element={<UserProfilePage />} />
-      </Routes>
+      <main className="app-main">
+        <Routes>
+          <Route path="/" element={<TimelinePage />} />
+          <Route path="/maps" element={<MapsPage />} />
+          <Route path="/add-concert" element={<AddConcertPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/user-profile" element={<UserProfilePage />} />
+        </Routes>
+      </main>
     </>
   )
 }

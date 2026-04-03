@@ -34,7 +34,8 @@ function AddConcertPage() {
     <section
       id="center"
       style={{
-        minHeight: '100%',
+        flex: 1,
+        width: '100%',
         padding: '2rem 1rem',
         display: 'flex',
         justifyContent: 'center',
