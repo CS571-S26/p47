@@ -1,33 +1,41 @@
-import { useState } from 'react'
-import { Button } from 'react-bootstrap'
-import reactLogo from '../assets/react.svg'
-import viteLogo from '../assets/vite.svg'
-import heroImg from '../assets/hero.png'
+import TimelineConcert from '../components/TimelineConcert'
+import TimelineStats from '../components/TimelineStats'
+import { Container, Row, Col, Button } from 'react-bootstrap'
+import { Plus } from 'lucide-react'
+import { NavLink } from 'react-router-dom'
+
+import { concerts } from '../data/MockConcerts'
 
 function TimelinePage() {
-  const [count, setCount] = useState(0)
-
   return (
-    <section id="center">
-      <div className="hero">
-        <img src={heroImg} className="base" width="170" height="179" alt="" />
-        <img src={reactLogo} className="framework" alt="React logo" />
-        <img src={viteLogo} className="vite" alt="Vite logo" />
-      </div>
-      <div>
-        <h1>SetLog</h1>
-        <p>
-          Capture concerts, relive setlists, and build your personal live music
-          journal.
-        </p>
-      </div>
-      <Button
-        className="counter"
-        onClick={() => setCount((currentCount) => currentCount + 1)}
-      >
-        Shows logged: {count}
-      </Button>
-    </section>
+    <Container fluid style={{ padding: "1rem" }}>
+      <Row>
+        <Col md={2}>
+          <TimelineStats />
+        </Col>
+        <Col>
+          <Row style={{ alignItems: "center", justifyContent: "space-between"}}>
+            <Col xs="auto">
+              <div style={{ fontSize: "48px", fontWeight: "700" }}>My Concert Timeline</div>
+            </Col>
+            <Col xs="auto">
+              <Button
+                as={NavLink}
+                to="/add-concert"
+                style={{ padding: "6px 12px", fontSize: "16px", fontWeight: "700", marginLeft: "auto", height: "fit-content" }}
+              >
+                <Plus size={18} /> Log a New Show
+              </Button>
+            </Col>
+          </Row>
+
+          <div style={{ fontSize: "24px", fontWeight: "300", marginBottom: "15px" }}>Your logged shows, newest first</div>
+          {concerts.map((concert) => (
+            <TimelineConcert key={concert.id} concert={concert} />
+          ))}
+        </Col>
+      </Row>
+    </Container>
   )
 }
 

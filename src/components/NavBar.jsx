@@ -1,26 +1,97 @@
-import { Container, Nav, Navbar } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Container, Nav, Navbar, FormControl, Row, Col, Form, Button } from 'react-bootstrap'
+import { NavLink } from 'react-router-dom'
+import { Map, CirclePlus, Settings, List, Search, Moon, User } from 'lucide-react'
+
+import logo from '../assets/setlog_logo.png'
+import './NavBar.css'
 
 function NavBar() {
   return (
-    <Navbar bg="dark" variant="dark" sticky="top" expand="sm" collapseOnSelect>
-      <Container>
-        <Navbar.Toggle aria-controls="main-nav" />
-        <Navbar.Brand as={Link} to="/">
-          SetLog
+    <Navbar
+      variant="dark"
+      sticky="top" expand="sm"
+      style={{
+        background: 'linear-gradient(180deg, #252830 0%, #1a1d23 100%)',
+      }}>
+      <Container fluid>
+        <Navbar.Brand as={NavLink} to="/">
+          <img src={logo} alt="Setlog Logo" style={{ width: "40px", height: "40px", marginRight: "0.5rem" }} />
+          <span style={{ marginRight: "50px", fontWeight: "700" }}>SetLog</span>
         </Navbar.Brand>
-        <Navbar.Collapse id="main-nav" className="me-auto">
-          <Nav>
-            <Nav.Link as={Link} to="/">
-              Timeline
+
+        <Navbar.Collapse>
+          {/* Left Side */}
+          <Nav className="me-auto">
+            <Nav.Link as={NavLink} to="/">
+              <List size={18} /> Timeline
             </Nav.Link>
-            <Nav.Link as={Link} to="/maps">
-              Maps
+
+            <Nav.Link as={NavLink} to="/maps">
+              <Map size={18} /> Map
             </Nav.Link>
-            <Nav.Link as={Link} to="/settings">
-              Settings
+
+            <Nav.Link as={NavLink} to="/add-concert">
+              <CirclePlus size={18} /> Log Concert
             </Nav.Link>
           </Nav>
+
+          {/* Right Side */}
+          <Row className="align-items-center">
+
+            {/* Search */}
+            <Col xs="auto">
+              <Form>
+                <Row className="align-items-center">
+                  <Col xs="auto">
+                    <Button variant="dark">
+                      <Search size={24} className="search-icon" />
+                    </Button>
+                  </Col>
+                  <Col>
+                    <FormControl
+                      type="search"
+                      placeholder="Search artists, venues, cities..."
+                      style={{
+                        borderRadius: "24px",
+                        padding: "0.3rem 0.75rem",
+                        minWidth: "400px",
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+
+            {/* Icon Buttons */}
+            <Col xs="auto">
+              {/* Dark Mode */}
+              <Button variant="dark">
+                <Moon size={32} />
+              </Button>
+            </Col>
+
+            <Col xs="auto">
+              {/* Settings */}
+              <Button
+                as={NavLink}
+                to="/settings"
+                variant="dark"
+              >
+                <Settings size={32} />
+              </Button>
+            </Col>
+
+            <Col xs="auto">
+              {/* User Profile */}
+              <Button
+                variant="outline-light"
+                as={NavLink}
+                to="/user-profile"
+              >
+                <User size={32} />
+              </Button>
+            </Col>
+          </Row>
         </Navbar.Collapse>
       </Container>
     </Navbar>

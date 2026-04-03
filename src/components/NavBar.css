@@ -1,0 +1,16 @@
+.navbar .nav-link {
+  color: var(--nav-text);
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  padding-bottom: 0.5rem;
+  margin-right: 15px
+}
+
+.navbar .nav-link.active {
+  color: var(--white);
+  border-bottom-color: var(--setlog-primary);
+}
+
+.navbar .nav-link.active svg {
+  color: var(--setlog-primary);
+}
