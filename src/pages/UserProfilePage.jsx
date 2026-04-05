@@ -196,7 +196,7 @@ function UserProfilePage() {
                     justifyContent: 'center',
                     fontSize: '28px',
                     fontWeight: 700,
-                    color: 'var(--setlog-card-text)',
+                    color: 'var(--setlog-primary)',
                   }}
                 >
                   {initials}
