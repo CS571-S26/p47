@@ -1,8 +1,8 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { useContext, useEffect, useState } from 'react'
-import { Form } from 'react-bootstrap'
+import { Form, Button } from 'react-bootstrap'
 import L from 'leaflet'
-import { MapPin } from 'lucide-react'
+import { MapPin, Heart, Square } from 'lucide-react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
@@ -19,14 +19,26 @@ import MapsMarkerPopup from '../components/MapsMarkerPopup'
 function MapsPage({ theme }) {
   const { concerts } = useContext(ConcertsContext)
   const { loginStatus, loading: authLoading } = useAuth()
-  const [filter, setFilter] = useState({ year: 'all', genre: 'all' })
+  const [filter, setFilter] = useState({
+    year: 'all',
+    genre: 'all',
+    favoriteOnly: false,
+    attendedOnly: false,
+  })
 
   const { years, genres } = getMapFilterOptions(concerts)
 
   useEffect(() => {
     const { years: yList, genres: gList } = getMapFilterOptions(concerts)
     setFilter((prev) => {
-      if (isStaleMapFilter(prev, yList, gList)) return { kind: 'all' }
+      if (isStaleMapFilter(prev, yList, gList)) {
+        return {
+          year: 'all',
+          genre: 'all',
+          favorite: false,
+          attended: false,
+        }
+      }
       return prev
     })
   }, [concerts])
@@ -62,31 +74,18 @@ function MapsPage({ theme }) {
       fontWeight: 600,
       boxShadow: 'none',
     },
-  }
-
-  function handleFilterChange(e) {
-    const value = e.target.value
-
-    if (value === 'all') {
-      setFilter({ kind: 'all' })
-      return
+    filterButton: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.45rem',
+      borderRadius: '999px',
+      padding: '0.5rem 0.9rem',
+      border: '1px solid var(--setlog-card-border)',
+      backgroundColor: 'var(--setlog-card-bg-secondary)',
+      color: 'var(--setlog-card-text)',
+      fontSize: '14px',
+      fontWeight: 600,
     }
-
-    if (value.startsWith('year:')) {
-      setFilter({ kind: 'year', year: value.slice(5) })
-      return
-    }
-
-    if (value.startsWith('genre:')) {
-      setFilter({ kind: 'genre', genre: value.slice(6) })
-    }
-  }
-
-  function getFilterValue(currentFilter) {
-    if (currentFilter.kind === 'all') return 'all'
-    if (currentFilter.kind === 'year') return `year:${currentFilter.year}`
-    if (currentFilter.kind === 'genre') return `genre:${currentFilter.genre}`
-    return 'all'
   }
 
   const grouped = {}
@@ -120,6 +119,7 @@ function MapsPage({ theme }) {
           marginTop: '0.5rem',
           marginBottom: '1rem',
           flexWrap: 'wrap',
+          alignItems: 'center',
         }}
       >
         <Form.Select
@@ -151,6 +151,40 @@ function MapsPage({ theme }) {
             </option>
           ))}
         </Form.Select>
+
+        <Button
+          type="button"
+          onClick={() =>
+            setFilter((prev) => ({
+              ...prev,
+              favoriteOnly: !prev.favoriteOnly,
+            }))
+          }
+          style={styles.filterButton}
+        >
+          <Heart
+            size={16}
+            fill={filter.favoriteOnly ? 'currentColor' : 'none'}
+          />
+          Favorites
+        </Button>
+
+        <Button
+          type="button"
+          onClick={() =>
+            setFilter((prev) => ({
+              ...prev,
+              attendedOnly: !prev.attendedOnly,
+            }))
+          }
+          style={styles.filterButton}
+        >
+          <Square
+            size={16}
+            fill={filter.attendedOnly ? 'currentColor' : 'none'}
+          />
+          Attended
+        </Button>
       </div>
 
       <div className="map-box">

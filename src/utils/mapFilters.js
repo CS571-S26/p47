@@ -35,12 +35,28 @@ export function applyMapFilter(list, filter) {
       filter.genre === 'all' ||
       String(c.genre ?? '').trim().toLowerCase() === filter.genre.toLowerCase()
 
-    return matchesYear && matchesGenre
+    const matchesFavorite =
+      !filter.favoriteOnly || c.favorite === true
+
+    const matchesAttended =
+      !filter.attendedOnly || c.attended === true
+
+    return (
+      matchesYear &&
+      matchesGenre &&
+      matchesFavorite &&
+      matchesAttended
+    )
   })
 }
 
 export function mapFiltersEqual(a, b) {
-  return a.year === b.year && a.genre === b.genre
+  return (
+    a.year === b.year &&
+    a.genre === b.genre &&
+    a.favorite === b.favorite &&
+    a.attended === b.attended
+  )
 }
 
 export function isStaleMapFilter(filter, years, genres) {
