@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { useContext, useEffect, useState } from 'react'
-import { Button, Row, Col } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import L from 'leaflet'
 import { MapPin } from 'lucide-react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -19,7 +19,7 @@ import MapsMarkerPopup from '../components/MapsMarkerPopup'
 function MapsPage({ theme }) {
   const { concerts } = useContext(ConcertsContext)
   const { loginStatus, loading: authLoading } = useAuth()
-  const [filter, setFilter] = useState({ kind: 'all' })
+  const [filter, setFilter] = useState({ year: 'all', genre: 'all' })
 
   const { years, genres } = getMapFilterOptions(concerts)
 
@@ -52,35 +52,41 @@ function MapsPage({ theme }) {
   })
 
   const styles = {
-    selectedButton: {
-      width: '100%',
-      backgroundColor: 'var(--setlog-primary)',
-      color: 'var(--white)',
-      border: 'none',
-      borderRadius: '32px',
-      padding: '6px',
-      fontSize: '13px',
-      fontWeight: 700,
-    },
-    unselectedButton: {
-      width: '100%',
+    filterSelect: {
+      maxWidth: '260px',
+      borderRadius: '999px',
+      border: '1px solid var(--setlog-card-border)',
       backgroundColor: 'var(--setlog-card-bg-secondary)',
       color: 'var(--setlog-card-text)',
-      border: '1px solid var(--setlog-card-border)',
-      borderRadius: '32px',
-      padding: '6px',
-      fontSize: '13px',
-      fontWeight: 700,
-    },
-    filterCol: {
-      padding: '4px 6px',
+      fontSize: '14px',
+      fontWeight: 600,
+      boxShadow: 'none',
     },
   }
 
-  function getButtonStyle(value) {
-    return mapFiltersEqual(filter, value)
-      ? styles.selectedButton
-      : styles.unselectedButton
+  function handleFilterChange(e) {
+    const value = e.target.value
+
+    if (value === 'all') {
+      setFilter({ kind: 'all' })
+      return
+    }
+
+    if (value.startsWith('year:')) {
+      setFilter({ kind: 'year', year: value.slice(5) })
+      return
+    }
+
+    if (value.startsWith('genre:')) {
+      setFilter({ kind: 'genre', genre: value.slice(6) })
+    }
+  }
+
+  function getFilterValue(currentFilter) {
+    if (currentFilter.kind === 'all') return 'all'
+    if (currentFilter.kind === 'year') return `year:${currentFilter.year}`
+    if (currentFilter.kind === 'genre') return `genre:${currentFilter.genre}`
+    return 'all'
   }
 
   const grouped = {}
@@ -107,43 +113,44 @@ function MapsPage({ theme }) {
         </p>
       ) : null}
 
-      <div className="maps-filter-row">
-        <Row className="maps-filter-row-inner flex-nowrap g-2">
-          <Col xs="auto" style={styles.filterCol}>
-            <Button
-              type="button"
-              style={getButtonStyle({ kind: 'all' })}
-              onClick={() => setFilter({ kind: 'all' })}
-              variant="light"
-            >
-              All
-            </Button>
-          </Col>
+      <div
+        style={{
+          display: 'flex',
+          gap: '0.75rem',
+          marginTop: '0.5rem',
+          marginBottom: '1rem',
+          flexWrap: 'wrap',
+        }}
+      >
+        <Form.Select
+          value={filter.year}
+          onChange={(e) =>
+            setFilter((prev) => ({ ...prev, year: e.target.value }))
+          }
+          style={styles.filterSelect}
+        >
+          <option value="all">All Years</option>
           {years.map((year) => (
-            <Col key={`y-${year}`} xs="auto" style={styles.filterCol}>
-              <Button
-                type="button"
-                style={getButtonStyle({ kind: 'year', year })}
-                onClick={() => setFilter({ kind: 'year', year })}
-                variant="light"
-              >
-                {year}
-              </Button>
-            </Col>
+            <option key={year} value={year}>
+              {year}
+            </option>
           ))}
+        </Form.Select>
+
+        <Form.Select
+          value={filter.genre}
+          onChange={(e) =>
+            setFilter((prev) => ({ ...prev, genre: e.target.value }))
+          }
+          style={styles.filterSelect}
+        >
+          <option value="all">All Genres</option>
           {genres.map((genre) => (
-            <Col key={`g-${genre}`} xs="auto" style={styles.filterCol}>
-              <Button
-                type="button"
-                style={getButtonStyle({ kind: 'genre', genre })}
-                onClick={() => setFilter({ kind: 'genre', genre })}
-                variant="light"
-              >
-                {genre}
-              </Button>
-            </Col>
+            <option key={genre} value={genre}>
+              {genre}
+            </option>
           ))}
-        </Row>
+        </Form.Select>
       </div>
 
       <div className="map-box">

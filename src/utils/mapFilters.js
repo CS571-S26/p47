@@ -27,33 +27,29 @@ export function getMapFilterOptions(concerts) {
 }
 
 export function applyMapFilter(list, filter) {
-  if (filter.kind === 'all') return list
-  if (filter.kind === 'year') {
-    return list.filter((c) => String(c.date ?? '').startsWith(filter.year))
-  }
-  if (filter.kind === 'genre') {
-    const target = filter.genre.toLowerCase()
-    return list.filter(
-      (c) => String(c.genre ?? '').trim().toLowerCase() === target,
-    )
-  }
-  return list
+  return list.filter((c) => {
+    const matchesYear =
+      filter.year === 'all' || String(c.date ?? '').startsWith(filter.year)
+
+    const matchesGenre =
+      filter.genre === 'all' ||
+      String(c.genre ?? '').trim().toLowerCase() === filter.genre.toLowerCase()
+
+    return matchesYear && matchesGenre
+  })
 }
 
 export function mapFiltersEqual(a, b) {
-  if (a.kind !== b.kind) return false
-  if (a.kind === 'all') return true
-  if (a.kind === 'year') return a.year === b.year
-  return a.genre === b.genre
+  return a.year === b.year && a.genre === b.genre
 }
 
 export function isStaleMapFilter(filter, years, genres) {
-  if (filter.kind === 'year' && !years.includes(filter.year)) return true
-  if (filter.kind === 'genre') {
-    const ok = genres.some(
-      (g) => g.toLowerCase() === filter.genre.toLowerCase(),
-    )
+  if (filter.year !== 'all' && !years.includes(filter.year)) return true
+
+  if (filter.genre !== 'all') {
+    const ok = genres.some((g) => g.toLowerCase() === filter.genre.toLowerCase())
     if (!ok) return true
   }
+
   return false
 }
