@@ -1,6 +1,9 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { useState } from 'react'
 import { Button, Row, Col } from 'react-bootstrap'
+import L from "leaflet"
+import { MapPin } from "lucide-react"
+import { renderToStaticMarkup } from "react-dom/server"
 
 import { concerts } from '../data/MockConcerts'
 import { colors } from "../data/Colors"
@@ -10,6 +13,19 @@ import MapsMarkerPopup from '../components/MapsMarkerPopup'
 function MapsPage() {
   // const [locations, setLocations] = useState([])
   const [filter, setFilter] = useState("all")
+
+  const concertIcon = new L.DivIcon({
+    html: renderToStaticMarkup(
+      <MapPin
+        size={32}
+        color={colors.setlogPrimaryHover}
+        fill={colors.setlogPrimary}
+      />
+    ),
+    className: "",
+    iconSize: [28, 28],
+    iconAnchor: [14, 28],
+  })
 
   // useEffect(() => {
   //   async function loadLocations() {
@@ -80,7 +96,7 @@ function MapsPage() {
           <Button
             style={getButtonStyle("all")}
             onClick={() => setFilter("all")}
-              variant="light"
+            variant="light"
           >
             All
           </Button>
@@ -89,7 +105,7 @@ function MapsPage() {
           <Button
             style={getButtonStyle("2025")}
             onClick={() => setFilter("2025")}
-              variant="light"
+            variant="light"
           >
             2025
           </Button>
@@ -98,7 +114,7 @@ function MapsPage() {
           <Button
             style={getButtonStyle("2024")}
             onClick={() => setFilter("2024")}
-              variant="light"
+            variant="light"
           >
             2024
           </Button>
@@ -107,7 +123,7 @@ function MapsPage() {
           <Button
             style={getButtonStyle("Rock")}
             onClick={() => setFilter("Rock")}
-              variant="light"
+            variant="light"
           >
             Rock
           </Button>
@@ -116,7 +132,7 @@ function MapsPage() {
           <Button
             style={getButtonStyle("Pop")}
             onClick={() => setFilter("Pop")}
-              variant="light"
+            variant="light"
           >
             Pop
           </Button>
@@ -137,7 +153,7 @@ function MapsPage() {
           />
 
           {Object.entries(grouped).map(([key, shows]) => (
-            <Marker key={key} position={shows[0].coords}>
+            <Marker key={key} position={shows[0].coords} icon={concertIcon}>
               <Popup>
                 <MapsMarkerPopup concerts={shows} />
               </Popup>
