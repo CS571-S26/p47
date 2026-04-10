@@ -1,18 +1,38 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Button, Row, Col } from 'react-bootstrap'
-import L from "leaflet"
-import { MapPin } from "lucide-react"
-import { renderToStaticMarkup } from "react-dom/server"
+import L from 'leaflet'
+import { MapPin } from 'lucide-react'
+import { renderToStaticMarkup } from 'react-dom/server'
 
-import { concerts } from '../data/MockConcerts'
-import { colors } from "../data/Colors"
+import { ConcertsContext } from '../contexts/concertsContext.js'
+import { colors } from '../data/Colors'
 import './MapsPage.css'
 import MapsMarkerPopup from '../components/MapsMarkerPopup'
 
+
+// TODO: Improve filtering (e.g. dynamic years/genres from stored concerts, partial genre match).
+function applyFilter(list, filter) {
+  if (filter === 'all') return list
+  if (filter === '2025' || filter === '2024') {
+    return list.filter((c) => String(c.date ?? '').startsWith(filter))
+  }
+  if (filter === 'Rock' || filter === 'Pop') {
+    return list.filter(
+      (c) => String(c.genre ?? '').toLowerCase() === filter.toLowerCase(),
+    )
+  }
+  return list
+}
+
 function MapsPage() {
-  // const [locations, setLocations] = useState([])
-  const [filter, setFilter] = useState("all")
+  const { concerts } = useContext(ConcertsContext)
+  const [filter, setFilter] = useState('all')
+
+  const filteredConcerts = applyFilter(concerts, filter)
+
+  const mappable = filteredConcerts.filter((c) => c.coords?.length === 2)
+  const skippedCount = filteredConcerts.length - mappable.length
 
   const concertIcon = new L.DivIcon({
     html: renderToStaticMarkup(
@@ -20,43 +40,21 @@ function MapsPage() {
         size={32}
         color={colors.setlogPrimaryHover}
         fill={colors.setlogPrimary}
-      />
+      />,
     ),
-    className: "",
+    className: '',
     iconSize: [28, 28],
     iconAnchor: [14, 28],
   })
 
-  // useEffect(() => {
-  //   async function loadLocations() {
-  //     const results = []
-
-  //     for (let concert of concerts) {
-  //       const coords = await geocodeVenue(concert.venue, concert.city)
-
-  //       if (coords) {
-  //         results.push({ ...concert, coords })
-  //       }
-  //     }
-  //     setLocations(results)
-  //   }
-  //   loadLocations()
-  // }, [])
-
-  // Return style of the current button based upon if it's selected
   function getButtonStyle(value) {
     return filter === value ? styles.selectedButton : styles.unselectedButton
   }
 
-  // Group concerts together so they can be viewed via one marker
   const grouped = {}
-  concerts.forEach((concert) => {
-    const key = concert.coords.join(",")
-
-    if (!grouped[key]) {
-      grouped[key] = []
-    }
-
+  mappable.forEach((concert) => {
+    const key = concert.coords.join(',')
+    if (!grouped[key]) grouped[key] = []
     grouped[key].push(concert)
   })
 
@@ -81,21 +79,27 @@ function MapsPage() {
       fontWeight: 700,
     },
     filterCol: {
-      padding: "12px",
-      width: "10%"
-    }
+      padding: '12px',
+      width: '10%',
+    },
   }
 
   return (
-    <div style={{ height: "100%", display: "flex", flexDirection: "column", padding: "1rem" }}>
-      <span style={{ fontSize: "48px", fontWeight: "700" }}>Concert Map</span>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
+      <span style={{ fontSize: '48px', fontWeight: '700' }}>Concert Map</span>
 
-      {/* TODO: MAKE FILTERS WORK */}
+      {skippedCount > 0 ? (
+        <p className="text-muted mb-2" style={{ fontSize: '14px' }}>
+          {skippedCount} show{skippedCount === 1 ? '' : 's'} in this view have no map pin (geocoding
+          failed or venue/city could not be located when saved).
+        </p>
+      ) : null}
+
       <Row style={{ gap: '8px' }}>
         <Col xs="auto" style={styles.filterCol}>
           <Button
-            style={getButtonStyle("all")}
-            onClick={() => setFilter("all")}
+            style={getButtonStyle('all')}
+            onClick={() => setFilter('all')}
             variant="light"
           >
             All
@@ -103,8 +107,8 @@ function MapsPage() {
         </Col>
         <Col xs="auto" style={styles.filterCol}>
           <Button
-            style={getButtonStyle("2025")}
-            onClick={() => setFilter("2025")}
+            style={getButtonStyle('2025')}
+            onClick={() => setFilter('2025')}
             variant="light"
           >
             2025
@@ -112,8 +116,8 @@ function MapsPage() {
         </Col>
         <Col xs="auto" style={styles.filterCol}>
           <Button
-            style={getButtonStyle("2024")}
-            onClick={() => setFilter("2024")}
+            style={getButtonStyle('2024')}
+            onClick={() => setFilter('2024')}
             variant="light"
           >
             2024
@@ -121,8 +125,8 @@ function MapsPage() {
         </Col>
         <Col xs="auto" style={styles.filterCol}>
           <Button
-            style={getButtonStyle("Rock")}
-            onClick={() => setFilter("Rock")}
+            style={getButtonStyle('Rock')}
+            onClick={() => setFilter('Rock')}
             variant="light"
           >
             Rock
@@ -130,18 +134,15 @@ function MapsPage() {
         </Col>
         <Col xs="auto" style={styles.filterCol}>
           <Button
-            style={getButtonStyle("Pop")}
-            onClick={() => setFilter("Pop")}
+            style={getButtonStyle('Pop')}
+            onClick={() => setFilter('Pop')}
             variant="light"
           >
             Pop
           </Button>
         </Col>
         <Col xs="auto" style={styles.filterCol}>
-          <Button
-            style={styles.unselectedButton}>
-            More
-          </Button>
+          <Button style={styles.unselectedButton}>More</Button>
         </Col>
       </Row>
 

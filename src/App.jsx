@@ -5,11 +5,12 @@ import SettingsPage from './pages/SettingsPage.jsx'
 import TimelinePage from './pages/TimelinePage.jsx'
 import AddConcertPage from './pages/AddConcertPage.jsx'
 import UserProfilePage from './pages/UserProfilePage.jsx'
+import { ConcertsProvider } from './contexts/ConcertsProvider.jsx'
 import './App.css'
 
 function App() {
   return (
-    <>
+    <ConcertsProvider>
       <NavBar />
       <main className="app-main">
         <Routes>
@@ -20,7 +21,7 @@ function App() {
           <Route path="/user-profile" element={<UserProfilePage />} />
         </Routes>
       </main>
-    </>
+    </ConcertsProvider>
   )
 }
 

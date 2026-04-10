@@ -5,6 +5,7 @@ function MapsMarkerPopup({ concerts }) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   const concert = concerts[currentIndex]
+  const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
   function handlePrev() {
     setCurrentIndex((prev) =>
@@ -35,17 +36,38 @@ function MapsMarkerPopup({ concerts }) {
   return (
     <Card style={{ width: "16rem", padding: "0.75rem", border: "none" }}>
       {/* Concert Image */}
-      <img
-        src={concert.image}
-        alt={concert.artist}
-        style={{
-          width: "100%",
-          height: "120px",
-          objectFit: "cover",
-          borderRadius: "0.5rem",
-          marginBottom: "0.5rem"
-        }}
-      />
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={concert.artist}
+          style={{
+            width: "100%",
+            height: "120px",
+            objectFit: "cover",
+            borderRadius: "0.5rem",
+            marginBottom: "0.5rem",
+          }}
+        />
+      ) : (
+        <div
+          aria-hidden
+          style={{
+            width: "100%",
+            height: "120px",
+            borderRadius: "0.5rem",
+            marginBottom: "0.5rem",
+            background: "#e5e7eb",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#9ca3af",
+            fontSize: "12px",
+            fontWeight: 600,
+          }}
+        >
+          No image
+        </div>
+      )}
 
       {/* Formatted Date */}
       <span style={{ fontSize: "0.9rem", color: "gray" }}>

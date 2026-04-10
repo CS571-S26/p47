@@ -1,10 +1,22 @@
+import { useContext } from 'react'
 import { Clock } from 'lucide-react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 
-import { colors } from "../data/Colors"
+import { ConcertsContext } from '../contexts/concertsContext.js'
+import { colors } from '../data/Colors'
 
 function TimelineConcert({ concert }) {
+    const { deleteConcert } = useContext(ConcertsContext)
+
+    function handleDelete() {
+        const ok = window.confirm(
+            `Remove "${concert.artist}" (${concert.date}) from your timeline?`,
+        )
+        if (ok) deleteConcert(concert.id)
+    }
     const date = new Date(concert.date)
+    const songCount = concert.songCount ?? 0
+    const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
     const month = date.toLocaleDateString('en-US', {
         month: 'short',
@@ -66,11 +78,32 @@ function TimelineConcert({ concert }) {
 
                 { /* Concert Image */}
                 <Col xs="auto">
-                    <img
-                        src={concert.image}
-                        alt={concert.artist}
-                        style={{ width: "250px", height: "125px", objectFit: "cover", "borderRadius": "10px", marginBottom: "6px" }}
-                    />
+                    {imageUrl ? (
+                        <img
+                            src={imageUrl}
+                            alt={concert.artist}
+                            style={{ width: "250px", height: "125px", objectFit: "cover", borderRadius: "10px", marginBottom: "6px" }}
+                        />
+                    ) : (
+                        <div
+                            aria-hidden
+                            style={{
+                                width: "250px",
+                                height: "125px",
+                                borderRadius: "10px",
+                                marginBottom: "6px",
+                                background: "#e5e7eb",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "#9ca3af",
+                                fontSize: "13px",
+                                fontWeight: 600,
+                            }}
+                        >
+                            No image
+                        </div>
+                    )}
                 </Col>
 
                 { /* Concert Information */}
@@ -100,12 +133,26 @@ function TimelineConcert({ concert }) {
                             <Clock size={16} />
                         </Col>
                         <Col xs="auto">
-                            <span style={{ fontSize: "14px", fontWeight: "200" }}>{concert.songCount} songs</span>
+                            <span style={{ fontSize: "14px", fontWeight: "200" }}>{songCount} songs</span>
                         </Col>
 
-                        <Col style={{ display: "flex" }}>
-                            <Button style={{ padding: "6px 12px", fontSize: "13px", fontWeight: "700", marginLeft: "auto" }}>
+                        <Col
+                            style={{
+                                display: 'flex',
+                                gap: '8px',
+                                justifyContent: 'flex-end',
+                                flexWrap: 'wrap',
+                            }}
+                        >
+                            <Button style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}>
                                 View Details
+                            </Button>
+                            <Button
+                                variant="outline-danger"
+                                style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}
+                                onClick={handleDelete}
+                            >
+                                Delete
                             </Button>
                         </Col>
 
