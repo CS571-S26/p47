@@ -1,9 +1,19 @@
+import { useContext } from 'react'
 import { Clock } from 'lucide-react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 
-import { colors } from "../data/Colors"
+import { ConcertsContext } from '../contexts/concertsContext.js'
+import { colors } from '../data/Colors'
 
 function TimelineConcert({ concert }) {
+    const { deleteConcert } = useContext(ConcertsContext)
+
+    function handleDelete() {
+        const ok = window.confirm(
+            `Remove "${concert.artist}" (${concert.date}) from your timeline?`,
+        )
+        if (ok) deleteConcert(concert.id)
+    }
     const date = new Date(concert.date)
     const songCount = concert.songCount ?? 0
     const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
@@ -126,9 +136,23 @@ function TimelineConcert({ concert }) {
                             <span style={{ fontSize: "14px", fontWeight: "200" }}>{songCount} songs</span>
                         </Col>
 
-                        <Col style={{ display: "flex" }}>
-                            <Button style={{ padding: "6px 12px", fontSize: "13px", fontWeight: "700", marginLeft: "auto" }}>
+                        <Col
+                            style={{
+                                display: 'flex',
+                                gap: '8px',
+                                justifyContent: 'flex-end',
+                                flexWrap: 'wrap',
+                            }}
+                        >
+                            <Button style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}>
                                 View Details
+                            </Button>
+                            <Button
+                                variant="outline-danger"
+                                style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}
+                                onClick={handleDelete}
+                            >
+                                Delete
                             </Button>
                         </Col>
 
