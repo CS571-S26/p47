@@ -1,13 +1,41 @@
+import { useContext } from 'react'
 import { Card } from 'react-bootstrap'
 import { Calendar, Users, MapPin, Star } from 'lucide-react'
 
-import { stats } from '../data/MockConcerts'
-import { colors } from "../data/Colors"
+import { ConcertsContext } from '../contexts/concertsContext.js'
+import { colors } from '../data/Colors'
 
 import StatRow from '../components/StatRow'
 
 function TimelineStats() {
-  {/* TODO Get real stats data from the user's shows */}
+  const { concerts } = useContext(ConcertsContext)
+
+  const n = concerts.length
+  const artists = new Set(
+    concerts
+      .map((c) => String(c.artist ?? '').toLowerCase().trim())
+      .filter((artist) => artist !== ''),
+  )
+  const cities = new Set(
+    concerts
+      .map((c) => String(c.city ?? '').toLowerCase().trim())
+      .filter((city) => city !== ''),
+  )
+  const ratings = concerts
+    .map((c) => Number(c.rating))
+    .filter((r) => !Number.isNaN(r) && r > 0)
+  const avgRating =
+    ratings.length > 0
+      ? ratings.reduce((a, b) => a + b, 0) / ratings.length
+      : 0
+
+  const stats = {
+    showsLogged: n,
+    artistsSeen: artists.size,
+    citiesVisited: cities.size,
+    avgRating: Math.round(avgRating * 10) / 10,
+  }
+
   return (
     <Card
       style={{
@@ -18,7 +46,16 @@ function TimelineStats() {
         maxWidth: '320px',
       }}
     >
-      <div style={{ fontSize: "20px", fontWeight: "500", marginBottom: "16px", lineHeight: "1.05" }}>Your Stats</div>
+      <div
+        style={{
+          fontSize: '20px',
+          fontWeight: '500',
+          marginBottom: '16px',
+          lineHeight: '1.05',
+        }}
+      >
+        Your Stats
+      </div>
       <StatRow
         icon={<Calendar size={20} color={colors.setlogPrimary} />}
         value={stats.showsLogged}
@@ -33,7 +70,7 @@ function TimelineStats() {
 
       <StatRow
         icon={<MapPin size={20} color={colors.setlogPrimary} />}
-        value={stats.showsLogged}
+        value={stats.citiesVisited}
         label="Cities Visited"
       />
 
