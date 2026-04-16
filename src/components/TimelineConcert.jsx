@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Clock } from 'lucide-react'
+import { Clock, Trash } from 'lucide-react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
@@ -184,9 +184,10 @@ function TimelineConcert({ concert }) {
                             </Button>
                             <Button
                                 variant="outline-danger"
-                                style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}
+                                style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', gap: '6px', alignItems: 'center' }}
                                 onClick={handleDelete}
                             >
+                                <Trash size={16} />
                                 Delete
                             </Button>
                         </Col>
