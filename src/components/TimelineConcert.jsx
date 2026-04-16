@@ -1,18 +1,24 @@
 import { useContext } from 'react'
 import { Clock } from 'lucide-react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { colors } from '../data/Colors'
 
 function TimelineConcert({ concert }) {
     const { deleteConcert } = useContext(ConcertsContext)
+    const navigate = useNavigate()
 
     function handleDelete() {
         const ok = window.confirm(
             `Remove "${concert.artist}" (${concert.date}) from your timeline?`,
         )
         if (ok) deleteConcert(concert.id)
+    }
+
+    function handleViewDetails() {
+        navigate(`/concerts/${concert.id}`)
     }
     const setlistCount = Array.isArray(concert.setlist) ? concert.setlist.length : null
     const songCount = typeof setlistCount === 'number' ? setlistCount : (concert.songCount ?? 0)
@@ -172,7 +178,10 @@ function TimelineConcert({ concert }) {
                                 flexWrap: 'wrap',
                             }}
                         >
-                            <Button style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}>
+                            <Button
+                                style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}
+                                onClick={handleViewDetails}
+                            >
                                 View Details
                             </Button>
                             <Button
