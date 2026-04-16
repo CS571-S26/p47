@@ -1,10 +1,11 @@
 import { useContext } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Card, Row, Col, Button } from 'react-bootstrap'
-import { ArrowLeft, Trash, Edit, MapPin } from 'lucide-react'
+import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { colors } from '../data/Colors'
+import SectionCard from '../components/SectionCard'
 
 function ConcertDetailPage() {
   const { concerts, deleteConcert } = useContext(ConcertsContext)
@@ -34,6 +35,22 @@ function ConcertDetailPage() {
 
   const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
+  const [year, month, day] = concert.date.split('-').map(Number)
+  const monthLabel = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    month: 'short',
+  }).toUpperCase()
+  const fullDateLabel = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
+  const dayOfWeek = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    weekday: 'long',
+  })
+
+
+  const songCount = typeof setlistCount === 'number' ? setlistCount : (concert.songCount ?? 0)
+
   if (!concert) {
     return (
       <Card>
@@ -55,11 +72,40 @@ function ConcertDetailPage() {
       alignItems: 'center'
     },
     concertTags: {
-      fontSize: "24px",
+      fontSize: "1.1rem",
       fontWeight: "700",
-      padding: "12px 40px",
+      padding: "12px 20px",
       borderRadius: "16px"
-    }
+    },
+    dateCard: {
+      border: '1px solid lightgray',
+      borderRadius: '16px',
+      overflow: 'hidden',
+      textAlign: 'center',
+      width: '12rem',
+      boxShadow: '0 4px 14px lightgray',
+    },
+    dateMonth: {
+      background: colors.setlogPrimary,
+      color: 'white',
+      fontSize: '0.75rem',
+      fontWeight: 800,
+      padding: '4px',
+      fontSize: '2rem'
+    },
+    dateDay: {
+      fontSize: '4rem',
+      fontWeight: 800,
+      color: "black",
+      lineHeight: 1,
+      paddingTop: '10px',
+    },
+
+    dateYear: {
+      fontSize: '2rem',
+      color: "gray",
+      padding: '6px 0 10px',
+    },
   }
 
   return (
@@ -81,10 +127,11 @@ function ConcertDetailPage() {
           borderRadius: '20px',
           border: '1px solid #dbe3ea',
           boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
-          padding: '0.75rem',
+          padding: '0.75rem'
         }}
       >
         <Card.Body>
+          { /* Top Buttons */}
           <Row style={{ marginBottom: '1rem', alignItems: 'center' }}>
             <Col>
               <Button
@@ -153,7 +200,7 @@ function ConcertDetailPage() {
               )}
             </Col>
 
-            <Col lg={8}>
+            <Col lg={6}>
               <Row>
                 <Col>
                   <div style={{ fontSize: "4rem", fontWeight: "700", marginBottom: "2px", }}>{concert.artist}</div>
@@ -205,9 +252,10 @@ function ConcertDetailPage() {
                     </Col>
                   </Row>
 
+                  { /* Stars Row */}
                   <Row>
                     <Col xs="auto">
-                      <span style={{ color: "orange", fontSize: "3.5rem" }}>
+                      <span style={{ color: "orange", fontSize: "2.5rem" }}>
                         {'★'.repeat(concert.rating)}
                         {'☆'.repeat(5 - concert.rating)}
                       </span>
@@ -219,7 +267,7 @@ function ConcertDetailPage() {
                         gap: '24px',
                       }}
                     >
-                      <span style={{ fontSize: "3.5rem", fontWeight: "700" }}>
+                      <span style={{ fontSize: "2.5rem", fontWeight: "700" }}>
                         {concert.rating}.0
                       </span>
                       <span style={{ fontSize: "1.5rem", color: "gray" }}>
@@ -230,10 +278,122 @@ function ConcertDetailPage() {
                 </Col>
               </Row>
             </Col>
+
+            <Col lg={2}>
+              <div style={styles.dateCard}>
+                <div style={styles.dateMonth}>{monthLabel}</div>
+                <div style={styles.dateDay}>{day}</div>
+                <div style={styles.dateYear}>{year}</div>
+              </div>
+            </Col>
           </Row>
+          <div style={{ marginTop: '1.25rem' }}>
+            <SectionCard>
+              <Row style={{ alignItems: 'stretch' }}>
+                <Col
+                  md={4}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    borderRight: '1px solid #e5e7eb',
+                    padding: '0 1.5rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Music size={32} color={colors.setlogPrimary} />
+                    <div>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 500 }}>{songCount}</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 700, color: '#6b7280' }}>
+                        SONGS
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+
+                <Col
+                  md={4}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    borderRight: '1px solid #e5e7eb',
+                    padding: '0 1.5rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <CalendarDays size={32} color={colors.setlogPrimary} />
+                    <div>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 500 }}>
+                        {dayOfWeek}
+                      </div>
+                      <div style={{ fontSize: '1rem', fontWeight: 700, color: '#6b7280' }}>
+                        {fullDateLabel}
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+
+                <Col
+                  md={4}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    padding: '0 1.5rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <MapPin size={32} color={colors.setlogPrimary} />
+                    <div>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 500 }}>
+                        {concert.coords
+                          ? `${concert.coords[0]}, ${concert.coords[1]}`
+                          : 'No coords'}
+                      </div>
+                      <div style={{ fontSize: '1rem', fontWeight: 700, color: '#6b7280' }}>
+                        COORDINATES
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </SectionCard>
+          </div>
+
+          <div style={{ marginTop: '1.25rem' }}>
+            <SectionCard
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <FileText size={22} color={colors.setlogPrimary} />
+                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1f2937' }}>
+                    Notes
+                  </span>
+                </div>
+              }
+            >
+              <div
+                style={{
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '14px',
+                  padding: '16px 18px',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '1.05rem',
+                    lineHeight: 1.7,
+                    fontWeight: 500,
+                    color: concert.notes?.trim() ? '#1f2937' : '#6b7280',
+                    whiteSpace: 'pre-line',
+                  }}
+                >
+                  {concert.notes?.trim() ? concert.notes : 'No notes for this concert yet.'}
+                </div>
+              </div>
+            </SectionCard>
+          </div>
         </Card.Body>
       </Card>
-    </section>
+    </section >
   )
 }
 
