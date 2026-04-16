@@ -13,13 +13,6 @@ function ConcertDetailPage() {
 
   const concert = concerts.find((c) => c.id === id)
 
-  function toTitleCase(str) {
-    return str.replace(
-      /\w\S*/g,
-      text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
-    );
-  }
-
   function handleDelete() {
     const ok = window.confirm(
       `Remove "${concert.artist}" (${concert.date}) from your timeline?`,
@@ -31,8 +24,6 @@ function ConcertDetailPage() {
   }
 
   const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
-  const city = toTitleCase(concert.city.split(", ")[0])
-  const state = concert.city.split(", ")[1].toUpperCase()
 
   if (!concert) {
     return (
@@ -162,7 +153,7 @@ function ConcertDetailPage() {
                       marginBottom: '0.2rem',
                     }}
                   >
-                    <MapPin size={32} color={colors.setlogPrimaryHover} />
+                    <MapPin size={32} color={colors.setlogPrimary} />
                     <span>{concert.venue}</span>
                   </div>
 
@@ -173,7 +164,7 @@ function ConcertDetailPage() {
                       marginBottom: '1rem',
                     }}
                   >
-                    {city}
+                    {concert.city}
                   </div>
                 </Col>
               </Row>
