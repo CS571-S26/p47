@@ -23,6 +23,8 @@ function TimelineConcert({ concert }) {
         month: 'short',
     }).toUpperCase()
 
+    console.log(concert)
+
     const styles = {
         concertCard: {
             background: 'white',
@@ -61,6 +63,12 @@ function TimelineConcert({ concert }) {
             color: "gray",
             padding: '6px 0 10px',
         },
+        concertTags: {
+            fontSize: "15px",
+            fontWeight: "700",
+            padding: "4px 10px",
+            borderRadius: "32px"
+        }
     }
 
     return (
@@ -108,13 +116,12 @@ function TimelineConcert({ concert }) {
                 { /* Concert Information */}
                 <Col>
                     <div style={{ fontSize: "24px", fontWeight: "700", marginBottom: "2px", }}>{concert.artist}</div>
-                    <div style={{ fontSize: "14px", fontStyle: "italic", color: "gray", marginBottom: "6px", lineHeight: "1.05" }}>{concert.venue} • {concert.city}</div>
+                    <div style={{ fontSize: "14px", fontStyle: "italic", color: "gray", marginBottom: "6px", lineHeight: "1.05" }}>
+                        {concert.venue} • {concert.city}
+                    </div>
 
                     { /* Rating Row */}
-                    <Row style={{ alignItems: "center" }}>
-                        <Col xs="auto">
-                            <span style={{ background: "#eef2ff", color: "#4f46e5", fontSize: "15px", fontWeight: "700", padding: "4px 10px", borderRadius: "32px" }}>{concert.genre}</span>
-                        </Col>
+                    <Row style={{ alignItems: "center", marginBottom: "10px" }}>
                         <Col xs="auto">
                             <span style={{ color: "orange", fontSize: "24px", lineHeight: "1" }}>
                                 {'★'.repeat(concert.rating)}
@@ -122,8 +129,30 @@ function TimelineConcert({ concert }) {
                             </span>
                         </Col>
                         <Col>
-                            <span style={{ fontSize: "16px", fontWeight: "700" }}>{concert.rating}.0</span>
+                            <span style={{ fontSize: "16px", fontWeight: "700" }}>
+                                {concert.rating}.0
+                            </span>
                         </Col>
+
+                        <Col xs="auto">
+                            <span style={{ ...styles.concertTags, background: "#eef2ff", color: "#4f46e5" }}>
+                                {concert.genre}
+                            </span>
+
+                            {concert.attended && (
+                                <span style={{ ...styles.concertTags, background: '#dcfce7', color: '#166534' }}>
+                                    Attended
+                                </span>
+                            )}
+
+                            {concert.favorite && (
+                                <span style={{ ...styles.concertTags, background: '#fef3c7', color: '#92400e' }}>
+                                    Favorite
+                                </span>
+                            )}
+                        </Col>
+
+
                     </Row>
 
                     { /* Song Count Row */}
