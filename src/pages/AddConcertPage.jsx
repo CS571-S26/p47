@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { geocodeVenue } from '../utils/geocode.js'
+import { extractSongTitles, searchFirstSetlist } from '../utils/setlistfm.js'
 
 function newConcertId() {
   return `c-${Date.now()}-${Math.random().toString(16).slice(2)}`
@@ -28,6 +29,8 @@ function AddConcertPage() {
 
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState('')
+  const [importingSetlist, setImportingSetlist] = useState(false)
+  const [importError, setImportError] = useState('')
 
   const stars = [1, 2, 3, 4, 5]
   function normalizeSetlist(list) {
@@ -97,6 +100,43 @@ function AddConcertPage() {
     addConcert(concert)
     setSaving(false)
     navigate('/')
+  }
+
+  const canImportFromSetlistFm = !!(artist.trim() && venue.trim() && date.trim())
+
+  async function handleImportFromSetlistFm() {
+    setImportError('')
+
+    if (!canImportFromSetlistFm) {
+      setImportError('Enter an artist, venue, and date before importing from setlist.fm.')
+      return
+    }
+
+    setImportingSetlist(true)
+    try {
+      const first = await searchFirstSetlist({
+        artistName: artist,
+        venueName: venue,
+        date,
+      })
+
+      if (!first) {
+        setImportError(`No setlists found for "${artist.trim()}" at "${venue.trim()}" on ${date.trim()}.`)
+        return
+      }
+
+      const titles = extractSongTitles(first)
+      if (!titles.length) {
+        setImportError('A matching setlist was found, but it contained no songs.')
+        return
+      }
+
+      setSetlist(titles)
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : 'Failed to import setlist from setlist.fm.')
+    } finally {
+      setImportingSetlist(false)
+    }
   }
 
   function handleAddSong() {
@@ -272,6 +312,33 @@ function AddConcertPage() {
                       Add
                     </Button>
                   </InputGroup>
+
+                  <div className="mt-2" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <Button
+                      type="button"
+                      variant="outline-success"
+                      onClick={handleImportFromSetlistFm}
+                      disabled={!canImportFromSetlistFm || importingSetlist}
+                    >
+                      {importingSetlist ? (
+                        <>
+                          <Spinner animation="border" size="sm" className="me-2" />
+                          Importing…
+                        </>
+                      ) : (
+                        'Import from setlist.fm'
+                      )}
+                    </Button>
+                    <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>
+                      Requires artist, venue, and date.
+                    </div>
+                  </div>
+
+                  {importError ? (
+                    <Alert variant="warning" className="mt-2 mb-0">
+                      {importError}
+                    </Alert>
+                  ) : null}
 
                   {normalizedSetlist.length ? (
                     <ListGroup className="mt-2">
