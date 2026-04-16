@@ -15,7 +15,8 @@ function TimelineConcert({ concert }) {
         if (ok) deleteConcert(concert.id)
     }
     const date = new Date(concert.date)
-    const songCount = concert.songCount ?? 0
+    const setlistCount = Array.isArray(concert.setlist) ? concert.setlist.length : null
+    const songCount = typeof setlistCount === 'number' ? setlistCount : (concert.songCount ?? 0)
     const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
     const month = date.toLocaleDateString('en-US', {

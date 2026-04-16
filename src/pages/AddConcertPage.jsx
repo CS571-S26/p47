@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { Row, Col, Button, Card, Form, Alert, Spinner } from 'react-bootstrap'
+import { Row, Col, Button, Card, Form, Alert, Spinner, InputGroup, ListGroup } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
@@ -23,12 +23,19 @@ function AddConcertPage() {
   const [favorite, setFavorite] = useState(false)
   const [image, setImage] = useState('')
   const [notes, setNotes] = useState('')
-  const [songCountInput, setSongCountInput] = useState('')
+  const [setlist, setSetlist] = useState([])
+  const [newSongTitle, setNewSongTitle] = useState('')
 
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState('')
 
   const stars = [1, 2, 3, 4, 5]
+  function normalizeSetlist(list) {
+    return (Array.isArray(list) ? list : [])
+      .map((s) => (typeof s === 'string' ? s.trim() : ''))
+      .filter((s) => s !== '')
+  }
+  const normalizedSetlist = normalizeSetlist(setlist)
 
   function getRatingLabel(value) {
     if (value === 5) return 'Amazing'
@@ -68,9 +75,7 @@ function AddConcertPage() {
       coords = null
     }
 
-    const parsedCount = parseInt(songCountInput, 10)
-    const songCount = Number.isFinite(parsedCount) && parsedCount >= 0 ? parsedCount : 0
-
+    const normalizedSetlist = normalizeSetlist(setlist)
     const concert = {
       id: newConcertId(),
       date: date.trim(),
@@ -79,7 +84,8 @@ function AddConcertPage() {
       city: city.trim(),
       genre: genre.trim(),
       rating,
-      songCount,
+      setlist: normalizedSetlist,
+      songCount: normalizedSetlist.length,
       duration: '',
       image: image.trim(),
       notes: notes.trim(),
@@ -91,6 +97,42 @@ function AddConcertPage() {
     addConcert(concert)
     setSaving(false)
     navigate('/')
+  }
+
+  function handleAddSong() {
+    const t = newSongTitle.trim()
+    if (!t) return
+    setSetlist((prev) => {
+      const base = Array.isArray(prev) ? prev : []
+      const next = [...base]
+      next.push(t)
+      return next
+    })
+    setNewSongTitle('')
+  }
+
+  function handleRemoveSong(index) {
+    setSetlist((prev) => {
+      const base = Array.isArray(prev) ? prev : []
+      const next = []
+      for (let i = 0; i < base.length; i++) {
+        if (i !== index) next.push(base[i])
+      }
+      return next
+    })
+  }
+
+  function handleMoveSong(index, dir) {
+    setSetlist((prev) => {
+      const arr = Array.isArray(prev) ? [...prev] : []
+      const nextIndex = index + dir
+      if (index < 0 || index >= arr.length) return arr
+      if (nextIndex < 0 || nextIndex >= arr.length) return arr
+      const tmp = arr[index]
+      arr[index] = arr[nextIndex]
+      arr[nextIndex] = tmp
+      return arr
+    })
   }
 
   return (
@@ -205,15 +247,81 @@ function AddConcertPage() {
 
               <Col md={6}>
                 <Form.Group>
-                  <Form.Label style={styles.formLabel}>Song count (optional)</Form.Label>
-                  <Form.Control
-                    type="number"
-                    min={0}
-                    placeholder="e.g., 18"
-                    style={styles.formControl}
-                    value={songCountInput}
-                    onChange={(ev) => setSongCountInput(ev.target.value)}
-                  />
+                  <Form.Label style={styles.formLabel}>Setlist (optional)</Form.Label>
+                  <InputGroup>
+                    <Form.Control
+                      type="text"
+                      placeholder="Add a song title…"
+                      style={styles.formControl}
+                      value={newSongTitle}
+                      onChange={(ev) => setNewSongTitle(ev.target.value)}
+                      onKeyDown={(ev) => {
+                        if (ev.key === 'Enter') {
+                          ev.preventDefault()
+                          handleAddSong()
+                        }
+                      }}
+                    />
+                    <Button
+                      variant="outline-primary"
+                      style={{ borderRadius: '12px', paddingLeft: '14px', paddingRight: '14px' }}
+                      onClick={handleAddSong}
+                      disabled={!newSongTitle.trim()}
+                      type="button"
+                    >
+                      Add
+                    </Button>
+                  </InputGroup>
+
+                  {normalizedSetlist.length ? (
+                    <ListGroup className="mt-2">
+                      {normalizedSetlist.map((title, idx) => (
+                        <ListGroup.Item
+                          key={`${title}-${idx}`}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '10px',
+                          }}
+                        >
+                          <div style={{ fontWeight: 600 }}>{idx + 1}. {title}</div>
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline-secondary"
+                              onClick={() => handleMoveSong(idx, -1)}
+                              disabled={idx === 0}
+                            >
+                              Up
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline-secondary"
+                              onClick={() => handleMoveSong(idx, 1)}
+                              disabled={idx === normalizedSetlist.length - 1}
+                            >
+                              Down
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline-danger"
+                              onClick={() => handleRemoveSong(idx)}
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  ) : (
+                    <div className="mt-2" style={{ color: '#6b7280', fontSize: '0.9rem' }}>
+                      No songs added yet.
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
 
