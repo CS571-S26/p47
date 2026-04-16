@@ -35,6 +35,8 @@ function AddConcertPage() {
   const [importError, setImportError] = useState('')
 
   const stars = [1, 2, 3, 4, 5]
+  const cityStatePattern = /^[A-Za-z .'-]+,\s[A-Za-z]{2}$/
+
   function normalizeSetlist(list) {
     return (Array.isArray(list) ? list : [])
       .map((s) => (typeof s === 'string' ? s.trim() : ''))
@@ -67,8 +69,15 @@ function AddConcertPage() {
     e.preventDefault()
     setFormError('')
 
+    const cleanedCity = formatCityState(city)
+
     if (!artist.trim() || !genre.trim() || !date.trim() || !venue.trim() || !city.trim()) {
       setFormError('Artist, genre, date, venue, and city are required.')
+      return
+    }
+
+    if (!cityStatePattern.test(cleanedCity)) {
+      setFormError('City must be in the format City, ST (for example: San Francisco, CA).')
       return
     }
 
@@ -86,8 +95,8 @@ function AddConcertPage() {
       date: date.trim(),
       artist: artist.trim(),
       venue: venue.trim(),
-      city: city.trim(),
-      genre: genre.trim(),
+      city: cleanedCity,
+      genre: toTitleCase(genre.trim()),
       rating,
       setlist: normalizedSetlist,
       songCount: normalizedSetlist.length,
@@ -175,6 +184,24 @@ function AddConcertPage() {
       arr[nextIndex] = tmp
       return arr
     })
+  }
+
+  function toTitleCase(str) {
+    return str.replace(
+      /\w\S*/g,
+      text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+    );
+  }
+
+  function formatCityState(value) {
+    const parts = value.split(',')
+
+    if (parts.length !== 2) return value.trim()
+
+    const cityPart = toTitleCase(parts[0].trim())
+    const statePart = parts[1].trim().toUpperCase()
+
+    return `${cityPart}, ${statePart}`
   }
 
   return (
@@ -290,7 +317,11 @@ function AddConcertPage() {
                           style={styles.formControl}
                           value={city}
                           onChange={(ev) => setCity(ev.target.value)}
+                          isInvalid={!!city.trim() && !cityStatePattern.test(city.trim())}
                         />
+                        <Form.Control.Feedback type="invalid">
+                          Use Format: City, ST
+                        </Form.Control.Feedback>
                       </Form.Group>
                     </Col>
 
