@@ -181,7 +181,7 @@ function AddConcertPage() {
       style={{
         flex: 1,
         width: '100%',
-        padding: '2rem 1rem',
+        padding: '1.25rem 1rem',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
@@ -190,11 +190,11 @@ function AddConcertPage() {
       <Card
         style={{
           width: '100%',
-          maxWidth: '760px',
+          maxWidth: '1080px',
           borderRadius: '20px',
           border: '1px solid #dbe3ea',
           boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
-          padding: '1rem',
+          padding: '0.75rem',
         }}
       >
         <Card.Body>
@@ -407,7 +407,7 @@ function AddConcertPage() {
               </Col>
 
               <Col md={6}>
-                <Form.Group>
+                <Form.Group style={{ marginBottom: '1.5rem'}}>
                   <Form.Label style={styles.formLabel}>Rating</Form.Label>
                   <div
                     style={{
@@ -451,10 +451,10 @@ function AddConcertPage() {
                 </Form.Group>
               </Col>
 
-              <Col md={6}>
+              <Col md={3}>
                 <div
                   style={{
-                    paddingTop: '1rem',
+                    paddingTop: '3rem',
                     paddingBottom: '1rem',
                   }}
                 >
@@ -468,10 +468,10 @@ function AddConcertPage() {
                 </div>
               </Col>
 
-              <Col md={6}>
+              <Col md={3}>
                 <div
                   style={{
-                    paddingTop: '1rem',
+                    paddingTop: '3rem',
                     paddingBottom: '1rem',
                   }}
                 >
