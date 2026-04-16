@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react'
 import { Row, Col, Button, Card, Form, Alert, Spinner, InputGroup, ListGroup } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
+import { Plus, ArrowDown, ArrowUp, Trash } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { geocodeVenue } from '../utils/geocode.js'
@@ -352,7 +353,7 @@ function AddConcertPage() {
                                   disabled={!newSongTitle.trim()}
                                   type="button"
                                 >
-                                  +
+                                  <Plus size={16} />
                                 </Button>
                               </InputGroup>
 
@@ -402,7 +403,7 @@ function AddConcertPage() {
                                 Current setlist ({normalizedSetlist.length})
                               </div>
                               {normalizedSetlist.length ? (
-                                <div style={{ maxHeight: '225px', overflowY: 'auto', scrollbarWidth: 'thin' }}>
+                                <div style={{ maxHeight: '205px', overflowY: 'auto', scrollbarWidth: 'thin' }}>
                                   <ListGroup>
                                     {normalizedSetlist.map((title, idx) => (
                                       <ListGroup.Item
@@ -431,7 +432,7 @@ function AddConcertPage() {
                                             disabled={idx === 0}
                                             style={{ fontSize: '1.5rem' }}
                                           >
-                                            ↑
+                                            <ArrowUp size={16} />
                                           </Button>
                                           <Button
                                             type="button"
@@ -441,16 +442,15 @@ function AddConcertPage() {
                                             disabled={idx === normalizedSetlist.length - 1}
                                             style={{ fontSize: '1.5rem' }}
                                           >
-                                            ↓
+                                            <ArrowDown size={16} />
                                           </Button>
                                           <Button
                                             type="button"
                                             size="sm"
                                             variant="outline-danger"
                                             onClick={() => handleRemoveSong(idx)}
-                                            style={{ fontSize: '1.5rem' }}
                                           >
-                                            ×
+                                            <Trash size={18} />
                                           </Button>
                                         </div>
                                       </ListGroup.Item>
