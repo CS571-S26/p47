@@ -14,17 +14,14 @@ function TimelineConcert({ concert }) {
         )
         if (ok) deleteConcert(concert.id)
     }
-    const date = new Date(concert.date)
     const setlistCount = Array.isArray(concert.setlist) ? concert.setlist.length : null
     const songCount = typeof setlistCount === 'number' ? setlistCount : (concert.songCount ?? 0)
     const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
-    const month = date.toLocaleDateString('en-US', {
+    const [year, month, day] = concert.date.split('-').map(Number)
+    const monthLabel = new Date(year, month - 1, day).toLocaleDateString('en-US', {
         month: 'short',
     }).toUpperCase()
-
-    const day = date.getDate()
-    const year = date.getFullYear()
 
     const styles = {
         concertCard: {
@@ -40,7 +37,7 @@ function TimelineConcert({ concert }) {
             borderRadius: '16px',
             overflow: 'hidden',
             textAlign: 'center',
-            width: '100px',
+            width: '115px',
             boxShadow: '0 4px 14px lightgray',
         },
         dateMonth: {
@@ -49,6 +46,7 @@ function TimelineConcert({ concert }) {
             fontSize: '0.75rem',
             fontWeight: 800,
             padding: '4px',
+            fontSize: '18px'
         },
         dateDay: {
             fontSize: '2rem',
@@ -71,7 +69,7 @@ function TimelineConcert({ concert }) {
                 { /* Date Card */}
                 <Col xs="auto">
                     <div style={styles.dateCard}>
-                        <div style={styles.dateMonth}>{month}</div>
+                        <div style={styles.dateMonth}>{monthLabel}</div>
                         <div style={styles.dateDay}>{day}</div>
                         <div style={styles.dateYear}>{year}</div>
                     </div>
