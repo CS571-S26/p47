@@ -23,6 +23,15 @@ function ConcertDetailPage() {
     }
   }
 
+  function getRatingLabel(value) {
+    if (value === 5) return 'Amazing'
+    if (value === 4) return 'Great'
+    if (value === 3) return 'Good'
+    if (value === 2) return 'Okay'
+    return 'Rough'
+  }
+
+
   const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
   if (!concert) {
@@ -44,6 +53,12 @@ function ConcertDetailPage() {
       display: 'inline-flex',
       gap: '6px',
       alignItems: 'center'
+    },
+    concertTags: {
+      fontSize: "24px",
+      fontWeight: "700",
+      padding: "12px 40px",
+      borderRadius: "16px"
     }
   }
 
@@ -143,29 +158,75 @@ function ConcertDetailPage() {
                 <Col>
                   <div style={{ fontSize: "4rem", fontWeight: "700", marginBottom: "2px", }}>{concert.artist}</div>
 
+                  { /* Location Segment */}
                   <div
                     style={{
                       display: 'flex',
-                      alignItems: 'center',
+                      alignItems: 'flex-start',
                       gap: '10px',
-                      fontSize: '1.7rem',
-                      fontWeight: '500',
-                      marginBottom: '0.2rem',
+                      marginBottom: '2rem',
                     }}
                   >
-                    <MapPin size={32} color={colors.setlogPrimary} />
-                    <span>{concert.venue}</span>
+                    <MapPin size={32} color={colors.setlogPrimary} style={{ marginTop: '4px', flexShrink: 0 }} />
+                    <div>
+                      <div style={{ fontSize: '1.7rem', fontWeight: '500', lineHeight: 1.2 }}>{concert.venue}</div>
+
+                      <div
+                        style={{
+                          fontSize: '1.3rem',
+                          color: '#6b7280',
+                          lineHeight: 1.2,
+                          marginTop: '0.5rem',
+                        }}
+                      >
+                        {concert.city}
+                      </div>
+                    </div>
                   </div>
 
-                  <div
-                    style={{
-                      fontSize: '1.3rem',
-                      color: '#6b7280',
-                      marginBottom: '1rem',
-                    }}
-                  >
-                    {concert.city}
-                  </div>
+                  { /* Tags Row */}
+                  <Row>
+                    <Col xs="auto" style={{ gap: '24px', display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+                      <span style={{ ...styles.concertTags, background: "#eef2ff", color: "#4f46e5" }}>
+                        {concert.genre}
+                      </span>
+
+                      {concert.attended && (
+                        <span style={{ ...styles.concertTags, background: '#dcfce7', color: '#166534' }}>
+                          Attended
+                        </span>
+                      )}
+
+                      {concert.favorite && (
+                        <span style={{ ...styles.concertTags, background: '#fef3c7', color: '#92400e' }}>
+                          Favorite
+                        </span>
+                      )}
+                    </Col>
+                  </Row>
+
+                  <Row>
+                    <Col xs="auto">
+                      <span style={{ color: "orange", fontSize: "3.5rem" }}>
+                        {'★'.repeat(concert.rating)}
+                        {'☆'.repeat(5 - concert.rating)}
+                      </span>
+                    </Col>
+                    <Col
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '24px',
+                      }}
+                    >
+                      <span style={{ fontSize: "3.5rem", fontWeight: "700" }}>
+                        {concert.rating}.0
+                      </span>
+                      <span style={{ fontSize: "1.5rem", color: "gray" }}>
+                        ({getRatingLabel(concert.rating)})
+                      </span>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
             </Col>
