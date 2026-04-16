@@ -49,17 +49,9 @@ function AddConcertPage() {
     return 'Rough'
   }
 
-  function getSongTitleFontSize(title) {
-    const len = `${title}`.length
-    if (len > 85) return '0.83rem'
-    if (len > 65) return '0.88rem'
-    if (len > 45) return '0.93rem'
-    return '1rem'
-  }
-
   const styles = {
     formControl: {
-      height: '48px',
+      height: '42px',
       borderRadius: '12px',
     },
     formLabel: {
@@ -216,8 +208,8 @@ function AddConcertPage() {
           ) : null}
 
           <Form onSubmit={handleSubmit}>
-            <Row>
-              <Col lg={6}>
+            <Row style={{ alignItems: 'stretch' }}>
+              <Col lg={6} style={{ display: 'flex' }}>
                 <SectionCard
                   title="Basic Details"
                   subtitle="The main information about the concert">
@@ -302,7 +294,7 @@ function AddConcertPage() {
                 </SectionCard>
               </Col>
 
-              <Col lg={6}>
+              <Col lg={6} style={{ display: 'flex' }}>
                 <SectionCard
                   title="Setlist"
                   subtitle="Add songs manually or import them from setlist.fm"
@@ -310,9 +302,8 @@ function AddConcertPage() {
                   <Row>
                     <Col md={12}>
                       <Form.Group style={{ marginBottom: '0.9rem' }}>
-                        <Form.Label style={styles.formLabel}>Setlist (optional)</Form.Label>
                         <Row style={{ rowGap: '0.75rem' }}>
-                          <Col lg={6}>
+                          <Col lg={5}>
                             <div
                               style={{
                                 border: '1px solid #e5e7eb',
@@ -320,6 +311,9 @@ function AddConcertPage() {
                                 padding: '12px',
                                 background: '#fafafa',
                                 height: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
                               }}
                             >
                               <InputGroup>
@@ -343,19 +337,26 @@ function AddConcertPage() {
                                   disabled={!newSongTitle.trim()}
                                   type="button"
                                 >
-                                  Add
+                                  +
                                 </Button>
                               </InputGroup>
 
                               <div style={{ marginTop: '0.5rem', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
                                 <Button
                                   type="button"
-                                  variant="outline-success"
+                                  variant="success"
                                   onClick={handleImportFromSetlistFm}
                                   disabled={!canImportFromSetlistFm || importingSetlist}
+                                  style={{
+                                    width: '100%',
+                                    opacity: !canImportFromSetlistFm || importingSetlist ? 0.55 : 1,
+                                    backgroundColor: !canImportFromSetlistFm || importingSetlist ? '#d1d5db' : undefined,
+                                    borderColor: !canImportFromSetlistFm || importingSetlist ? '#d1d5db' : undefined,
+                                    color: !canImportFromSetlistFm || importingSetlist ? '#6b7280' : undefined,
+                                  }}
                                 >
                                   {importingSetlist ? (
-                                    <>
+                                    <>Import from setlist.fm
                                       <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
                                       Importing...
                                     </>
@@ -376,7 +377,7 @@ function AddConcertPage() {
                             </div>
                           </Col>
 
-                          <Col lg={6}>
+                          <Col lg={7}>
                             <div
                               style={{
                                 border: '1px solid #e5e7eb',
@@ -389,7 +390,7 @@ function AddConcertPage() {
                                 Current setlist ({normalizedSetlist.length})
                               </div>
                               {normalizedSetlist.length ? (
-                                <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                <div style={{ maxHeight: '225px', overflowY: 'auto', scrollbarWidth: 'thin' }}>
                                   <ListGroup>
                                     {normalizedSetlist.map((title, idx) => (
                                       <ListGroup.Item
@@ -403,8 +404,8 @@ function AddConcertPage() {
                                       >
                                         <div
                                           style={{
-                                            fontWeight: 600,
-                                            fontSize: getSongTitleFontSize(title),
+                                            fontWeight: 500,
+                                            fontSize: '1rem',
                                           }}
                                         >
                                           {idx + 1}. {title}
@@ -435,8 +436,9 @@ function AddConcertPage() {
                                             size="sm"
                                             variant="outline-danger"
                                             onClick={() => handleRemoveSong(idx)}
+                                            style={{ fontSize: '1.5rem' }}
                                           >
-                                            Remove
+                                            ×
                                           </Button>
                                         </div>
                                       </ListGroup.Item>
@@ -475,7 +477,7 @@ function AddConcertPage() {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                <Col md={4}>
                   <Form.Group style={{ marginBottom: '1.5rem' }}>
                     <Form.Label style={styles.formLabel}>Rating</Form.Label>
                     <div
@@ -520,11 +522,15 @@ function AddConcertPage() {
                   </Form.Group>
                 </Col>
 
-                <Col md={3}>
+                <Col md={8}>
                   <div
                     style={{
                       paddingTop: '3rem',
                       paddingBottom: '1rem',
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      alignItems: 'center',
+                      gap: '1.5rem',
                     }}
                   >
                     <Form.Check
@@ -534,16 +540,7 @@ function AddConcertPage() {
                       onChange={() => setAttended(!attended)}
                       style={styles.formLabel}
                     />
-                  </div>
-                </Col>
 
-                <Col md={3}>
-                  <div
-                    style={{
-                      paddingTop: '3rem',
-                      paddingBottom: '1rem',
-                    }}
-                  >
                     <Form.Check
                       type="switch"
                       label="Add to Favorites"
@@ -555,16 +552,22 @@ function AddConcertPage() {
                 </Col>
 
                 <Col xs={12}>
-                  <Button type="submit" disabled={saving}>
-                    {saving ? (
-                      <>
-                        <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
-                        Saving…
-                      </>
-                    ) : (
-                      'Save Concert'
-                    )}
-                  </Button>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem  ' }}>
+                    <Button type="button" variant="outline-danger" disabled={saving} onClick={() => navigate("/")}>
+                      Cancel
+                    </Button>
+
+                    <Button type="submit" disabled={saving}>
+                      {saving ? (
+                        <>
+                          <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
+                          Saving…
+                        </>
+                      ) : (
+                        'Save Concert'
+                      )}
+                    </Button>
+                  </div>
                 </Col>
               </Row>
             </SectionCard>
