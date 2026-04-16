@@ -54,14 +54,16 @@ function AddConcertPage() {
 
   const styles = {
     formControl: {
-      height: '42px',
-      borderRadius: '12px',
+      height: '40px',
+      borderRadius: '10px',
+      fontSize: '0.95rem',
     },
     formLabel: {
       fontWeight: '600',
-      marginBottom: '0.5rem',
+      marginBottom: '0.4rem',
       marginTop: '0rem',
       color: '#374151',
+      fontSize: '0.95rem',
     },
   }
 
@@ -190,7 +192,7 @@ function AddConcertPage() {
     return str.replace(
       /\w\S*/g,
       text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
-    );
+    )
   }
 
   function formatCityState(value) {
@@ -210,7 +212,7 @@ function AddConcertPage() {
       style={{
         flex: 1,
         width: '100%',
-        padding: '1.25rem 1rem',
+        padding: '1rem 0.85rem',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
@@ -219,28 +221,37 @@ function AddConcertPage() {
       <Card
         style={{
           width: '100%',
-          maxWidth: '1600px',
-          borderRadius: '20px',
+          maxWidth: '1400px',
+          borderRadius: '18px',
           border: '1px solid #dbe3ea',
           boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
-          padding: '0.75rem',
+          padding: '0.5rem',
         }}
       >
         <Card.Body>
-          <div style={{ fontSize: '2.5rem', lineHeight: 1.1, fontWeight: '700', marginBottom: '0.75rem' }}>Log a New Concert</div>
+          <div
+            style={{
+              fontSize: '2.15rem',
+              lineHeight: 1.1,
+              fontWeight: '700',
+              marginBottom: '0.6rem'
+            }}
+          >
+            Log a New Concert
+          </div>
 
           {formError ? (
-            <Alert variant="danger" style={{ marginTop: '0.75rem', marginBottom: 0 }}>
+            <Alert variant="danger" style={{ marginTop: '0.6rem', marginBottom: 0 }}>
               {formError}
             </Alert>
           ) : null}
 
-          <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '0.75rem' }}>
+          <div style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.7rem' }}>
             <span style={{ color: '#dc3545', fontWeight: 700 }}>*</span> Required fields
           </div>
 
           <Form onSubmit={handleSubmit}>
-            <Row style={{ alignItems: 'stretch' }}>
+            <Row style={{ alignItems: 'stretch', rowGap: '1rem' }}>
               <Col lg={6} style={{ display: 'flex' }}>
                 <SectionCard
                   title="Basic Details"
@@ -248,7 +259,7 @@ function AddConcertPage() {
                 >
                   <Row>
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                      <Form.Group style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
                           Artist/Band <span style={{ color: '#dc3545' }}>*</span>
                         </Form.Label>
@@ -263,7 +274,7 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                      <Form.Group style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
                           Music Genre <span style={{ color: '#dc3545' }}>*</span>
                         </Form.Label>
@@ -278,7 +289,7 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                      <Form.Group style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
                           Date <span style={{ color: '#dc3545' }}>*</span>
                         </Form.Label>
@@ -292,7 +303,7 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                      <Form.Group style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
                           Venue <span style={{ color: '#dc3545' }}>*</span>
                         </Form.Label>
@@ -307,7 +318,7 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                      <Form.Group style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
                           City, State <span style={{ color: '#dc3545' }}>*</span>
                         </Form.Label>
@@ -326,7 +337,7 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                      <Form.Group style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>Cover image URL</Form.Label>
                         <Form.Control
                           type="url"
@@ -348,14 +359,14 @@ function AddConcertPage() {
                 >
                   <Row>
                     <Col md={12}>
-                      <Form.Group style={{ marginBottom: '0.9rem' }}>
-                        <Row style={{ rowGap: '0.75rem' }}>
+                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                        <Row style={{ rowGap: '0.7rem' }}>
                           <Col lg={5}>
                             <div
                               style={{
                                 border: '1px solid #e5e7eb',
-                                borderRadius: '12px',
-                                padding: '12px',
+                                borderRadius: '10px',
+                                padding: '10px',
                                 background: '#fafafa',
                                 height: '100%',
                                 display: 'flex',
@@ -379,16 +390,16 @@ function AddConcertPage() {
                                 />
                                 <Button
                                   variant="outline-primary"
-                                  style={{ borderRadius: '12px', paddingLeft: '14px', paddingRight: '14px' }}
+                                  style={{ borderRadius: '10px', paddingLeft: '12px', paddingRight: '12px' }}
                                   onClick={handleAddSong}
                                   disabled={!newSongTitle.trim()}
                                   type="button"
                                 >
-                                  <Plus size={16} />
+                                  <Plus size={14} />
                                 </Button>
                               </InputGroup>
 
-                              <div style={{ marginTop: '0.5rem', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                              <div style={{ marginTop: '0.45rem', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
                                 <Button
                                   type="button"
                                   variant="success"
@@ -400,6 +411,7 @@ function AddConcertPage() {
                                     backgroundColor: !canImportFromSetlistFm || importingSetlist ? '#d1d5db' : undefined,
                                     borderColor: !canImportFromSetlistFm || importingSetlist ? '#d1d5db' : undefined,
                                     color: !canImportFromSetlistFm || importingSetlist ? '#6b7280' : undefined,
+                                    fontSize: '0.92rem',
                                   }}
                                 >
                                   {importingSetlist ? (
@@ -425,16 +437,16 @@ function AddConcertPage() {
                             <div
                               style={{
                                 border: '1px solid #e5e7eb',
-                                borderRadius: '12px',
-                                padding: '12px',
+                                borderRadius: '10px',
+                                padding: '10px',
                                 background: '#fff',
                               }}
                             >
-                              <div style={{ fontWeight: 600, color: '#374151', marginBottom: '8px' }}>
+                              <div style={{ fontWeight: 600, color: '#374151', marginBottom: '8px', fontSize: '0.95rem' }}>
                                 Current setlist ({normalizedSetlist.length})
                               </div>
                               {normalizedSetlist.length ? (
-                                <div style={{ maxHeight: '205px', overflowY: 'auto', scrollbarWidth: 'thin' }}>
+                                <div style={{ maxHeight: '190px', overflowY: 'auto', scrollbarWidth: 'thin' }}>
                                   <ListGroup>
                                     {normalizedSetlist.map((title, idx) => (
                                       <ListGroup.Item
@@ -444,26 +456,27 @@ function AddConcertPage() {
                                           alignItems: 'center',
                                           justifyContent: 'space-between',
                                           gap: '10px',
+                                          paddingTop: '0.55rem',
+                                          paddingBottom: '0.55rem',
                                         }}
                                       >
                                         <div
                                           style={{
                                             fontWeight: 500,
-                                            fontSize: '1rem',
+                                            fontSize: '0.95rem',
                                           }}
                                         >
                                           {idx + 1}. {title}
                                         </div>
-                                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap', flexShrink: 0 }}>
+                                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
                                           <Button
                                             type="button"
                                             size="sm"
                                             variant="outline-secondary"
                                             onClick={() => handleMoveSong(idx, -1)}
                                             disabled={idx === 0}
-                                            style={{ fontSize: '1.5rem' }}
                                           >
-                                            <ArrowUp size={16} />
+                                            <ArrowUp size={14} />
                                           </Button>
                                           <Button
                                             type="button"
@@ -471,9 +484,8 @@ function AddConcertPage() {
                                             variant="outline-secondary"
                                             onClick={() => handleMoveSong(idx, 1)}
                                             disabled={idx === normalizedSetlist.length - 1}
-                                            style={{ fontSize: '1.5rem' }}
                                           >
-                                            <ArrowDown size={16} />
+                                            <ArrowDown size={14} />
                                           </Button>
                                           <Button
                                             type="button"
@@ -481,7 +493,7 @@ function AddConcertPage() {
                                             variant="outline-danger"
                                             onClick={() => handleRemoveSong(idx)}
                                           >
-                                            <Trash size={18} />
+                                            <Trash size={16} />
                                           </Button>
                                         </div>
                                       </ListGroup.Item>
@@ -489,7 +501,7 @@ function AddConcertPage() {
                                   </ListGroup>
                                 </div>
                               ) : (
-                                <div style={{ marginTop: '0.5rem', color: '#6b7280', fontSize: '0.9rem' }}>
+                                <div style={{ marginTop: '0.45rem', color: '#6b7280', fontSize: '0.85rem' }}>
                                   No songs yet. Add one on the left or import from setlist.fm.
                                 </div>
                               )}
@@ -502,19 +514,20 @@ function AddConcertPage() {
                 </SectionCard>
               </Col>
             </Row>
-            <Row style={{ alignItems: 'stretch' }}>
+
+            <Row style={{ alignItems: 'stretch', rowGap: '1rem' }}>
               <Col lg={4} style={{ display: 'flex' }}>
                 <SectionCard
                   title="Image Preview"
                   subtitle="Preview the concert cover image"
                 >
-                  <div style={{ width: '100%', }}>
+                  <div style={{ width: '100%' }}>
                     <div
                       style={{
                         width: '100%',
-                        minHeight: '320px',
+                        minHeight: '270px',
                         border: '1px solid #e5e7eb',
-                        borderRadius: '12px',
+                        borderRadius: '10px',
                         background: '#f9fafb',
                         overflow: 'hidden',
                         display: 'flex',
@@ -537,7 +550,7 @@ function AddConcertPage() {
                         <div
                           style={{
                             color: '#6b7280',
-                            fontSize: '0.95rem',
+                            fontSize: '0.9rem',
                             textAlign: 'center',
                             padding: '1rem',
                           }}
@@ -557,13 +570,13 @@ function AddConcertPage() {
                 >
                   <Row>
                     <Col md={12}>
-                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                      <Form.Group style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>Notes</Form.Label>
                         <Form.Control
                           as="textarea"
                           rows={2}
                           placeholder="Memories, highlights…"
-                          style={{ borderRadius: '12px' }}
+                          style={{ borderRadius: '10px', fontSize: '0.95rem' }}
                           value={notes}
                           onChange={(ev) => setNotes(ev.target.value)}
                         />
@@ -571,22 +584,22 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={4}>
-                      <Form.Group style={{ marginBottom: '1.5rem' }}>
+                      <Form.Group style={{ marginBottom: '1rem' }}>
                         <Form.Label style={styles.formLabel}>
                           Rating <span style={{ color: '#dc3545' }}>*</span>
                         </Form.Label>
                         <div
                           style={{
-                            height: '48px',
-                            padding: '0 14px',
+                            height: '44px',
+                            padding: '0 12px',
                             display: 'flex',
                             alignItems: 'center',
                             border: '1px solid #dee2e6',
-                            borderRadius: '12px',
+                            borderRadius: '10px',
                             justifyContent: 'space-between',
                           }}
                         >
-                          <div style={{ gap: '0.25rem', display: 'flex' }}>
+                          <div style={{ gap: '0.2rem', display: 'flex' }}>
                             {stars.map((star) => (
                               <span
                                 key={star}
@@ -600,7 +613,7 @@ function AddConcertPage() {
                                   }
                                 }}
                                 style={{
-                                  fontSize: '1.4rem',
+                                  fontSize: '1.2rem',
                                   cursor: 'pointer',
                                   color: star <= rating ? '#f59e0b' : '#d1d5db',
                                   lineHeight: 1,
@@ -610,7 +623,7 @@ function AddConcertPage() {
                               </span>
                             ))}
                           </div>
-                          <span style={{ fontWeight: '600', color: '#374151' }}>
+                          <span style={{ fontWeight: '600', color: '#374151', fontSize: '0.92rem' }}>
                             {getRatingLabel(rating)}
                           </span>
                         </div>
@@ -620,12 +633,13 @@ function AddConcertPage() {
                     <Col md={8}>
                       <div
                         style={{
-                          paddingTop: '3rem',
-                          paddingBottom: '1rem',
+                          paddingTop: '1.75rem',
+                          paddingBottom: '0.6rem',
                           display: 'flex',
                           justifyContent: 'flex-end',
                           alignItems: 'center',
-                          gap: '1.5rem',
+                          gap: '1.2rem',
+                          flexWrap: 'wrap',
                         }}
                       >
                         <Form.Check
@@ -647,7 +661,7 @@ function AddConcertPage() {
                     </Col>
 
                     <Col xs={12}>
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem  ' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.7rem' }}>
                         <Button type="button" variant="outline-danger" disabled={saving} onClick={() => navigate("/")}>
                           Cancel
                         </Button>
@@ -670,8 +684,8 @@ function AddConcertPage() {
             </Row>
           </Form>
         </Card.Body>
-      </Card >
-    </section >
+      </Card>
+    </section>
   )
 }
 
