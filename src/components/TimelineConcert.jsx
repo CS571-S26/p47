@@ -29,8 +29,6 @@ function TimelineConcert({ concert }) {
         month: 'short',
     }).toUpperCase()
 
-    console.log(concert)
-
     const styles = {
         concertCard: {
             background: 'white',
