@@ -199,7 +199,7 @@ function AddConcertPage() {
       <Card
         style={{
           width: '100%',
-          maxWidth: '1080px',
+          maxWidth: '1600px',
           borderRadius: '20px',
           border: '1px solid #dbe3ea',
           boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
@@ -216,245 +216,250 @@ function AddConcertPage() {
           ) : null}
 
           <Form onSubmit={handleSubmit}>
-            <SectionCard
-              title="Basic Details"
-              subtitle="The main information about the concert">
-              <Row>
-                <Col md={6}>
-                  <Form.Group style={{ marginBottom: '0.9rem' }}>
-                    <Form.Label style={styles.formLabel}>Artist/Band</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="e.g., Dead & Company"
-                      style={styles.formControl}
-                      value={artist}
-                      onChange={(ev) => setArtist(ev.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
+            <Row>
+              <Col lg={6}>
+                <SectionCard
+                  title="Basic Details"
+                  subtitle="The main information about the concert">
+                  <Row>
+                    <Col md={6}>
+                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                        <Form.Label style={styles.formLabel}>Artist/Band</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="e.g., Dead & Company"
+                          style={styles.formControl}
+                          value={artist}
+                          onChange={(ev) => setArtist(ev.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
 
-                <Col md={6}>
-                  <Form.Group style={{ marginBottom: '0.9rem' }}>
-                    <Form.Label style={styles.formLabel}>Music Genre</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="e.g., Jam Band"
-                      style={styles.formControl}
-                      value={genre}
-                      onChange={(ev) => setGenre(ev.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
+                    <Col md={6}>
+                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                        <Form.Label style={styles.formLabel}>Music Genre</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="e.g., Jam Band"
+                          style={styles.formControl}
+                          value={genre}
+                          onChange={(ev) => setGenre(ev.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
 
-                <Col md={6}>
-                  <Form.Group style={{ marginBottom: '0.9rem' }}>
-                    <Form.Label style={styles.formLabel}>Date</Form.Label>
-                    <Form.Control
-                      type="date"
-                      style={styles.formControl}
-                      value={date}
-                      onChange={(ev) => setDate(ev.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
+                    <Col md={6}>
+                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                        <Form.Label style={styles.formLabel}>Date</Form.Label>
+                        <Form.Control
+                          type="date"
+                          style={styles.formControl}
+                          value={date}
+                          onChange={(ev) => setDate(ev.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
 
-                <Col md={6}>
-                  <Form.Group style={{ marginBottom: '0.9rem' }}>
-                    <Form.Label style={styles.formLabel}>Venue</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="e.g., Oracle Park"
-                      style={styles.formControl}
-                      value={venue}
-                      onChange={(ev) => setVenue(ev.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
+                    <Col md={6}>
+                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                        <Form.Label style={styles.formLabel}>Venue</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="e.g., Oracle Park"
+                          style={styles.formControl}
+                          value={venue}
+                          onChange={(ev) => setVenue(ev.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
 
-                <Col md={6}>
-                  <Form.Group style={{ marginBottom: '0.9rem' }}>
-                    <Form.Label style={styles.formLabel}>City, State</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="e.g., San Francisco, CA"
-                      style={styles.formControl}
-                      value={city}
-                      onChange={(ev) => setCity(ev.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
+                    <Col md={6}>
+                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                        <Form.Label style={styles.formLabel}>City, State</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="e.g., San Francisco, CA"
+                          style={styles.formControl}
+                          value={city}
+                          onChange={(ev) => setCity(ev.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
 
-                <Col md={6}>
-                  <Form.Group style={{ marginBottom: '0.9rem' }}>
-                    <Form.Label style={styles.formLabel}>Cover image URL (optional)</Form.Label>
-                    <Form.Control
-                      type="url"
-                      placeholder="https://…"
-                      style={styles.formControl}
-                      value={image}
-                      onChange={(ev) => setImage(ev.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-            </SectionCard>
+                    <Col md={6}>
+                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                        <Form.Label style={styles.formLabel}>Cover image URL (optional)</Form.Label>
+                        <Form.Control
+                          type="url"
+                          placeholder="https://…"
+                          style={styles.formControl}
+                          value={image}
+                          onChange={(ev) => setImage(ev.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </SectionCard>
+              </Col>
 
-            <SectionCard
-              title="Setlist"
-              subtitle="Add songs manually or import them from setlist.fm"
-            >
-              <Row>
-                <Col md={12}>
-                  <Form.Group style={{ marginBottom: '0.9rem' }}>
-                    <Form.Label style={styles.formLabel}>Setlist (optional)</Form.Label>
-                    <Row style={{ rowGap: '0.75rem' }}>
-                      <Col lg={6}>
-                        <div
-                          style={{
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '12px',
-                            padding: '12px',
-                            background: '#fafafa',
-                            height: '100%',
-                          }}
-                        >
-                          <InputGroup>
-                            <Form.Control
-                              type="text"
-                              placeholder="Add a song title..."
-                              style={styles.formControl}
-                              value={newSongTitle}
-                              onChange={(ev) => setNewSongTitle(ev.target.value)}
-                              onKeyDown={(ev) => {
-                                if (ev.key === 'Enter') {
-                                  ev.preventDefault()
-                                  handleAddSong()
-                                }
+              <Col lg={6}>
+                <SectionCard
+                  title="Setlist"
+                  subtitle="Add songs manually or import them from setlist.fm"
+                >
+                  <Row>
+                    <Col md={12}>
+                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                        <Form.Label style={styles.formLabel}>Setlist (optional)</Form.Label>
+                        <Row style={{ rowGap: '0.75rem' }}>
+                          <Col lg={6}>
+                            <div
+                              style={{
+                                border: '1px solid #e5e7eb',
+                                borderRadius: '12px',
+                                padding: '12px',
+                                background: '#fafafa',
+                                height: '100%',
                               }}
-                            />
-                            <Button
-                              variant="outline-primary"
-                              style={{ borderRadius: '12px', paddingLeft: '14px', paddingRight: '14px' }}
-                              onClick={handleAddSong}
-                              disabled={!newSongTitle.trim()}
-                              type="button"
                             >
-                              Add
-                            </Button>
-                          </InputGroup>
+                              <InputGroup>
+                                <Form.Control
+                                  type="text"
+                                  placeholder="Add a song title..."
+                                  style={styles.formControl}
+                                  value={newSongTitle}
+                                  onChange={(ev) => setNewSongTitle(ev.target.value)}
+                                  onKeyDown={(ev) => {
+                                    if (ev.key === 'Enter') {
+                                      ev.preventDefault()
+                                      handleAddSong()
+                                    }
+                                  }}
+                                />
+                                <Button
+                                  variant="outline-primary"
+                                  style={{ borderRadius: '12px', paddingLeft: '14px', paddingRight: '14px' }}
+                                  onClick={handleAddSong}
+                                  disabled={!newSongTitle.trim()}
+                                  type="button"
+                                >
+                                  Add
+                                </Button>
+                              </InputGroup>
 
-                          <div style={{ marginTop: '0.5rem', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-                            <Button
-                              type="button"
-                              variant="outline-success"
-                              onClick={handleImportFromSetlistFm}
-                              disabled={!canImportFromSetlistFm || importingSetlist}
+                              <div style={{ marginTop: '0.5rem', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                                <Button
+                                  type="button"
+                                  variant="outline-success"
+                                  onClick={handleImportFromSetlistFm}
+                                  disabled={!canImportFromSetlistFm || importingSetlist}
+                                >
+                                  {importingSetlist ? (
+                                    <>
+                                      <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
+                                      Importing...
+                                    </>
+                                  ) : (
+                                    'Import from setlist.fm'
+                                  )}
+                                </Button>
+                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>
+                                  Requires artist, venue, and date.
+                                </div>
+                              </div>
+
+                              {importError ? (
+                                <Alert variant="warning" style={{ marginTop: '0.5rem', marginBottom: 0 }}>
+                                  {importError}
+                                </Alert>
+                              ) : null}
+                            </div>
+                          </Col>
+
+                          <Col lg={6}>
+                            <div
+                              style={{
+                                border: '1px solid #e5e7eb',
+                                borderRadius: '12px',
+                                padding: '12px',
+                                background: '#fff',
+                              }}
                             >
-                              {importingSetlist ? (
-                                <>
-                                  <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
-                                  Importing...
-                                </>
+                              <div style={{ fontWeight: 600, color: '#374151', marginBottom: '8px' }}>
+                                Current setlist ({normalizedSetlist.length})
+                              </div>
+                              {normalizedSetlist.length ? (
+                                <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                  <ListGroup>
+                                    {normalizedSetlist.map((title, idx) => (
+                                      <ListGroup.Item
+                                        key={`${title}-${idx}`}
+                                        style={{
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'space-between',
+                                          gap: '10px',
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            fontWeight: 600,
+                                            fontSize: getSongTitleFontSize(title),
+                                          }}
+                                        >
+                                          {idx + 1}. {title}
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap', flexShrink: 0 }}>
+                                          <Button
+                                            type="button"
+                                            size="sm"
+                                            variant="outline-secondary"
+                                            onClick={() => handleMoveSong(idx, -1)}
+                                            disabled={idx === 0}
+                                            style={{ fontSize: '1.5rem' }}
+                                          >
+                                            ↑
+                                          </Button>
+                                          <Button
+                                            type="button"
+                                            size="sm"
+                                            variant="outline-secondary"
+                                            onClick={() => handleMoveSong(idx, 1)}
+                                            disabled={idx === normalizedSetlist.length - 1}
+                                            style={{ fontSize: '1.5rem' }}
+                                          >
+                                            ↓
+                                          </Button>
+                                          <Button
+                                            type="button"
+                                            size="sm"
+                                            variant="outline-danger"
+                                            onClick={() => handleRemoveSong(idx)}
+                                          >
+                                            Remove
+                                          </Button>
+                                        </div>
+                                      </ListGroup.Item>
+                                    ))}
+                                  </ListGroup>
+                                </div>
                               ) : (
-                                'Import from setlist.fm'
+                                <div style={{ marginTop: '0.5rem', color: '#6b7280', fontSize: '0.9rem' }}>
+                                  No songs yet. Add one on the left or import from setlist.fm.
+                                </div>
                               )}
-                            </Button>
-                            <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>
-                              Requires artist, venue, and date.
                             </div>
-                          </div>
-
-                          {importError ? (
-                            <Alert variant="warning" style={{ marginTop: '0.5rem', marginBottom: 0 }}>
-                              {importError}
-                            </Alert>
-                          ) : null}
-                        </div>
-                      </Col>
-
-                      <Col lg={6}>
-                        <div
-                          style={{
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '12px',
-                            padding: '12px',
-                            background: '#fff',
-                          }}
-                        >
-                          <div style={{ fontWeight: 600, color: '#374151', marginBottom: '8px' }}>
-                            Current setlist ({normalizedSetlist.length})
-                          </div>
-                          {normalizedSetlist.length ? (
-                            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                              <ListGroup>
-                                {normalizedSetlist.map((title, idx) => (
-                                  <ListGroup.Item
-                                    key={`${title}-${idx}`}
-                                    style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'space-between',
-                                      gap: '10px',
-                                    }}
-                                  >
-                                    <div
-                                      style={{
-                                        fontWeight: 600,
-                                        fontSize: getSongTitleFontSize(title),
-                                      }}
-                                    >
-                                      {idx + 1}. {title}
-                                    </div>
-                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap', flexShrink: 0 }}>
-                                      <Button
-                                        type="button"
-                                        size="sm"
-                                        variant="outline-secondary"
-                                        onClick={() => handleMoveSong(idx, -1)}
-                                        disabled={idx === 0}
-                                        style={{ fontSize: '1.5rem' }}
-                                      >
-                                        ↑
-                                      </Button>
-                                      <Button
-                                        type="button"
-                                        size="sm"
-                                        variant="outline-secondary"
-                                        onClick={() => handleMoveSong(idx, 1)}
-                                        disabled={idx === normalizedSetlist.length - 1}
-                                        style={{ fontSize: '1.5rem' }}
-                                      >
-                                        ↓
-                                      </Button>
-                                      <Button
-                                        type="button"
-                                        size="sm"
-                                        variant="outline-danger"
-                                        onClick={() => handleRemoveSong(idx)}
-                                      >
-                                        Remove
-                                      </Button>
-                                    </div>
-                                  </ListGroup.Item>
-                                ))}
-                              </ListGroup>
-                            </div>
-                          ) : (
-                            <div style={{ marginTop: '0.5rem', color: '#6b7280', fontSize: '0.9rem' }}>
-                              No songs yet. Add one on the left or import from setlist.fm.
-                            </div>
-                          )}
-                        </div>
-                      </Col>
-                    </Row>
-                  </Form.Group>
-                </Col>
-              </Row>
-            </SectionCard>
-
+                          </Col>
+                        </Row>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </SectionCard>
+              </Col>
+            </Row>
             <SectionCard
-            title="Notes & Extras"
-            subtitle="Rating, attendance, favorites, and memories">
+              title="Notes & Extras"
+              subtitle="Rating, attendance, favorites, and memories">
               <Row>
                 <Col md={12}>
                   <Form.Group style={{ marginBottom: '0.9rem' }}>
