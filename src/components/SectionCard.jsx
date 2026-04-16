@@ -14,7 +14,7 @@ function SectionCard({ title, subtitle, children }) {
         <div style={{ marginBottom: '0.9rem' }}>
           <div
             style={{
-              fontSize: '1.05rem',
+              fontSize: '1.20rem',
               fontWeight: 700,
               color: '#111827',
             }}
