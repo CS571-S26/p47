@@ -34,14 +34,74 @@ function ConcertDetailPage() {
 
   if (!concert) {
     return (
-      <Card>
-        <Card.Body>
-          NO CONCERT TODO
-        </Card.Body>
-      </Card>
+      <section
+        id="center"
+        style={{
+          flex: 1,
+          width: '100%',
+          padding: '0.85rem 0.75rem',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+        }}
+      >
+        <Card
+          style={{
+            width: '100%',
+            maxWidth: '1280px',
+            borderRadius: '16px',
+            border: '1px solid #dbe3ea',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+            padding: '0.35rem',
+          }}
+        >
+          <Card.Body
+            style={{
+              minHeight: '420px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              textAlign: 'center',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '1.8rem',
+                fontWeight: 800,
+                color: '#1f2937',
+                marginBottom: '0.5rem',
+              }}
+            >
+              Concert not found
+            </div>
+
+            <div
+              style={{
+                fontSize: '1rem',
+                color: '#6b7280',
+                marginBottom: '1.25rem',
+              }}
+            >
+              This concert doesn’t exist or may have been deleted.
+            </div>
+
+            <Button
+              variant="primary"
+              onClick={() => navigate('/')}
+              style={{
+                fontWeight: 700,
+                borderRadius: '10px',
+                padding: '8px 14px',
+              }}
+            >
+              Back to Timeline
+            </Button>
+          </Card.Body>
+        </Card>
+      </section>
     )
   }
-
   const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
   const [year, month, day] = concert.date.split('-').map(Number)
