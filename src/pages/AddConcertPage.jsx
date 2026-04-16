@@ -207,6 +207,10 @@ function AddConcertPage() {
             </Alert>
           ) : null}
 
+          <div style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '0.75rem' }}>
+            <span style={{ color: '#dc3545', fontWeight: 700 }}>*</span> Required fields
+          </div>
+
           <Form onSubmit={handleSubmit}>
             <Row style={{ alignItems: 'stretch' }}>
               <Col lg={6} style={{ display: 'flex' }}>
@@ -216,7 +220,9 @@ function AddConcertPage() {
                   <Row>
                     <Col md={6}>
                       <Form.Group style={{ marginBottom: '0.9rem' }}>
-                        <Form.Label style={styles.formLabel}>Artist/Band</Form.Label>
+                        <Form.Label style={styles.formLabel}>
+                          Artist/Band <span style={{ color: '#dc3545' }}>*</span>
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           placeholder="e.g., Dead & Company"
@@ -229,7 +235,9 @@ function AddConcertPage() {
 
                     <Col md={6}>
                       <Form.Group style={{ marginBottom: '0.9rem' }}>
-                        <Form.Label style={styles.formLabel}>Music Genre</Form.Label>
+                        <Form.Label style={styles.formLabel}>
+                          Music Genre <span style={{ color: '#dc3545' }}>*</span>
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           placeholder="e.g., Jam Band"
@@ -242,7 +250,9 @@ function AddConcertPage() {
 
                     <Col md={6}>
                       <Form.Group style={{ marginBottom: '0.9rem' }}>
-                        <Form.Label style={styles.formLabel}>Date</Form.Label>
+                        <Form.Label style={styles.formLabel}>
+                          Date <span style={{ color: '#dc3545' }}>*</span>
+                        </Form.Label>
                         <Form.Control
                           type="date"
                           style={styles.formControl}
@@ -254,7 +264,9 @@ function AddConcertPage() {
 
                     <Col md={6}>
                       <Form.Group style={{ marginBottom: '0.9rem' }}>
-                        <Form.Label style={styles.formLabel}>Venue</Form.Label>
+                        <Form.Label style={styles.formLabel}>
+                          Venue <span style={{ color: '#dc3545' }}>*</span>
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           placeholder="e.g., Oracle Park"
@@ -267,7 +279,9 @@ function AddConcertPage() {
 
                     <Col md={6}>
                       <Form.Group style={{ marginBottom: '0.9rem' }}>
-                        <Form.Label style={styles.formLabel}>City, State</Form.Label>
+                        <Form.Label style={styles.formLabel}>
+                          City, State <span style={{ color: '#dc3545' }}>*</span>
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           placeholder="e.g., San Francisco, CA"
@@ -280,7 +294,7 @@ function AddConcertPage() {
 
                     <Col md={6}>
                       <Form.Group style={{ marginBottom: '0.9rem' }}>
-                        <Form.Label style={styles.formLabel}>Cover image URL (optional)</Form.Label>
+                        <Form.Label style={styles.formLabel}>Cover image URL</Form.Label>
                         <Form.Control
                           type="url"
                           placeholder="https://…"
@@ -364,9 +378,6 @@ function AddConcertPage() {
                                     'Import from setlist.fm'
                                   )}
                                 </Button>
-                                <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>
-                                  Requires artist, venue, and date.
-                                </div>
                               </div>
 
                               {importError ? (
@@ -465,7 +476,7 @@ function AddConcertPage() {
               <Row>
                 <Col md={12}>
                   <Form.Group style={{ marginBottom: '0.9rem' }}>
-                    <Form.Label style={styles.formLabel}>Notes (optional)</Form.Label>
+                    <Form.Label style={styles.formLabel}>Notes</Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={2}
@@ -479,7 +490,9 @@ function AddConcertPage() {
 
                 <Col md={4}>
                   <Form.Group style={{ marginBottom: '1.5rem' }}>
-                    <Form.Label style={styles.formLabel}>Rating</Form.Label>
+                    <Form.Label style={styles.formLabel}>
+                      Rating <span style={{ color: '#dc3545' }}>*</span>
+                    </Form.Label>
                     <div
                       style={{
                         height: '48px',
