@@ -78,123 +78,135 @@ function TimelineConcert({ concert }) {
     }
 
     return (
-        <div style={styles.concertCard}>
-                { /* Date Card */}
-                <Col xs="auto">
-                    <div style={styles.dateCard}>
-                        <div style={styles.dateMonth}>{monthLabel}</div>
-                        <div style={styles.dateDay}>{day}</div>
-                        <div style={styles.dateYear}>{year}</div>
-                    </div>
-                </Col>
+        <div
+            style={{
+                ...styles.concertCard,
+                cursor: 'pointer',
+            }}
+            onClick={handleViewDetails}
+        >
+            { /* Date Card */}
+            <Col xs="auto">
+                <div style={styles.dateCard}>
+                    <div style={styles.dateMonth}>{monthLabel}</div>
+                    <div style={styles.dateDay}>{day}</div>
+                    <div style={styles.dateYear}>{year}</div>
+                </div>
+            </Col>
 
-                { /* Concert Image */}
-                <Col xs="auto">
-                    {imageUrl ? (
-                        <img
-                            src={imageUrl}
-                            alt={concert.artist}
-                            style={{ width: "250px", height: "125px", objectFit: "cover", borderRadius: "10px", marginBottom: "6px" }}
-                        />
-                    ) : (
-                        <div
-                            aria-hidden
-                            style={{
-                                width: "250px",
-                                height: "125px",
-                                borderRadius: "10px",
-                                marginBottom: "6px",
-                                background: "#e5e7eb",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                color: "#9ca3af",
-                                fontSize: "13px",
-                                fontWeight: 600,
+            { /* Concert Image */}
+            <Col xs="auto">
+                {imageUrl ? (
+                    <img
+                        src={imageUrl}
+                        alt={concert.artist}
+                        style={{ width: "250px", height: "125px", objectFit: "cover", borderRadius: "10px", marginBottom: "6px" }}
+                    />
+                ) : (
+                    <div
+                        aria-hidden
+                        style={{
+                            width: "250px",
+                            height: "125px",
+                            borderRadius: "10px",
+                            marginBottom: "6px",
+                            background: "#e5e7eb",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#9ca3af",
+                            fontSize: "13px",
+                            fontWeight: 600,
+                        }}
+                    >
+                        No image
+                    </div>
+                )}
+            </Col>
+
+            { /* Concert Information */}
+            <Col>
+                <div style={{ fontSize: "24px", fontWeight: "700", marginBottom: "2px", }}>{concert.artist}</div>
+                <div style={{ fontSize: "14px", fontStyle: "italic", color: "gray", marginBottom: "6px", lineHeight: "1.05" }}>
+                    {concert.venue} • {concert.city}
+                </div>
+
+                { /* Rating Row */}
+                <Row style={{ alignItems: "center", marginBottom: "10px" }}>
+                    <Col xs="auto">
+                        <span style={{ color: "orange", fontSize: "24px", lineHeight: "1" }}>
+                            {'★'.repeat(concert.rating)}
+                            {'☆'.repeat(5 - concert.rating)}
+                        </span>
+                    </Col>
+                    <Col>
+                        <span style={{ fontSize: "16px", fontWeight: "700" }}>
+                            {concert.rating}.0
+                        </span>
+                    </Col>
+
+                    <Col xs="auto">
+                        <span style={{ ...styles.concertTags, background: "#eef2ff", color: "#4f46e5" }}>
+                            {concert.genre}
+                        </span>
+
+                        {concert.attended && (
+                            <span style={{ ...styles.concertTags, background: '#dcfce7', color: '#166534' }}>
+                                Attended
+                            </span>
+                        )}
+
+                        {concert.favorite && (
+                            <span style={{ ...styles.concertTags, background: '#fef3c7', color: '#92400e' }}>
+                                Favorite
+                            </span>
+                        )}
+                    </Col>
+
+
+                </Row>
+
+                { /* Song Count Row */}
+                <Row style={{ alignItems: "center" }}>
+                    <Col xs="auto">
+                        <Clock size={16} />
+                    </Col>
+                    <Col xs="auto">
+                        <span style={{ fontSize: "14px", fontWeight: "200" }}>{songCount} songs</span>
+                    </Col>
+
+                    <Col
+                        style={{
+                            display: 'flex',
+                            gap: '8px',
+                            justifyContent: 'flex-end',
+                            flexWrap: 'wrap',
+                        }}
+                    >
+                        <Button
+                            style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                handleViewDetails()
                             }}
                         >
-                            No image
-                        </div>
-                    )}
-                </Col>
-
-                { /* Concert Information */}
-                <Col>
-                    <div style={{ fontSize: "24px", fontWeight: "700", marginBottom: "2px", }}>{concert.artist}</div>
-                    <div style={{ fontSize: "14px", fontStyle: "italic", color: "gray", marginBottom: "6px", lineHeight: "1.05" }}>
-                        {concert.venue} • {concert.city}
-                    </div>
-
-                    { /* Rating Row */}
-                    <Row style={{ alignItems: "center", marginBottom: "10px" }}>
-                        <Col xs="auto">
-                            <span style={{ color: "orange", fontSize: "24px", lineHeight: "1" }}>
-                                {'★'.repeat(concert.rating)}
-                                {'☆'.repeat(5 - concert.rating)}
-                            </span>
-                        </Col>
-                        <Col>
-                            <span style={{ fontSize: "16px", fontWeight: "700" }}>
-                                {concert.rating}.0
-                            </span>
-                        </Col>
-
-                        <Col xs="auto">
-                            <span style={{ ...styles.concertTags, background: "#eef2ff", color: "#4f46e5" }}>
-                                {concert.genre}
-                            </span>
-
-                            {concert.attended && (
-                                <span style={{ ...styles.concertTags, background: '#dcfce7', color: '#166534' }}>
-                                    Attended
-                                </span>
-                            )}
-
-                            {concert.favorite && (
-                                <span style={{ ...styles.concertTags, background: '#fef3c7', color: '#92400e' }}>
-                                    Favorite
-                                </span>
-                            )}
-                        </Col>
-
-
-                    </Row>
-
-                    { /* Song Count Row */}
-                    <Row style={{ alignItems: "center" }}>
-                        <Col xs="auto">
-                            <Clock size={16} />
-                        </Col>
-                        <Col xs="auto">
-                            <span style={{ fontSize: "14px", fontWeight: "200" }}>{songCount} songs</span>
-                        </Col>
-
-                        <Col
-                            style={{
-                                display: 'flex',
-                                gap: '8px',
-                                justifyContent: 'flex-end',
-                                flexWrap: 'wrap',
+                            View Details
+                        </Button>
+                        <Button
+                            variant="outline-danger"
+                            style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', gap: '6px', alignItems: 'center' }}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                handleDelete()
                             }}
                         >
-                            <Button
-                                style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}
-                                onClick={handleViewDetails}
-                            >
-                                View Details
-                            </Button>
-                            <Button
-                                variant="outline-danger"
-                                style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', gap: '6px', alignItems: 'center' }}
-                                onClick={handleDelete}
-                            >
-                                <Trash size={16} />
-                                Delete
-                            </Button>
-                        </Col>
+                            <Trash size={16} />
+                            Delete
+                        </Button>
+                    </Col>
 
-                    </Row>
-                </Col>
+                </Row>
+            </Col>
         </div>
     )
 }
