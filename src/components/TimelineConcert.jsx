@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Clock, Trash } from 'lucide-react'
-import { Container, Row, Col, Button } from 'react-bootstrap'
+import { Row, Col, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
@@ -35,8 +35,10 @@ function TimelineConcert({ concert }) {
             border: '1px solid lightgray',
             borderRadius: '16px',
             padding: '14px 16px',
-            width: '75vw',
+            width: '100%',
             boxShadow: '0 4px 14px lightgray',
+            display: 'flex',
+            gap: '16px'
         },
         dateCard: {
             border: '1px solid lightgray',
@@ -76,8 +78,7 @@ function TimelineConcert({ concert }) {
     }
 
     return (
-        <Container style={styles.concertCard}>
-            <Row>
+        <div style={styles.concertCard}>
                 { /* Date Card */}
                 <Col xs="auto">
                     <div style={styles.dateCard}>
@@ -194,8 +195,7 @@ function TimelineConcert({ concert }) {
 
                     </Row>
                 </Col>
-            </Row>
-        </Container>
+        </div>
     )
 }
 
