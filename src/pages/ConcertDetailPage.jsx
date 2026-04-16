@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Card, Row, Col, Button } from 'react-bootstrap'
-import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays } from 'lucide-react'
+import { Card, Row, Col, Button, ListGroup } from 'react-bootstrap'
+import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { colors } from '../data/Colors'
@@ -32,6 +32,15 @@ function ConcertDetailPage() {
     return 'Rough'
   }
 
+  if (!concert) {
+    return (
+      <Card>
+        <Card.Body>
+          NO CONCERT TODO
+        </Card.Body>
+      </Card>
+    )
+  }
 
   const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
@@ -47,19 +56,6 @@ function ConcertDetailPage() {
   const dayOfWeek = new Date(year, month - 1, day).toLocaleDateString('en-US', {
     weekday: 'long',
   })
-
-
-  const songCount = typeof setlistCount === 'number' ? setlistCount : (concert.songCount ?? 0)
-
-  if (!concert) {
-    return (
-      <Card>
-        <Card.Body>
-          NO CONCERT TODO
-        </Card.Body>
-      </Card>
-    )
-  }
 
   const styles = {
     topButton: {
@@ -106,6 +102,18 @@ function ConcertDetailPage() {
       color: "gray",
       padding: '6px 0 10px',
     },
+    infoLabel: {
+      fontSize: '1.2rem',
+      fontWeight: 700,
+      color: '#6b7280',
+      marginBottom: '2px',
+    },
+    infoValue: {
+      fontSize: '1.3rem',
+      color: '#1f2937',
+      marginBottom: '14px',
+      lineHeight: 1.25,
+    }
   }
 
   return (
@@ -302,7 +310,7 @@ function ConcertDetailPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <Music size={32} color={colors.setlogPrimary} />
                     <div>
-                      <div style={{ fontSize: '1.5rem', fontWeight: 500 }}>{songCount}</div>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 500 }}>{concert.songCount}</div>
                       <div style={{ fontSize: '1rem', fontWeight: 700, color: '#6b7280' }}>
                         SONGS
                       </div>
@@ -364,7 +372,7 @@ function ConcertDetailPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <FileText size={22} color={colors.setlogPrimary} />
                   <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1f2937' }}>
-                    Notes
+                    NOTES
                   </span>
                 </div>
               }
@@ -391,6 +399,175 @@ function ConcertDetailPage() {
               </div>
             </SectionCard>
           </div>
+
+          <Row>
+            <Col lg={8}>
+              <div style={{ marginTop: '1.25rem' }}>
+                <SectionCard
+                  title={
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
+                      <ListMusic size={22} color={colors.setlogPrimary} />
+                      <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1f2937' }}>
+                        SETLIST
+                      </span>
+                      <span style={{ fontSize: '1rem', fontWeight: 600, color: '#6b7280', marginLeft: 'auto' }}>
+                        {concert.songCount} songs
+                      </span>
+                    </div>
+                  }
+                >
+                  {Array.isArray(concert.setlist) && concert.setlist.length > 0 ? (
+                    <ListGroup variant="flush">
+                      {concert.setlist.map((song, idx) => (
+                        <ListGroup.Item
+                          key={`${song}-${idx}`}
+                          style={{
+                            padding: '14px 0',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '14px',
+                            fontSize: '1.1rem',
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: '28px',
+                              color: '#6b7280',
+                              fontWeight: 700,
+                            }}
+                          >
+                            {idx + 1}
+                          </span>
+                          <span style={{ color: '#1f2937' }}>{song}</span>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  ) : (
+                    <div style={{ color: '#6b7280' }}>No setlist available.</div>
+                  )}
+                </SectionCard>
+              </div>
+            </Col>
+            <Col lg={4}>
+              <div style={{ marginTop: '1.25rem' }}>
+                <SectionCard
+                  title={
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <Info size={22} color={colors.setlogPrimary} />
+                      <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1f2937' }}>
+                        AT A GLANCE
+                      </span>
+                    </div>
+                  }
+                >
+                  <div style={styles.infoLabel}>Artist</div>
+                  <div style={styles.infoValue}>{concert.artist}</div>
+
+                  <div style={styles.infoLabel}>Venue</div>
+                  <div style={styles.infoValue}>{concert.venue}</div>
+
+                  <div style={styles.infoLabel}>City, State</div>
+                  <div style={styles.infoValue}>{concert.city}</div>
+
+                  <div style={styles.infoLabel}>Genre</div>
+                  <div style={styles.infoValue}>{concert.genre}</div>
+
+                  <div style={styles.infoLabel}>Date</div>
+                  <div style={styles.infoValue}>{fullDateLabel}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '3rem', marginBottom: '1.5rem' }}>
+                    <div style={styles.infoLabel}>Attendance</div>
+                    <div style={styles.infoValue}>
+                      {concert.attended ? (
+                        <span style={{ ...styles.concertTags, background: '#dcfce7', color: '#166534' }}>
+                          Attended
+                        </span>
+                      ) : (
+                        <span style={{ ...styles.concertTags, background: '#fcdcdc', color: '#651616' }}>
+                          Not Attended
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
+                    <div style={styles.infoLabel}>Favorite</div>
+                    <div style={styles.infoValue}>
+                      {concert.favorite ? (
+                        <span style={{ ...styles.concertTags, background: '#fef3c7', color: '#92400e' }}>
+                          Yes
+                        </span>
+                      ) : (
+                        <span style={{ ...styles.concertTags, background: '#fef3c7', color: '#92400e' }}>
+                          No
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'baseline',
+                      gap: '14px',
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    <div
+                      style={{
+                        ...styles.infoLabel,
+                        marginBottom: 0,
+                        lineHeight: 1,
+                      }}
+                    >
+                      Rating
+                    </div>
+
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'baseline',
+                        gap: '14px',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: 'orange',
+                          fontSize: '1.2rem',
+                          lineHeight: 1,
+                          letterSpacing: '2px',
+                        }}
+                      >
+                        {'★'.repeat(concert.rating)}
+                        {'☆'.repeat(5 - concert.rating)}
+                      </span>
+
+                      <span
+                        style={{
+                          fontSize: '1.5rem',
+                          fontWeight: 700,
+                          color: '#111827',
+                          lineHeight: 2,
+                        }}
+                      >
+                        {concert.rating}.0
+                      </span>
+
+                      <span
+                        style={{
+                          fontSize: '1.2rem',
+                          color: '#6b7280',
+                          lineHeight: 1,
+                        }}
+                      >
+                        ({getRatingLabel(concert.rating)})
+                      </span>
+                    </div>
+                  </div>
+                </SectionCard>
+              </div>
+            </Col>
+          </Row>
+
         </Card.Body>
       </Card>
     </section >
