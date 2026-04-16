@@ -60,57 +60,57 @@ function ConcertDetailPage() {
   const styles = {
     topButton: {
       fontWeight: '700',
-      borderRadius: '10px',
-      padding: '5px 10px',
-      fontSize: '15px',
+      borderRadius: '9px',
+      padding: '4px 9px',
+      fontSize: '14px',
       display: 'inline-flex',
       gap: '5px',
       alignItems: 'center'
     },
     concertTags: {
-      fontSize: "0.95rem",
-      fontWeight: "700",
-      padding: "9px 15px",
-      borderRadius: "14px"
+      fontSize: '0.85rem',
+      fontWeight: '700',
+      padding: '7px 12px',
+      borderRadius: '12px'
     },
     dateCard: {
       border: '1px solid lightgray',
-      borderRadius: '14px',
+      borderRadius: '12px',
       overflow: 'hidden',
       textAlign: 'center',
-      width: '10rem',
+      width: '8.75rem',
       boxShadow: '0 4px 14px lightgray',
     },
     dateMonth: {
       background: colors.setlogPrimary,
       color: 'white',
       fontWeight: 800,
-      padding: '4px',
-      fontSize: '1.5rem'
+      padding: '3px',
+      fontSize: '1.25rem'
     },
     dateDay: {
-      fontSize: '3rem',
+      fontSize: '2.5rem',
       fontWeight: 800,
-      color: "black",
+      color: 'black',
       lineHeight: 1,
-      paddingTop: '8px',
+      paddingTop: '6px',
     },
 
     dateYear: {
-      fontSize: '1.5rem',
-      color: "gray",
-      padding: '5px 0 8px',
+      fontSize: '1.25rem',
+      color: 'gray',
+      padding: '4px 0 6px',
     },
     infoLabel: {
-      fontSize: '1rem',
+      fontSize: '0.9rem',
       fontWeight: 700,
       color: '#6b7280',
       marginBottom: '2px',
     },
     infoValue: {
-      fontSize: '1.05rem',
+      fontSize: '0.95rem',
       color: '#1f2937',
-      marginBottom: '12px',
+      marginBottom: '10px',
       lineHeight: 1.25,
     }
   }
@@ -121,7 +121,7 @@ function ConcertDetailPage() {
       style={{
         flex: 1,
         width: '100%',
-        padding: '1rem 0.85rem',
+        padding: '0.85rem 0.75rem',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
@@ -130,16 +130,16 @@ function ConcertDetailPage() {
       <Card
         style={{
           width: '100%',
-          maxWidth: '1400px',
-          borderRadius: '18px',
+          maxWidth: '1280px',
+          borderRadius: '16px',
           border: '1px solid #dbe3ea',
           boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
-          padding: '0.5rem'
+          padding: '0.35rem'
         }}
       >
         <Card.Body>
           { /* Top Buttons */}
-          <Row style={{ marginBottom: '0.85rem', alignItems: 'center' }}>
+          <Row style={{ marginBottom: '0.7rem', alignItems: 'center' }}>
             <Col>
               <Button
                 variant="link"
@@ -149,16 +149,16 @@ function ConcertDetailPage() {
                   textDecoration: 'none',
                   fontWeight: 700,
                   color: '#4338ca',
-                  fontSize: '0.95rem',
+                  fontSize: '0.9rem',
                 }}
               >
-                <ArrowLeft size={16} style={{ marginRight: '5px' }} />
+                <ArrowLeft size={14} style={{ marginRight: '5px' }} />
                 Back to Timeline
               </Button>
             </Col>
-            <Col xs="auto" style={{ display: 'flex', gap: '10px' }}>
+            <Col xs="auto" style={{ display: 'flex', gap: '8px' }}>
               <Button variant="outline-primary" style={styles.topButton}>
-                <Edit size={14} />
+                <Edit size={13} />
                 Edit Concert
               </Button>
               <Button
@@ -166,7 +166,7 @@ function ConcertDetailPage() {
                 style={styles.topButton}
                 onClick={handleDelete}
               >
-                <Trash size={14} />
+                <Trash size={13} />
                 Delete
               </Button>
             </Col>
@@ -180,10 +180,10 @@ function ConcertDetailPage() {
                   alt={concert.artist}
                   style={{
                     width: '100%',
-                    maxWidth: '420px',
-                    height: '340px',
+                    maxWidth: '360px',
+                    height: '290px',
                     objectFit: 'cover',
-                    borderRadius: '14px',
+                    borderRadius: '12px',
                     display: 'block',
                     boxShadow: '0 6px 18px rgba(0,0,0,0.12)',
                   }}
@@ -192,9 +192,9 @@ function ConcertDetailPage() {
                 <div
                   style={{
                     width: '100%',
-                    maxWidth: '420px',
-                    height: '340px',
-                    borderRadius: '14px',
+                    maxWidth: '360px',
+                    height: '290px',
+                    borderRadius: '12px',
                     background: '#e5e7eb',
                     display: 'flex',
                     alignItems: 'center',
@@ -211,27 +211,27 @@ function ConcertDetailPage() {
             <Col lg={6}>
               <Row>
                 <Col>
-                  <div style={{ fontSize: "3rem", fontWeight: "700", marginBottom: "2px", }}>{concert.artist}</div>
+                  <div style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '2px' }}>{concert.artist}</div>
 
                   { /* Location Segment */}
                   <div
                     style={{
                       display: 'flex',
                       alignItems: 'flex-start',
-                      gap: '8px',
-                      marginBottom: '1.5rem',
+                      gap: '7px',
+                      marginBottom: '1.1rem',
                     }}
                   >
-                    <MapPin size={26} color={colors.setlogPrimary} style={{ marginTop: '3px', flexShrink: 0 }} />
+                    <MapPin size={22} color={colors.setlogPrimary} style={{ marginTop: '3px', flexShrink: 0 }} />
                     <div>
-                      <div style={{ fontSize: '1.35rem', fontWeight: '500', lineHeight: 1.2 }}>{concert.venue}</div>
+                      <div style={{ fontSize: '1.15rem', fontWeight: '500', lineHeight: 1.2 }}>{concert.venue}</div>
 
                       <div
                         style={{
-                          fontSize: '1.05rem',
+                          fontSize: '0.95rem',
                           color: '#6b7280',
                           lineHeight: 1.2,
-                          marginTop: '0.35rem',
+                          marginTop: '0.25rem',
                         }}
                       >
                         {concert.city}
@@ -241,8 +241,8 @@ function ConcertDetailPage() {
 
                   { /* Tags Row */}
                   <Row>
-                    <Col xs="auto" style={{ gap: '16px', display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-                      <span style={{ ...styles.concertTags, background: "#eef2ff", color: "#4f46e5" }}>
+                    <Col xs="auto" style={{ gap: '12px', display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+                      <span style={{ ...styles.concertTags, background: '#eef2ff', color: '#4f46e5' }}>
                         {concert.genre}
                       </span>
 
@@ -263,7 +263,7 @@ function ConcertDetailPage() {
                   { /* Stars Row */}
                   <Row>
                     <Col xs="auto">
-                      <span style={{ color: "orange", fontSize: "2rem" }}>
+                      <span style={{ color: 'orange', fontSize: '1.55rem' }}>
                         {'★'.repeat(concert.rating)}
                         {'☆'.repeat(5 - concert.rating)}
                       </span>
@@ -272,13 +272,13 @@ function ConcertDetailPage() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '18px',
+                        gap: '12px',
                       }}
                     >
-                      <span style={{ fontSize: "2rem", fontWeight: "700" }}>
+                      <span style={{ fontSize: '1.55rem', fontWeight: '700' }}>
                         {concert.rating}.0
                       </span>
-                      <span style={{ fontSize: "1.2rem", color: "gray" }}>
+                      <span style={{ fontSize: '1rem', color: 'gray' }}>
                         ({getRatingLabel(concert.rating)})
                       </span>
                     </Col>
@@ -295,7 +295,7 @@ function ConcertDetailPage() {
               </div>
             </Col>
           </Row>
-          <div style={{ marginTop: '1rem' }}>
+          <div style={{ marginTop: '0.85rem' }}>
             <SectionCard>
               <Row style={{ alignItems: 'stretch' }}>
                 <Col
@@ -304,14 +304,14 @@ function ConcertDetailPage() {
                     display: 'flex',
                     justifyContent: 'center',
                     borderRight: '1px solid #e5e7eb',
-                    padding: '0 1.1rem',
+                    padding: '0 0.9rem',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Music size={26} color={colors.setlogPrimary} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Music size={22} color={colors.setlogPrimary} />
                     <div>
-                      <div style={{ fontSize: '1.2rem', fontWeight: 500 }}>{concert.songCount}</div>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#6b7280' }}>
+                      <div style={{ fontSize: '1rem', fontWeight: 500 }}>{concert.songCount}</div>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7280' }}>
                         SONGS
                       </div>
                     </div>
@@ -324,16 +324,16 @@ function ConcertDetailPage() {
                     display: 'flex',
                     justifyContent: 'center',
                     borderRight: '1px solid #e5e7eb',
-                    padding: '0 1.1rem',
+                    padding: '0 0.9rem',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <CalendarDays size={26} color={colors.setlogPrimary} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CalendarDays size={22} color={colors.setlogPrimary} />
                     <div>
-                      <div style={{ fontSize: '1.2rem', fontWeight: 500 }}>
+                      <div style={{ fontSize: '1rem', fontWeight: 500 }}>
                         {dayOfWeek}
                       </div>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#6b7280' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7280' }}>
                         {fullDateLabel}
                       </div>
                     </div>
@@ -345,18 +345,18 @@ function ConcertDetailPage() {
                   style={{
                     display: 'flex',
                     justifyContent: 'center',
-                    padding: '0 1.1rem',
+                    padding: '0 0.9rem',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <MapPin size={26} color={colors.setlogPrimary} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <MapPin size={22} color={colors.setlogPrimary} />
                     <div>
-                      <div style={{ fontSize: '1.2rem', fontWeight: 500 }}>
+                      <div style={{ fontSize: '1rem', fontWeight: 500 }}>
                         {concert.coords
                           ? `${concert.coords[0]}, ${concert.coords[1]}`
                           : 'No coords'}
                       </div>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#6b7280' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7280' }}>
                         COORDINATES
                       </div>
                     </div>
@@ -366,12 +366,12 @@ function ConcertDetailPage() {
             </SectionCard>
           </div>
 
-          <div style={{ marginTop: '1rem' }}>
+          <div style={{ marginTop: '0.85rem' }}>
             <SectionCard
               title={
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <FileText size={18} color={colors.setlogPrimary} />
-                  <span style={{ fontSize: '1rem', fontWeight: 800, color: '#1f2937' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                  <FileText size={16} color={colors.setlogPrimary} />
+                  <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#1f2937' }}>
                     NOTES
                   </span>
                 </div>
@@ -381,14 +381,14 @@ function ConcertDetailPage() {
                 style={{
                   background: '#f9fafb',
                   border: '1px solid #e5e7eb',
-                  borderRadius: '12px',
-                  padding: '12px 14px',
+                  borderRadius: '10px',
+                  padding: '10px 12px',
                 }}
               >
                 <div
                   style={{
-                    fontSize: '0.95rem',
-                    lineHeight: 1.6,
+                    fontSize: '0.85rem',
+                    lineHeight: 1.55,
                     fontWeight: 500,
                     color: concert.notes?.trim() ? '#1f2937' : '#6b7280',
                     whiteSpace: 'pre-line',
@@ -402,15 +402,15 @@ function ConcertDetailPage() {
 
           <Row>
             <Col lg={8}>
-              <div style={{ marginTop: '1rem' }}>
+              <div style={{ marginTop: '0.85rem' }}>
                 <SectionCard
                   title={
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-                      <ListMusic size={18} color={colors.setlogPrimary} />
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: '#1f2937' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px', width: '100%' }}>
+                      <ListMusic size={16} color={colors.setlogPrimary} />
+                      <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#1f2937' }}>
                         SETLIST
                       </span>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#6b7280', marginLeft: 'auto' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#6b7280', marginLeft: 'auto' }}>
                         {concert.songCount} songs
                       </span>
                     </div>
@@ -422,16 +422,16 @@ function ConcertDetailPage() {
                         <ListGroup.Item
                           key={`${song}-${idx}`}
                           style={{
-                            padding: '10px 0',
+                            padding: '8px 0',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '12px',
-                            fontSize: '0.95rem',
+                            gap: '10px',
+                            fontSize: '0.85rem',
                           }}
                         >
                           <span
                             style={{
-                              width: '24px',
+                              width: '22px',
                               color: '#6b7280',
                               fontWeight: 700,
                             }}
@@ -449,12 +449,12 @@ function ConcertDetailPage() {
               </div>
             </Col>
             <Col lg={4}>
-              <div style={{ marginTop: '1rem' }}>
+              <div style={{ marginTop: '0.85rem' }}>
                 <SectionCard
                   title={
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Info size={18} color={colors.setlogPrimary} />
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: '#1f2937' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                      <Info size={16} color={colors.setlogPrimary} />
+                      <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#1f2937' }}>
                         AT A GLANCE
                       </span>
                     </div>
@@ -474,7 +474,7 @@ function ConcertDetailPage() {
 
                   <div style={styles.infoLabel}>Date</div>
                   <div style={styles.infoValue}>{fullDateLabel}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '1.1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem', marginBottom: '0.9rem' }}>
                     <div style={styles.infoLabel}>Attendance</div>
                     <div style={styles.infoValue}>
                       {concert.attended ? (
@@ -488,7 +488,7 @@ function ConcertDetailPage() {
                       )}
                     </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem' }}>
                     <div style={styles.infoLabel}>Favorite</div>
                     <div style={styles.infoValue}>
                       {concert.favorite ? (
@@ -507,7 +507,7 @@ function ConcertDetailPage() {
                     style={{
                       display: 'flex',
                       alignItems: 'baseline',
-                      gap: '10px',
+                      gap: '8px',
                       flexWrap: 'wrap',
                     }}
                   >
@@ -525,14 +525,14 @@ function ConcertDetailPage() {
                       style={{
                         display: 'flex',
                         alignItems: 'baseline',
-                        gap: '10px',
+                        gap: '8px',
                         flexWrap: 'wrap',
                       }}
                     >
                       <span
                         style={{
                           color: 'orange',
-                          fontSize: '1rem',
+                          fontSize: '0.9rem',
                           lineHeight: 1,
                           letterSpacing: '1px',
                         }}
@@ -543,10 +543,10 @@ function ConcertDetailPage() {
 
                       <span
                         style={{
-                          fontSize: '1.2rem',
+                          fontSize: '1rem',
                           fontWeight: 700,
                           color: '#111827',
-                          lineHeight: 1.8,
+                          lineHeight: 1.6,
                         }}
                       >
                         {concert.rating}.0
@@ -554,7 +554,7 @@ function ConcertDetailPage() {
 
                       <span
                         style={{
-                          fontSize: '1rem',
+                          fontSize: '0.9rem',
                           color: '#6b7280',
                           lineHeight: 1,
                         }}
