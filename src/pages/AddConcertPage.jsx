@@ -48,6 +48,14 @@ function AddConcertPage() {
     return 'Rough'
   }
 
+  function getSongTitleFontSize(title) {
+    const len = `${title}`.length
+    if (len > 85) return '0.83rem'
+    if (len > 65) return '0.88rem'
+    if (len > 45) return '0.93rem'
+    return '1rem'
+  }
+
   const styles = {
     formControl: {
       height: '48px',
@@ -201,7 +209,7 @@ function AddConcertPage() {
           <div style={{ fontSize: '48px', fontWeight: '700' }}>Log a New Concert</div>
 
           {formError ? (
-            <Alert variant="danger" className="mt-3 mb-0">
+            <Alert variant="danger" style={{ marginTop: '0.75rem', marginBottom: 0 }}>
               {formError}
             </Alert>
           ) : null}
@@ -285,110 +293,149 @@ function AddConcertPage() {
                 </Form.Group>
               </Col>
 
-              <Col md={6}>
+              <Col md={12}>
                 <Form.Group>
                   <Form.Label style={styles.formLabel}>Setlist (optional)</Form.Label>
-                  <InputGroup>
-                    <Form.Control
-                      type="text"
-                      placeholder="Add a song title…"
-                      style={styles.formControl}
-                      value={newSongTitle}
-                      onChange={(ev) => setNewSongTitle(ev.target.value)}
-                      onKeyDown={(ev) => {
-                        if (ev.key === 'Enter') {
-                          ev.preventDefault()
-                          handleAddSong()
-                        }
-                      }}
-                    />
-                    <Button
-                      variant="outline-primary"
-                      style={{ borderRadius: '12px', paddingLeft: '14px', paddingRight: '14px' }}
-                      onClick={handleAddSong}
-                      disabled={!newSongTitle.trim()}
-                      type="button"
-                    >
-                      Add
-                    </Button>
-                  </InputGroup>
+                  <Row style={{ rowGap: '0.75rem' }}>
+                    <Col lg={6}>
+                      <div
+                        style={{
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '12px',
+                          padding: '12px',
+                          background: '#fafafa',
+                          height: '100%',
+                        }}
+                      >
+                        <InputGroup>
+                          <Form.Control
+                            type="text"
+                            placeholder="Add a song title..."
+                            style={styles.formControl}
+                            value={newSongTitle}
+                            onChange={(ev) => setNewSongTitle(ev.target.value)}
+                            onKeyDown={(ev) => {
+                              if (ev.key === 'Enter') {
+                                ev.preventDefault()
+                                handleAddSong()
+                              }
+                            }}
+                          />
+                          <Button
+                            variant="outline-primary"
+                            style={{ borderRadius: '12px', paddingLeft: '14px', paddingRight: '14px' }}
+                            onClick={handleAddSong}
+                            disabled={!newSongTitle.trim()}
+                            type="button"
+                          >
+                            Add
+                          </Button>
+                        </InputGroup>
 
-                  <div className="mt-2" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <Button
-                      type="button"
-                      variant="outline-success"
-                      onClick={handleImportFromSetlistFm}
-                      disabled={!canImportFromSetlistFm || importingSetlist}
-                    >
-                      {importingSetlist ? (
-                        <>
-                          <Spinner animation="border" size="sm" className="me-2" />
-                          Importing…
-                        </>
-                      ) : (
-                        'Import from setlist.fm'
-                      )}
-                    </Button>
-                    <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>
-                      Requires artist, venue, and date.
-                    </div>
-                  </div>
-
-                  {importError ? (
-                    <Alert variant="warning" className="mt-2 mb-0">
-                      {importError}
-                    </Alert>
-                  ) : null}
-
-                  {normalizedSetlist.length ? (
-                    <ListGroup className="mt-2">
-                      {normalizedSetlist.map((title, idx) => (
-                        <ListGroup.Item
-                          key={`${title}-${idx}`}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            gap: '10px',
-                          }}
-                        >
-                          <div style={{ fontWeight: 600 }}>{idx + 1}. {title}</div>
-                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="outline-secondary"
-                              onClick={() => handleMoveSong(idx, -1)}
-                              disabled={idx === 0}
-                            >
-                              Up
-                            </Button>
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="outline-secondary"
-                              onClick={() => handleMoveSong(idx, 1)}
-                              disabled={idx === normalizedSetlist.length - 1}
-                            >
-                              Down
-                            </Button>
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="outline-danger"
-                              onClick={() => handleRemoveSong(idx)}
-                            >
-                              Remove
-                            </Button>
+                        <div style={{ marginTop: '0.5rem', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                          <Button
+                            type="button"
+                            variant="outline-success"
+                            onClick={handleImportFromSetlistFm}
+                            disabled={!canImportFromSetlistFm || importingSetlist}
+                          >
+                            {importingSetlist ? (
+                              <>
+                                <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
+                                Importing...
+                              </>
+                            ) : (
+                              'Import from setlist.fm'
+                            )}
+                          </Button>
+                          <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>
+                            Requires artist, venue, and date.
                           </div>
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                  ) : (
-                    <div className="mt-2" style={{ color: '#6b7280', fontSize: '0.9rem' }}>
-                      No songs added yet.
-                    </div>
-                  )}
+                        </div>
+
+                        {importError ? (
+                          <Alert variant="warning" style={{ marginTop: '0.5rem', marginBottom: 0 }}>
+                            {importError}
+                          </Alert>
+                        ) : null}
+                      </div>
+                    </Col>
+
+                    <Col lg={6}>
+                      <div
+                        style={{
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '12px',
+                          padding: '12px',
+                          background: '#fff',
+                        }}
+                      >
+                        <div style={{ fontWeight: 600, color: '#374151', marginBottom: '8px' }}>
+                          Current setlist ({normalizedSetlist.length})
+                        </div>
+                        {normalizedSetlist.length ? (
+                          <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                            <ListGroup>
+                              {normalizedSetlist.map((title, idx) => (
+                                <ListGroup.Item
+                                  key={`${title}-${idx}`}
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: '10px',
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontWeight: 600,
+                                      fontSize: getSongTitleFontSize(title),
+                                    }}
+                                  >
+                                    {idx + 1}. {title}
+                                  </div>
+                                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap', flexShrink: 0 }}>
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      variant="outline-secondary"
+                                      onClick={() => handleMoveSong(idx, -1)}
+                                      disabled={idx === 0}
+                                      style={{ fontSize: '1.5rem' }}
+                                    >
+                                      ↑
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      variant="outline-secondary"
+                                      onClick={() => handleMoveSong(idx, 1)}
+                                      disabled={idx === normalizedSetlist.length - 1}
+                                      style={{ fontSize: '1.5rem' }}
+                                    >
+                                      ↓
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      variant="outline-danger"
+                                      onClick={() => handleRemoveSong(idx)}
+                                    >
+                                      Remove
+                                    </Button>
+                                  </div>
+                                </ListGroup.Item>
+                              ))}
+                            </ListGroup>
+                          </div>
+                        ) : (
+                          <div style={{ marginTop: '0.5rem', color: '#6b7280', fontSize: '0.9rem' }}>
+                            No songs yet. Add one on the left or import from setlist.fm.
+                          </div>
+                        )}
+                      </div>
+                    </Col>
+                  </Row>
                 </Form.Group>
               </Col>
 
@@ -489,7 +536,7 @@ function AddConcertPage() {
                 <Button type="submit" disabled={saving}>
                   {saving ? (
                     <>
-                      <Spinner animation="border" size="sm" className="me-2" />
+                      <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
                       Saving…
                     </>
                   ) : (
