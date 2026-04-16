@@ -4,6 +4,7 @@ function SectionCard({ title, subtitle, children }) {
   return (
     <Card
       style={{
+        width: '100%',
         borderRadius: '18px',
         border: '1px solid #e7ebf0',
         boxShadow: '0 3px 12px rgba(0,0,0,0.04)',

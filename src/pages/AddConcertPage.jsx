@@ -216,7 +216,8 @@ function AddConcertPage() {
               <Col lg={6} style={{ display: 'flex' }}>
                 <SectionCard
                   title="Basic Details"
-                  subtitle="The main information about the concert">
+                  subtitle="The main information about the concert"
+                >
                   <Row>
                     <Col md={6}>
                       <Form.Group style={{ marginBottom: '0.9rem' }}>
@@ -470,120 +471,172 @@ function AddConcertPage() {
                 </SectionCard>
               </Col>
             </Row>
-            <SectionCard
-              title="Notes & Extras"
-              subtitle="Rating, attendance, favorites, and memories">
-              <Row>
-                <Col md={12}>
-                  <Form.Group style={{ marginBottom: '0.9rem' }}>
-                    <Form.Label style={styles.formLabel}>Notes</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={2}
-                      placeholder="Memories, highlights…"
-                      style={{ borderRadius: '12px' }}
-                      value={notes}
-                      onChange={(ev) => setNotes(ev.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
-
-                <Col md={4}>
-                  <Form.Group style={{ marginBottom: '1.5rem' }}>
-                    <Form.Label style={styles.formLabel}>
-                      Rating <span style={{ color: '#dc3545' }}>*</span>
-                    </Form.Label>
+            <Row style={{ alignItems: 'stretch' }}>
+              <Col lg={4} style={{ display: 'flex' }}>
+                <SectionCard
+                  title="Image Preview"
+                  subtitle="Preview the concert cover image"
+                >
+                  <div style={{ width: '100%', }}>
                     <div
                       style={{
-                        height: '48px',
-                        padding: '0 14px',
+                        width: '100%',
+                        minHeight: '320px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '12px',
+                        background: '#f9fafb',
+                        overflow: 'hidden',
                         display: 'flex',
                         alignItems: 'center',
-                        border: '1px solid #dee2e6',
-                        borderRadius: '12px',
-                        justifyContent: 'space-between',
+                        justifyContent: 'center',
                       }}
                     >
-                      <div style={{ gap: '0.25rem', display: 'flex' }}>
-                        {stars.map((star) => (
-                          <span
-                            key={star}
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => setRating(star)}
-                            onKeyDown={(ev) => {
-                              if (ev.key === 'Enter' || ev.key === ' ') {
-                                ev.preventDefault()
-                                setRating(star)
-                              }
-                            }}
-                            style={{
-                              fontSize: '1.4rem',
-                              cursor: 'pointer',
-                              color: star <= rating ? '#f59e0b' : '#d1d5db',
-                              lineHeight: 1,
-                            }}
-                          >
-                            ★
-                          </span>
-                        ))}
-                      </div>
-                      <span style={{ fontWeight: '600', color: '#374151' }}>
-                        {getRatingLabel(rating)}
-                      </span>
-                    </div>
-                  </Form.Group>
-                </Col>
-
-                <Col md={8}>
-                  <div
-                    style={{
-                      paddingTop: '3rem',
-                      paddingBottom: '1rem',
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                      alignItems: 'center',
-                      gap: '1.5rem',
-                    }}
-                  >
-                    <Form.Check
-                      type="switch"
-                      label="I Attended"
-                      checked={attended}
-                      onChange={() => setAttended(!attended)}
-                      style={styles.formLabel}
-                    />
-
-                    <Form.Check
-                      type="switch"
-                      label="Add to Favorites"
-                      checked={favorite}
-                      onChange={() => setFavorite(!favorite)}
-                      style={styles.formLabel}
-                    />
-                  </div>
-                </Col>
-
-                <Col xs={12}>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem  ' }}>
-                    <Button type="button" variant="outline-danger" disabled={saving} onClick={() => navigate("/")}>
-                      Cancel
-                    </Button>
-
-                    <Button type="submit" disabled={saving}>
-                      {saving ? (
-                        <>
-                          <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
-                          Saving…
-                        </>
+                      {image.trim() ? (
+                        <img
+                          src={image.trim()}
+                          alt="Concert preview"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            display: 'block',
+                          }}
+                        />
                       ) : (
-                        'Save Concert'
+                        <div
+                          style={{
+                            color: '#6b7280',
+                            fontSize: '0.95rem',
+                            textAlign: 'center',
+                            padding: '1rem',
+                          }}
+                        >
+                          Add a cover image URL to preview it here.
+                        </div>
                       )}
-                    </Button>
+                    </div>
                   </div>
-                </Col>
-              </Row>
-            </SectionCard>
+                </SectionCard>
+              </Col>
+
+              <Col lg={8} style={{ display: 'flex' }}>
+                <SectionCard
+                  title="Notes & Extras"
+                  subtitle="Rating, attendance, favorites, and memories"
+                >
+                  <Row>
+                    <Col md={12}>
+                      <Form.Group style={{ marginBottom: '0.9rem' }}>
+                        <Form.Label style={styles.formLabel}>Notes</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={2}
+                          placeholder="Memories, highlights…"
+                          style={{ borderRadius: '12px' }}
+                          value={notes}
+                          onChange={(ev) => setNotes(ev.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={4}>
+                      <Form.Group style={{ marginBottom: '1.5rem' }}>
+                        <Form.Label style={styles.formLabel}>
+                          Rating <span style={{ color: '#dc3545' }}>*</span>
+                        </Form.Label>
+                        <div
+                          style={{
+                            height: '48px',
+                            padding: '0 14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            border: '1px solid #dee2e6',
+                            borderRadius: '12px',
+                            justifyContent: 'space-between',
+                          }}
+                        >
+                          <div style={{ gap: '0.25rem', display: 'flex' }}>
+                            {stars.map((star) => (
+                              <span
+                                key={star}
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => setRating(star)}
+                                onKeyDown={(ev) => {
+                                  if (ev.key === 'Enter' || ev.key === ' ') {
+                                    ev.preventDefault()
+                                    setRating(star)
+                                  }
+                                }}
+                                style={{
+                                  fontSize: '1.4rem',
+                                  cursor: 'pointer',
+                                  color: star <= rating ? '#f59e0b' : '#d1d5db',
+                                  lineHeight: 1,
+                                }}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                          <span style={{ fontWeight: '600', color: '#374151' }}>
+                            {getRatingLabel(rating)}
+                          </span>
+                        </div>
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={8}>
+                      <div
+                        style={{
+                          paddingTop: '3rem',
+                          paddingBottom: '1rem',
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          alignItems: 'center',
+                          gap: '1.5rem',
+                        }}
+                      >
+                        <Form.Check
+                          type="switch"
+                          label="I Attended"
+                          checked={attended}
+                          onChange={() => setAttended(!attended)}
+                          style={styles.formLabel}
+                        />
+
+                        <Form.Check
+                          type="switch"
+                          label="Add to Favorites"
+                          checked={favorite}
+                          onChange={() => setFavorite(!favorite)}
+                          style={styles.formLabel}
+                        />
+                      </div>
+                    </Col>
+
+                    <Col xs={12}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem  ' }}>
+                        <Button type="button" variant="outline-danger" disabled={saving} onClick={() => navigate("/")}>
+                          Cancel
+                        </Button>
+
+                        <Button type="submit" disabled={saving}>
+                          {saving ? (
+                            <>
+                              <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
+                              Saving…
+                            </>
+                          ) : (
+                            'Save Concert'
+                          )}
+                        </Button>
+                      </div>
+                    </Col>
+                  </Row>
+                </SectionCard>
+              </Col>
+            </Row>
           </Form>
         </Card.Body>
       </Card >
