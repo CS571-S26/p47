@@ -3,7 +3,11 @@
   --setlog-primary-hover: #b4571a;
   --nav-text: #cbd5e1;
   --white: #ffffff;
-  --setlog-page-bg: #f1f5f9;
+  --setlog-page-bg: linear-gradient(180deg,
+      #d5cef3 0%,
+      #e8d7cf 38%,
+      #ead7ad 72%,
+      #f6f4ef 100%);
 }
 
 /*
@@ -11,7 +15,7 @@
  * document at one viewport and leaves scrolled areas (Timeline) showing :root’s dark theme bg.
  */
 html {
-  background-color: var(--setlog-page-bg);
+  background: var(--setlog-page-bg);
 }
 
 html,
@@ -21,7 +25,7 @@ body {
 }
 
 body {
-  background-color: var(--setlog-page-bg);
+  background: var(--setlog-page-bg);
 }
 
 #root {

@@ -13,11 +13,13 @@ function TimelineStats() {
   const n = concerts.length
   const artists = new Set(
     concerts
+      .filter((c) => c.attended)
       .map((c) => String(c.artist ?? '').toLowerCase().trim())
       .filter((artist) => artist !== ''),
   )
   const cities = new Set(
     concerts
+      .filter((c) => c.attended)
       .map((c) => String(c.city ?? '').toLowerCase().trim())
       .filter((city) => city !== ''),
   )
