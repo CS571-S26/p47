@@ -3,37 +3,40 @@ import { Alert, Button, Form } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../contexts/authContext.js'
-import { registerUser } from '../utils/userStore.js'
 
 function RegisterPage() {
-  const { setLoggedInUser } = useAuth()
+  const { register } = useAuth()
   const navigate = useNavigate()
-  const [username, setUsername] = useState('')
+  const [displayName, setDisplayName] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setError('')
-    if (username.trim() === '' || password.trim() === '') {
-      setError('Username and password are required.')
+    if (displayName.trim() === '' || email.trim() === '' || password.trim() === '') {
+      setError('Display name, email, and password are required.')
       return
     }
     if (password !== confirmPassword) {
       setError('Passwords do not match.')
       return
     }
-    const result = registerUser(username, password)
+    const result = await register({ email, password, displayName })
     if (!result.ok) {
-      if (result.reason === 'taken') {
-        setError('That username is already taken.')
+      if (result.reason === 'auth/email-already-in-use') {
+        setError('That email is already in use.')
+      } else if (result.reason === 'auth/invalid-email') {
+        setError('Enter a valid email address.')
+      } else if (result.reason === 'auth/weak-password') {
+        setError('Password is too weak.')
       } else {
-        setError('Invalid username or password.')
+        setError('Registration failed. Please try again.')
       }
       return
     }
-    setLoggedInUser(username.trim())
     navigate('/')
   }
 
@@ -42,7 +45,7 @@ function RegisterPage() {
       <div style={{ maxWidth: '420px', margin: '0 auto' }}>
         <h1>Create account</h1>
         <p className="text-secondary mb-4">
-          Your account is saved only in this browser (local storage).
+          Create an account to sync your concerts across devices.
         </p>
         {error ? (
           <Alert variant="danger" className="mb-3">
@@ -50,12 +53,21 @@ function RegisterPage() {
           </Alert>
         ) : null}
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="registerUsername">
-            <Form.Label>Username</Form.Label>
+          <Form.Group className="mb-3" controlId="registerDisplayName">
+            <Form.Label>Display name</Form.Label>
             <Form.Control
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              autoComplete="nickname"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="registerEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="registerPassword">

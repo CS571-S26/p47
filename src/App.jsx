@@ -10,12 +10,16 @@ import RegisterPage from './pages/RegisterPage.jsx'
 import { AuthProvider } from './contexts/AuthProvider.jsx'
 import ConcertDetailPage from './pages/ConcertDetailPage.jsx'
 import { ConcertsProvider } from './contexts/ConcertsProvider.jsx'
+import { useAuth } from './contexts/authContext.js'
 
 import './App.css'
 
-function App() {
+function AppShell() {
+  const { user } = useAuth()
+  const concertsKey = user?.uid ?? 'guest'
+
   return (
-    <AuthProvider>
+    <ConcertsProvider key={concertsKey}>
       <NavBar />
       <main className="app-main">
         <Routes>
@@ -29,6 +33,14 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </main>
+    </ConcertsProvider>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppShell />
     </AuthProvider>
   )
 }

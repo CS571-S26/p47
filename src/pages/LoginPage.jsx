@@ -7,19 +7,26 @@ import { useAuth } from '../contexts/authContext.js'
 function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setError('')
-    if (username.trim() === '' || password.trim() === '') {
-      setError('Enter both username and password.')
+    if (email.trim() === '' || password.trim() === '') {
+      setError('Enter both email and password.')
       return
     }
-    if (!login(username, password)) {
-      setError('Incorrect username or password.')
+    const res = await login(email, password)
+    if (!res.ok) {
+      if (res.reason === 'auth/invalid-credential') {
+        setError('Incorrect email or password.')
+      } else if (res.reason === 'auth/too-many-requests') {
+        setError('Too many attempts. Try again later.')
+      } else {
+        setError('Login failed. Please try again.')
+      }
       return
     }
     navigate('/')
@@ -30,7 +37,7 @@ function LoginPage() {
       <div style={{ maxWidth: '420px', margin: '0 auto' }}>
         <h1>Log in</h1>
         <p className="text-secondary mb-4">
-          SetLog accounts are stored only on this device.
+          Log in to sync your concerts across devices.
         </p>
         {error ? (
           <Alert variant="danger" className="mb-3">
@@ -38,12 +45,13 @@ function LoginPage() {
           </Alert>
         ) : null}
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="loginUsername">
-            <Form.Label>Username</Form.Label>
+          <Form.Group className="mb-3" controlId="loginEmail">
+            <Form.Label>Email</Form.Label>
             <Form.Control
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="loginPassword">
