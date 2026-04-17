@@ -1,13 +1,66 @@
 :root {
-  --setlog-primary: #df6c20;
-  --setlog-primary-hover: #b4571a;
   --nav-text: #cbd5e1;
   --white: #ffffff;
+}
+
+/* Dark Mode */
+[data-theme='light'] {
+  --setlog-primary: #df6c20;
+  --setlog-primary-hover: #b4571a;
   --setlog-page-bg: linear-gradient(180deg,
       #d5cef3 0%,
       #e8d7cf 38%,
       #ead7ad 72%,
       #f6f4ef 100%);
+  --setlog-primary-text: #000000;
+  --setlog-secondary-text: #444040;
+  --setlog-card-bg: #fffaf5;
+  --setlog-card-bg-secondary: #f1f5f9;
+  --setlog-card-border: #e7d8cc;
+  --setlog-card-text: #1f2937;
+  --setlog-card-text-secondary: #6b7280;
+
+  --tag-genre-bg: #eef2ff;
+  --tag-genre-text: #4f46e5;
+
+  --tag-attended-bg: #dcfce7;
+  --tag-attended-text: #166534;
+
+  --tag-not-attended-bg: #fee2e2;
+  --tag-not-attended-text: #b91c1c;
+
+  --tag-favorite-bg: #fef3c7;
+  --tag-favorite-text: #92400e;
+}
+
+/* Dark Mode */
+[data-theme='dark'] {
+  --setlog-primary: #d08a63;
+  --setlog-primary-hover: #b8744f;
+  --setlog-page-bg: linear-gradient(180deg,
+      #1c1730 0%,
+      #2b1f22 38%,
+      #3a3122 72%,
+      #121316 100%);
+  --setlog-primary-text: #ffffff;
+  --setlog-secondary-text: #ffffff;
+  --setlog-card-bg: #1f1b2e;
+  --setlog-card-bg-secondary: #2a243c;
+  --setlog-card-border: #3a3247;
+  --setlog-card-text: #f3f4f6;
+  --setlog-card-text-secondary: #b8bcc8;
+
+  --tag-genre-bg: #2a2448;
+  --tag-genre-text: #c7c2ff;
+
+  --tag-attended-bg: #1d3a2b;
+  --tag-attended-text: #86efac;
+
+  --tag-not-attended-bg: #4a1f24;
+  --tag-not-attended-text: #fca5a5;
+
+  --tag-favorite-bg: #4a3820;
+  --tag-favorite-text: #fcd34d;
 }
 
 /*
@@ -51,21 +104,60 @@ body {
   border-color: var(--setlog-primary-hover) !important;
 }
 
-.form-switch .form-check-input {
+[data-theme='light'] .form-switch .form-check-input {
   border-color: var(--setlog-primary) !important;
+  background-color: var(--setlog-card-bg-secondary) !important;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23df6c20'/%3e%3c/svg%3e") !important;
 }
 
-.form-switch .form-check-input:focus {
+[data-theme='light'] .form-switch .form-check-input:focus {
   border-color: var(--setlog-primary) !important;
-  box-shadow: 0 0 0 0.2rem rgba(223, 108, 32, 0.25) !important;
+  box-shadow: 0 0 0 0.2rem var(--setlog-focus-ring) !important;
+  background-color: var(--setlog-card-bg-secondary) !important;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23df6c20'/%3e%3c/svg%3e") !important;
+}
+
+[data-theme='dark'] .form-switch .form-check-input {
+  border-color: var(--setlog-primary) !important;
+  background-color: var(--setlog-card-bg-secondary) !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23d08a63'/%3e%3c/svg%3e") !important;
+}
+
+[data-theme='dark'] .form-switch .form-check-input:focus {
+  border-color: var(--setlog-primary) !important;
+  box-shadow: 0 0 0 0.2rem var(--setlog-focus-ring) !important;
+  background-color: var(--setlog-card-bg-secondary) !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23d08a63'/%3e%3c/svg%3e") !important;
 }
 
 .form-switch .form-check-input:checked {
   background-color: var(--setlog-primary) !important;
   border-color: var(--setlog-primary) !important;
-
-  /* white circle */
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e") !important;
+}
+
+.form-control {
+  background: var(--setlog-card-bg-secondary) !important;
+  color: var(--setlog-card-text) !important;
+  border: 1px solid var(--setlog-card-border) !important;
+  border-radius: 10px !important;
+}
+
+.form-control::placeholder {
+  color: var(--setlog-card-text-secondary) !important;
+  opacity: 1;
+}
+
+.form-control:focus {
+  background: var(--setlog-card-bg-secondary) !important;
+  color: var(--setlog-card-text) !important;
+  border-color: var(--setlog-primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(208, 138, 99, 0.2) !important;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+  background: var(--setlog-card-bg) !important;
+  color: var(--setlog-card-text-secondary) !important;
+  opacity: 1;
 }

@@ -3,7 +3,6 @@ import { Card } from 'react-bootstrap'
 import { Calendar, Users, MapPin, Star } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
-import { colors } from '../data/Colors'
 
 import StatRow from '../components/StatRow'
 
@@ -43,9 +42,10 @@ function TimelineStats() {
       style={{
         padding: '20px',
         borderRadius: '16px',
-        border: '1px solid #e5e7eb',
+        border: '1px solid var(--setlog-card-border)',
         width: '100%',
         maxWidth: '320px',
+        background: 'var(--setlog-card-bg)',
       }}
     >
       <div
@@ -54,30 +54,31 @@ function TimelineStats() {
           fontWeight: '500',
           marginBottom: '16px',
           lineHeight: '1.05',
+          color: 'var(--setlog-card-text)'
         }}
       >
         Your Stats
       </div>
       <StatRow
-        icon={<Calendar size={20} color={colors.setlogPrimary} />}
+        icon={<Calendar size={20} color='var(--setlog-primary)' />}
         value={stats.showsLogged}
         label="Shows Logged"
       />
 
       <StatRow
-        icon={<Users size={20} color={colors.setlogPrimary} />}
+        icon={<Users size={20} color='var(--setlog-primary)' />}
         value={stats.artistsSeen}
         label="Artist Seen"
       />
 
       <StatRow
-        icon={<MapPin size={20} color={colors.setlogPrimary} />}
+        icon={<MapPin size={20} color='var(--setlog-primary)' />}
         value={stats.citiesVisited}
         label="Cities Visited"
       />
 
       <StatRow
-        icon={<Star size={20} color={colors.setlogPrimary} />}
+        icon={<Star size={20} color='var(--setlog-primary)' />}
         value={stats.avgRating}
         label="Average Rating"
       />

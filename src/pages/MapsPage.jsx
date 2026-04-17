@@ -7,7 +7,6 @@ import { renderToStaticMarkup } from 'react-dom/server'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
-import { colors } from '../data/Colors'
 import './MapsPage.css'
 import MapsMarkerPopup from '../components/MapsMarkerPopup'
 
@@ -26,7 +25,7 @@ function applyFilter(list, filter) {
   return list
 }
 
-function MapsPage() {
+function MapsPage({ theme }) {
   const { concerts } = useContext(ConcertsContext)
   const { loginStatus } = useAuth()
   const [filter, setFilter] = useState('all')
@@ -36,12 +35,14 @@ function MapsPage() {
   const mappable = filteredConcerts.filter((c) => c.coords?.length === 2)
   const skippedCount = filteredConcerts.length - mappable.length
 
+  const isDark = theme === 'dark'
+
   const concertIcon = new L.DivIcon({
     html: renderToStaticMarkup(
       <MapPin
         size={32}
-        color={colors.setlogPrimaryHover}
-        fill={colors.setlogPrimary}
+        color='var(--setlog-primary-hover)'
+        fill='var(--setlog-primary)'
       />,
     ),
     className: '',
@@ -63,7 +64,7 @@ function MapsPage() {
   const styles = {
     selectedButton: {
       width: '100%',
-      backgroundColor: colors.setlogPrimary,
+      backgroundColor: 'var(--setlog-primary)',
       border: 'none',
       borderRadius: '32px',
       padding: '6px',
@@ -88,16 +89,16 @@ function MapsPage() {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
-      <span style={{ fontSize: '48px', fontWeight: '700' }}>Concert Map</span>
+      <span style={{ fontSize: '48px', fontWeight: '700', color: 'var(--setlog-primary-text)' }}>Concert Map</span>
 
       {!loginStatus.loggedIn ? (
-        <p className="text-muted mb-2" style={{ fontSize: '15px' }}>
+        <p className="mb-2" style={{ fontSize: '15px', color: 'var(--setlog-secondary-text)' }}>
           Log in to see your shows on the map. Only concerts logged under your account appear here.
         </p>
       ) : null}
 
       {skippedCount > 0 ? (
-        <p className="text-muted mb-2" style={{ fontSize: '14px' }}>
+        <p className="mb-2" style={{ fontSize: '14px', color: 'var(--setlog-secondary-text)' }}>
           {skippedCount} show{skippedCount === 1 ? '' : 's'} in this view have no map pin (geocoding
           failed or venue/city could not be located when saved).
         </p>
@@ -155,10 +156,14 @@ function MapsPage() {
       </Row>
 
       <div className="map-box">
-        <MapContainer center={[39.5, -98.35]} zoom={4} scrollWheelZoom>
+        <MapContainer key={theme} center={[39.5, -98.35]} zoom={4} scrollWheelZoom>
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; OpenStreetMap contributors &copy; CARTO'
+            url={
+              isDark
+                ? "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+                : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            }
           />
 
           {Object.entries(grouped).map(([key, shows]) => (
