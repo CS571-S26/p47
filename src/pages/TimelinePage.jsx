@@ -25,7 +25,7 @@ function TimelinePage() {
         <Col>
           <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
             <Col xs="auto">
-              <div style={{ fontSize: '48px', fontWeight: '700' }}>
+              <div style={{ fontSize: '48px', fontWeight: '700', color: 'var(--setlog-primary-text)' }}>
                 My Concert Timeline
               </div>
             </Col>
@@ -67,6 +67,7 @@ function TimelinePage() {
               fontSize: '24px',
               fontWeight: '300',
               marginBottom: '15px',
+              color: 'var(--setlog-secondary-text)'
             }}
           >
             Your logged shows, newest first
@@ -78,14 +79,14 @@ function TimelinePage() {
                 maxWidth: '520px',
                 padding: '2rem',
                 borderRadius: '16px',
-                border: '1px solid #e5e7eb',
-                background: '#f9fafb',
+                border: '1px solid var(--setlog-card-border)',
+                background: 'var(--setlog-card-bg)',
               }}
             >
-              <div style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px' }}>
+              <div style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)' }}>
                 Log in to see your shows
               </div>
-              <p style={{ marginBottom: '1rem', color: '#4b5563' }}>
+              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary' }}>
                 Your logged concerts are tied to your account on this device. Create an account or
                 log in to view and add shows.
               </p>
@@ -102,14 +103,14 @@ function TimelinePage() {
                 maxWidth: '520px',
                 padding: '2rem',
                 borderRadius: '16px',
-                border: '1px solid #e5e7eb',
-                background: '#f9fafb',
+                border: '1px solid var(--setlog-card-border)',
+                background: 'var(--setlog-card-bg)',
               }}
             >
-              <div style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px' }}>
+              <div style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)' }}>
                 No shows yet
               </div>
-              <p style={{ marginBottom: '1rem', color: '#4b5563' }}>
+              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary'  }}>
                 Log a concert to build your timeline. Data is saved in this browser only
                 (local storage).
               </p>

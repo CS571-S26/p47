@@ -1,5 +1,4 @@
 import { Row, Col } from 'react-bootstrap'
-import { colors } from "../data/Colors"
 
 function StatRow({ icon, value, label }) {
   return (
@@ -7,7 +6,7 @@ function StatRow({ icon, value, label }) {
       <Col xs="auto">
         <div
           style={{
-            backgroundColor: "#f1f5f9",
+            backgroundColor: "var(--setlog-card-bg-secondary)",
             borderRadius: "50%",
             padding: "10px",
             display: "flex",
@@ -24,7 +23,7 @@ function StatRow({ icon, value, label }) {
           style={{
             fontSize: "20px",
             fontWeight: "600",
-            color: colors.setlogPrimary
+            color: 'var(--setlog-primary)'
           }}
         >
           {value}
@@ -33,7 +32,7 @@ function StatRow({ icon, value, label }) {
         <div
           style={{
             fontSize: "14px",
-            color: "#64748b"
+            color: 'var(--setlog-card-text-secondary)'
           }}
         >
           {label}
