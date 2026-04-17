@@ -8,6 +8,9 @@ import UserProfilePage from './pages/UserProfilePage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import { AuthProvider } from './contexts/AuthProvider.jsx'
+import ConcertDetailPage from './pages/ConcertDetailPage.jsx'
+import { ConcertsProvider } from './contexts/ConcertsProvider.jsx'
+
 import './App.css'
 
 function App() {
@@ -19,6 +22,7 @@ function App() {
           <Route path="/" element={<TimelinePage />} />
           <Route path="/maps" element={<MapsPage />} />
           <Route path="/add-concert" element={<AddConcertPage />} />
+          <Route path="/concerts/:id" element={<ConcertDetailPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/user-profile" element={<UserProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
