@@ -50,7 +50,7 @@ function ConcertDetailPage() {
             maxWidth: '1280px',
             borderRadius: '16px',
             border: '1px solid #dbe3ea',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+            boxShadow: '0 8px 24px var(--setlog-card-bg)',
             padding: '0.35rem',
           }}
         >
@@ -246,7 +246,7 @@ function ConcertDetailPage() {
                     objectFit: 'cover',
                     borderRadius: '12px',
                     display: 'block',
-                    boxShadow: '0 6px 18px rgba(0,0,0,0.12)',
+                    boxShadow: '0 6px 18px var(--setlog-card-bg)',
                   }}
                 />
               ) : (

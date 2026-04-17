@@ -40,7 +40,7 @@ function LoginPage() {
           Log in to sync your concerts across devices.
         </p>
         {error ? (
-          <Alert variant="danger" className="mb-3">
+          <Alert variant="danger" className="mb-3" style={{ marginTop: '0.6rem', marginBottom: 0, background: "var(--tag-not-attended-bg)", color: "var(--tag-not-attended-text)" }}>
             {error}
           </Alert>
         ) : null}
