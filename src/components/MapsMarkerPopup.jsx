@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Card, Button, Row, Col } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 
 function MapsMarkerPopup({ concerts }) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const navigate = useNavigate()
 
   const concert = concerts[currentIndex]
   const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
@@ -18,6 +20,10 @@ function MapsMarkerPopup({ concerts }) {
     setCurrentIndex((prev) =>
       prev === concerts.length - 1 ? 0 : prev + 1
     )
+  }
+
+  function handleViewDetails() {
+    navigate(`/concerts/${concert.id}`)
   }
 
   const styles = {
@@ -126,7 +132,7 @@ function MapsMarkerPopup({ concerts }) {
             </Col>
 
             <Col>
-              <Button variant="primary" style={styles.navButton}>View Show</Button>
+              <Button variant="primary" style={styles.navButton} onClick={() => { handleViewDetails() }}>View Details</Button>
             </Col>
 
             <Col xs="auto">
