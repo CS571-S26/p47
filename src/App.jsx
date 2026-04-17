@@ -5,12 +5,14 @@ import SettingsPage from './pages/SettingsPage.jsx'
 import TimelinePage from './pages/TimelinePage.jsx'
 import AddConcertPage from './pages/AddConcertPage.jsx'
 import UserProfilePage from './pages/UserProfilePage.jsx'
-import { ConcertsProvider } from './contexts/ConcertsProvider.jsx'
+import LoginPage from './pages/LoginPage.jsx'
+import RegisterPage from './pages/RegisterPage.jsx'
+import { AuthProvider } from './contexts/AuthProvider.jsx'
 import './App.css'
 
 function App() {
   return (
-    <ConcertsProvider>
+    <AuthProvider>
       <NavBar />
       <main className="app-main">
         <Routes>
@@ -19,9 +21,11 @@ function App() {
           <Route path="/add-concert" element={<AddConcertPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/user-profile" element={<UserProfilePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </main>
-    </ConcertsProvider>
+    </AuthProvider>
   )
 }
 

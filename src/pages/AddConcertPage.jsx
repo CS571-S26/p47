@@ -1,8 +1,9 @@
 import { useContext, useState } from 'react'
 import { Row, Col, Button, Card, Form, Alert, Spinner, InputGroup, ListGroup } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
+import { useAuth } from '../contexts/authContext.js'
 import { geocodeVenue } from '../utils/geocode.js'
 import { extractSongTitles, searchFirstSetlist } from '../utils/setlistfm.js'
 
@@ -12,6 +13,7 @@ function newConcertId() {
 
 function AddConcertPage() {
   const { addConcert } = useContext(ConcertsContext)
+  const { loginStatus } = useAuth()
   const navigate = useNavigate()
 
   const [artist, setArtist] = useState('')
@@ -173,6 +175,47 @@ function AddConcertPage() {
       arr[nextIndex] = tmp
       return arr
     })
+  }
+
+  if (!loginStatus.loggedIn) {
+    return (
+      <section
+        id="center"
+        style={{
+          flex: 1,
+          width: '100%',
+          padding: '2rem 1rem',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+        }}
+      >
+        <Card
+          style={{
+            width: '100%',
+            maxWidth: '560px',
+            borderRadius: '20px',
+            border: '1px solid #dbe3ea',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+            padding: '1rem',
+          }}
+        >
+          <Card.Body>
+            <div style={{ fontSize: '36px', fontWeight: '700' }}>Log a New Concert</div>
+            <p className="text-secondary mt-3 mb-4">
+              Concerts you log are tied to your account on this device. Log in or register to
+              continue.
+            </p>
+            <Button as={Link} to="/login" variant="primary" className="me-2">
+              Log in
+            </Button>
+            <Button as={Link} to="/register" variant="outline-primary">
+              Register
+            </Button>
+          </Card.Body>
+        </Card>
+      </section>
+    )
   }
 
   return (

@@ -1,11 +1,20 @@
 import { Container, Nav, Navbar, FormControl, Row, Col, Form, Button } from 'react-bootstrap'
-import { NavLink } from 'react-router-dom'
-import { Map, CirclePlus, Settings, List, Search, Moon, User } from 'lucide-react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { Map, CirclePlus, Settings, List, Search, Moon, User, LogOut } from 'lucide-react'
 
 import logo from '../assets/setlog_logo.png'
+import { useAuth } from '../contexts/authContext.js'
 import './NavBar.css'
 
 function NavBar() {
+  const { loginStatus, logout } = useAuth()
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    logout()
+    navigate('/')
+  }
+
   return (
     <Navbar
       variant="dark"
@@ -82,14 +91,36 @@ function NavBar() {
             </Col>
 
             <Col xs="auto">
-              {/* User Profile */}
-              <Button
-                variant="outline-light"
-                as={NavLink}
-                to="/user-profile"
-              >
-                <User size={32} />
-              </Button>
+              {loginStatus.loggedIn ? (
+                <>
+                  <span
+                    className="text-light small me-2 d-none d-md-inline"
+                    style={{ verticalAlign: 'middle' }}
+                  >
+                    {loginStatus.username}
+                  </span>
+                  <Button
+                    variant="outline-light"
+                    as={NavLink}
+                    to="/user-profile"
+                    className="me-1"
+                  >
+                    <User size={32} />
+                  </Button>
+                  <Button variant="outline-light" onClick={handleLogout} title="Log out">
+                    <LogOut size={28} />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline-light" as={NavLink} to="/login" className="me-1">
+                    Log in
+                  </Button>
+                  <Button variant="outline-light" as={NavLink} to="/register">
+                    Register
+                  </Button>
+                </>
+              )}
             </Col>
           </Row>
         </Navbar.Collapse>
