@@ -4,7 +4,6 @@ import { Card, Row, Col, Button, ListGroup } from 'react-bootstrap'
 import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
-import { colors } from '../data/Colors'
 import SectionCard from '../components/SectionCard'
 
 function ConcertDetailPage() {
@@ -434,7 +433,7 @@ function ConcertDetailPage() {
             <SectionCard
               title={
                 <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-                  <FileText size={16} color={colors.setlogPrimary} />
+                  <FileText size={16} color='var(--setlog-primary)' />
                   <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--setlog-card-text)' }}>
                     NOTES
                   </span>
