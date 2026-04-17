@@ -19,6 +19,15 @@
   --setlog-card-border: #e7d8cc;
   --setlog-card-text: #1f2937;
   --setlog-card-text-secondary: #6b7280;
+
+  --tag-genre-bg: #eef2ff;
+  --tag-genre-text: #4f46e5;
+
+  --tag-attended-bg: #dcfce7;
+  --tag-attended-text: #166534;
+
+  --tag-favorite-bg: #fef3c7;
+  --tag-favorite-text: #92400e;
 }
 
 /* Dark Mode */
@@ -37,6 +46,15 @@
   --setlog-card-border: #3a3247;
   --setlog-card-text: #f3f4f6;
   --setlog-card-text-secondary: #b8bcc8;
+
+  --tag-genre-bg: #2a2448;
+  --tag-genre-text: #c7c2ff;
+
+  --tag-attended-bg: #1d3a2b;
+  --tag-attended-text: #86efac;
+
+  --tag-favorite-bg: #4a3820;
+  --tag-favorite-text: #fcd34d;
 }
 
 /*
