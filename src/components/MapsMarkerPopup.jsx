@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Card, Button, Row, Col } from 'react-bootstrap'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 
 function MapsMarkerPopup({ concerts }) {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -34,7 +35,7 @@ function MapsMarkerPopup({ concerts }) {
   }
 
   return (
-    <Card style={{ width: "16rem", padding: "0.75rem", border: "none" }}>
+    <Card style={{ width: "16rem", padding: "0.75rem", border: "none", background: "var(--setlog-card-bg)" }}>
       {/* Concert Image */}
       {imageUrl ? (
         <img
@@ -56,11 +57,12 @@ function MapsMarkerPopup({ concerts }) {
             height: "120px",
             borderRadius: "0.5rem",
             marginBottom: "0.5rem",
-            background: "#e5e7eb",
+            background: "var(--setlog-card-bg-secondary)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#9ca3af",
+            color: "var(--setlog-card-text-secondary)",
+            border: '1px solid var(--setlog-card-border)',
             fontSize: "12px",
             fontWeight: 600,
           }}
@@ -70,7 +72,7 @@ function MapsMarkerPopup({ concerts }) {
       )}
 
       {/* Formatted Date */}
-      <span style={{ fontSize: "0.9rem", color: "gray" }}>
+      <span style={{ fontSize: "0.9rem", color: "var(--setlog-card-text-secondary)" }}>
         {new Date(concert.date).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
@@ -82,7 +84,8 @@ function MapsMarkerPopup({ concerts }) {
       <span style={{
         marginTop: "0.25rem",
         fontSize: "24px",
-        fontWeight: 700
+        fontWeight: 700,
+        color: "var(--setlog-card-text)"
       }}>
         {concert.artist}
       </span>
@@ -93,7 +96,7 @@ function MapsMarkerPopup({ concerts }) {
         lineHeight: 1.05,
         fontSize: "14px",
         fontStyle: "italic",
-        color: "gray"
+        color: "var(--setlog-card-text-secondary)"
       }}>
         {concert.venue}
       </span>
@@ -107,7 +110,7 @@ function MapsMarkerPopup({ concerts }) {
           </span>
         </Col>
         <Col xs="auto">
-          <span style={{ fontSize: "16px", fontWeight: "700" }}>{concert.rating}.0</span>
+          <span style={{ fontSize: "16px", fontWeight: "700", color: "var(--setlog-card-text)" }}>{concert.rating}.0</span>
         </Col>
       </Row>
 
@@ -118,7 +121,7 @@ function MapsMarkerPopup({ concerts }) {
 
             <Col xs="auto">
               <Button variant="secondary" onClick={handlePrev} style={styles.navButtonText}>
-                ←
+                <ArrowLeft size={14} style={{ marginRight: '5px' }} />
               </Button>
             </Col>
 
@@ -128,14 +131,14 @@ function MapsMarkerPopup({ concerts }) {
 
             <Col xs="auto">
               <Button variant="secondary" onClick={handleNext} style={styles.navButtonText}>
-                →
+                <ArrowRight size={14} style={{ marginRight: '5px' }} />
               </Button>
             </Col>
 
           </Row>
 
           {concerts.length > 1 && (
-            <span style={{ fontSize: "15px", fontWeight: "600", textAlign: "center" }}>
+            <span style={{ fontSize: "15px", fontWeight: "600", textAlign: "center", color: "var(--setlog-card-text-secondary)" }}>
               Show {currentIndex + 1} of {concerts.length}
             </span>
           )}
