@@ -1,6 +1,7 @@
 import { Container, Nav, Navbar, FormControl, Row, Col, Form, Button } from 'react-bootstrap'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Map, CirclePlus, Settings, List, Search, Moon, User, LogOut } from 'lucide-react'
+import { Map, CirclePlus, Settings, List, Search, Moon, Sun, User, LogOut } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
@@ -9,6 +10,17 @@ import './NavBar.css'
 function NavBar() {
   const { loginStatus, logout } = useAuth()
   const navigate = useNavigate()
+
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light')
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  function handleToggleTheme() {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
+  }
 
   function handleLogout() {
     logout()
@@ -74,8 +86,8 @@ function NavBar() {
             {/* Icon Buttons */}
             <Col xs="auto">
               {/* Dark Mode */}
-              <Button variant="dark">
-                <Moon size={32} />
+              <Button variant="dark" onClick={handleToggleTheme}>
+                {theme === 'light' ? <Moon size={32} /> : <Sun size={32} />}
               </Button>
             </Col>
 

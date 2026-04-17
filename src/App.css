@@ -8,6 +8,19 @@
       #e8d7cf 38%,
       #ead7ad 72%,
       #f6f4ef 100%);
+  --setlog-primary-text: #f5aeae;
+  --setlog-secondary-text: #ed0b0b;
+}
+
+/* Dark Mode */
+[data-theme='dark'] {
+  --setlog-page-bg: linear-gradient(180deg,
+    #1c1730 0%,
+    #2b1f22 38%,
+    #3a3122 72%,
+    #121316 100%);
+
+  --nav-text: #e5e7eb;
 }
 
 /*
