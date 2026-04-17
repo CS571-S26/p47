@@ -166,13 +166,18 @@ function MapsPage({ theme }) {
             }
           />
 
-          {Object.entries(grouped).map(([key, shows]) => (
-            <Marker key={key} position={shows[0].coords} icon={concertIcon}>
-              <Popup>
-                <MapsMarkerPopup concerts={shows} />
-              </Popup>
-            </Marker>
-          ))}
+          {Object.entries(grouped).map(([key, shows]) => {
+            const sortedShows = [...shows].sort(
+              (a, b) => new Date(a.date) - new Date(b.date)
+            )
+            return (
+              <Marker key={key} position={sortedShows[0].coords} icon={concertIcon}>
+                <Popup>
+                  <MapsMarkerPopup concerts={sortedShows} />
+                </Popup>
+              </Marker>
+            )
+          })}
         </MapContainer>
       </div>
     </div>

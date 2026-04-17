@@ -4,10 +4,13 @@ import { Row, Col, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
+import { useAuth } from '../contexts/authContext.js'
 
 function TimelineConcert({ concert }) {
     const { deleteConcert } = useContext(ConcertsContext)
     const navigate = useNavigate()
+
+    const { loginStatus } = useAuth()
 
     function handleDelete() {
         const ok = window.confirm(
@@ -196,17 +199,18 @@ function TimelineConcert({ concert }) {
                         >
                             View Details
                         </Button>
-                        <Button
-                            variant="outline-danger"
-                            style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', gap: '6px', alignItems: 'center' }}
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                handleDelete()
-                            }}
-                        >
-                            <Trash size={16} />
-                            Delete
-                        </Button>
+                        {loginStatus.loggedIn && (
+                            <Button
+                                variant="outline-danger"
+                                style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', gap: '6px', alignItems: 'center' }}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDelete()
+                                }}
+                            >
+                                <Trash size={16} />
+                                Delete
+                            </Button>)}
                     </Col>
 
                 </Row>

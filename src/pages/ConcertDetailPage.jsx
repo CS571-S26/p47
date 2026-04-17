@@ -5,6 +5,7 @@ import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusi
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import SectionCard from '../components/SectionCard'
+import { useAuth } from '../contexts/authContext.js'
 
 function ConcertDetailPage() {
   const { concerts, deleteConcert } = useContext(ConcertsContext)
@@ -12,9 +13,10 @@ function ConcertDetailPage() {
   const location = useLocation()
   const { id } = useParams()
 
+  const { loginStatus } = useAuth()
+
   const concert = concerts.find((c) => c.id === id)
 
-  const backTo = location.state?.from || '/'
   const backLabel = location.state?.backLabel || 'Back to Timeline'
 
   function handleDelete() {
@@ -222,18 +224,21 @@ function ConcertDetailPage() {
               </Button>
             </Col>
             <Col xs="auto" style={{ display: 'flex', gap: '8px' }}>
-              <Button variant="outline-primary" style={styles.topButton}>
-                <Edit size={13} />
-                Edit Concert
-              </Button>
-              <Button
-                variant="outline-danger"
-                style={styles.topButton}
-                onClick={handleDelete}
-              >
-                <Trash size={13} />
-                Delete
-              </Button>
+              {loginStatus.loggedIn && (
+                <Button variant="outline-primary" style={styles.topButton}>
+                  <Edit size={13} />
+                  Edit Concert
+                </Button>)}
+              {loginStatus.loggedIn && (
+                <Button
+                  variant="outline-danger"
+                  style={styles.topButton}
+                  onClick={handleDelete}
+                >
+                  <Trash size={13} />
+                  Delete
+                </Button>
+              )}
             </Col>
           </Row>
 
@@ -457,7 +462,7 @@ function ConcertDetailPage() {
                     fontSize: '0.85rem',
                     lineHeight: 1.55,
                     fontWeight: 500,
-                    color: concert.notes?.trim() ? '#var(--setlog-card-text)' : 'var(--setlog-card-text-secondary)',
+                    color: concert.notes?.trim() ? 'var(--setlog-card-text)' : 'var(--setlog-card-text-secondary)',
                     whiteSpace: 'pre-line',
                   }}
                 >
