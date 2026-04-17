@@ -6,6 +6,7 @@ import { MapPin } from 'lucide-react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
+import { useAuth } from '../contexts/authContext.js'
 import { colors } from '../data/Colors'
 import './MapsPage.css'
 import MapsMarkerPopup from '../components/MapsMarkerPopup'
@@ -27,6 +28,7 @@ function applyFilter(list, filter) {
 
 function MapsPage() {
   const { concerts } = useContext(ConcertsContext)
+  const { loginStatus } = useAuth()
   const [filter, setFilter] = useState('all')
 
   const filteredConcerts = applyFilter(concerts, filter)
@@ -87,6 +89,12 @@ function MapsPage() {
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
       <span style={{ fontSize: '48px', fontWeight: '700' }}>Concert Map</span>
+
+      {!loginStatus.loggedIn ? (
+        <p className="text-muted mb-2" style={{ fontSize: '15px' }}>
+          Log in to see your shows on the map. Only concerts logged under your account appear here.
+        </p>
+      ) : null}
 
       {skippedCount > 0 ? (
         <p className="text-muted mb-2" style={{ fontSize: '14px' }}>

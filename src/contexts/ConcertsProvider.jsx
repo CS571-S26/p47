@@ -1,31 +1,51 @@
 import { useEffect, useState } from 'react'
 
 import { ConcertsContext } from './concertsContext.js'
+import { useAuth } from './authContext.js'
 import { loadConcerts, saveConcerts } from '../utils/concertStore.js'
 
 export function ConcertsProvider({ children }) {
-  const [concerts, setConcerts] = useState(() => loadConcerts())
+  const { loginStatus } = useAuth()
+  const [allConcerts, setAllConcerts] = useState(() => loadConcerts())
 
   useEffect(() => {
-    saveConcerts(concerts)
-  }, [concerts])
+    saveConcerts(allConcerts)
+  }, [allConcerts])
+
+  const concerts =
+    loginStatus.loggedIn && loginStatus.username
+      ? allConcerts.filter((c) => c.ownerUsername === loginStatus.username)
+      : []
 
   function addConcert(concert) {
-    setConcerts((prev) => [...prev, concert])
+    if (!loginStatus.loggedIn || !loginStatus.username) return
+    setAllConcerts((prev) => [
+      ...prev,
+      { ...concert, ownerUsername: loginStatus.username },
+    ])
   }
 
   function updateConcert(id, patch) {
-    setConcerts((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, ...patch } : c)),
+    if (!loginStatus.loggedIn || !loginStatus.username) return
+    const u = loginStatus.username
+    setAllConcerts((prev) =>
+      prev.map((c) =>
+        c.id === id && c.ownerUsername === u ? { ...c, ...patch } : c,
+      ),
     )
   }
 
   function deleteConcert(id) {
-    setConcerts((prev) => prev.filter((c) => c.id !== id))
+    if (!loginStatus.loggedIn || !loginStatus.username) return
+    const u = loginStatus.username
+    setAllConcerts((prev) => prev.filter((c) => !(c.id === id && c.ownerUsername === u)))
   }
 
   function getConcert(id) {
-    return concerts.find((c) => c.id === id)
+    if (!loginStatus.loggedIn || !loginStatus.username) return undefined
+    const c = allConcerts.find((x) => x.id === id)
+    if (!c || c.ownerUsername !== loginStatus.username) return undefined
+    return c
   }
 
   return (
