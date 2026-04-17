@@ -462,7 +462,7 @@ function ConcertDetailPage() {
                     fontSize: '0.85rem',
                     lineHeight: 1.55,
                     fontWeight: 500,
-                    color: concert.notes?.trim() ? '#var(--setlog-card-text)' : 'var(--setlog-card-text-secondary)',
+                    color: concert.notes?.trim() ? 'var(--setlog-card-text)' : 'var(--setlog-card-text-secondary)',
                     whiteSpace: 'pre-line',
                   }}
                 >
