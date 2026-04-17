@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { demoConcerts } from '../data/DemoConcerts.jsx'
 
 import {
   collection,
@@ -120,7 +121,7 @@ export function ConcertsProvider({ children }) {
     return () => unsub()
   }, [user])
 
-  const concerts = user ? allConcerts : []
+  const concerts = user ? allConcerts : demoConcerts
 
   const addConcert = useCallback(
     async (concert) => {

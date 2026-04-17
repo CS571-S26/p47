@@ -5,7 +5,7 @@ export const stats = {
   avgRating: 4.9,
 }
 
-export const concerts = [
+export const demoConcerts = [
   {
     id: '1',
     date: '1977-05-08',
