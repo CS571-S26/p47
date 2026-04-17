@@ -6,8 +6,9 @@ function SectionCard({ title, subtitle, children }) {
       style={{
         width: '100%',
         borderRadius: '18px',
-        border: '1px solid #e7ebf0',
-        boxShadow: '0 3px 12px rgba(0,0,0,0.04)',
+        background: 'var(--setlog-card)',
+        border: '1px solid var(--setlog-card-border)',
+        boxShadow: '0 3px 12px var(--setlog-card-bg)',
         marginBottom: '0.5rem',
       }}
     >
@@ -17,7 +18,7 @@ function SectionCard({ title, subtitle, children }) {
             style={{
               fontSize: '1.20rem',
               fontWeight: 700,
-              color: '#111827',
+              color: 'var(--setlog-card-text)',
             }}
           >
             {title}
@@ -27,7 +28,7 @@ function SectionCard({ title, subtitle, children }) {
             <div
               style={{
                 fontSize: '0.92rem',
-                color: '#6b7280',
+                color: 'var(--setlog-card-text-secondary)',
                 marginTop: '0.1rem',
               }}
             >

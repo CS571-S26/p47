@@ -115,6 +115,7 @@ function TimelineConcert({ concert }) {
                             alignItems: "center",
                             justifyContent: "center",
                             color: "var(--setlog-card-text-secondary)",
+                            border: '1px solid var(--setlog-card-border)',
                             fontSize: "13px",
                             fontWeight: 600,
                         }}
@@ -126,7 +127,7 @@ function TimelineConcert({ concert }) {
 
             { /* Concert Information */}
             <Col>
-                <div style={{ fontSize: "24px", fontWeight: "700", marginBottom: "2px", color: "var(--setlog-card-text)"}}>{concert.artist}</div>
+                <div style={{ fontSize: "24px", fontWeight: "700", marginBottom: "2px", color: "var(--setlog-card-text)" }}>{concert.artist}</div>
                 <div style={{ fontSize: "14px", fontStyle: "italic", color: "var(--setlog-card-text-secondary)", marginBottom: "6px", lineHeight: "1.05" }}>
                     {concert.venue} • {concert.city}
                 </div>
@@ -169,7 +170,7 @@ function TimelineConcert({ concert }) {
                 { /* Song Count Row */}
                 <Row style={{ alignItems: "center" }}>
                     <Col xs="auto">
-                        <Clock size={16} style={{color: 'var(--setlog-card-text)'}}/>
+                        <Clock size={16} style={{ color: 'var(--setlog-card-text)' }} />
                     </Col>
                     <Col xs="auto">
                         <span style={{ fontSize: "14px", fontWeight: "200", color: "var(--setlog-card-text)" }}>{songCount} songs</span>

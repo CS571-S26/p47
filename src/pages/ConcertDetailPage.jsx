@@ -134,15 +134,16 @@ function ConcertDetailPage() {
       borderRadius: '12px'
     },
     dateCard: {
-      border: '1px solid lightgray',
+      border: '1px solid var(--setlog-card-border)',
+      background: 'var(--setlog-card-bg-secondary)',
       borderRadius: '12px',
       overflow: 'hidden',
       textAlign: 'center',
       width: '8.75rem',
-      boxShadow: '0 4px 14px lightgray',
+      boxShadow: '0 4px 14px var(--setlog-card-bg)',
     },
     dateMonth: {
-      background: colors.setlogPrimary,
+      background: 'var(--setlog-primary)',
       color: 'white',
       fontWeight: 800,
       padding: '3px',
@@ -151,25 +152,25 @@ function ConcertDetailPage() {
     dateDay: {
       fontSize: '2.5rem',
       fontWeight: 800,
-      color: 'black',
       lineHeight: 1,
       paddingTop: '6px',
+      color: "var(--setlog-card-text)",
     },
 
     dateYear: {
       fontSize: '1.25rem',
-      color: 'gray',
+      color: "var(--setlog-card-text-secondary)",
       padding: '4px 0 6px',
     },
     infoLabel: {
       fontSize: '0.9rem',
       fontWeight: 700,
-      color: '#6b7280',
+      color: 'var(--setlog-card-text-secondary)',
       marginBottom: '2px',
     },
     infoValue: {
       fontSize: '0.95rem',
-      color: '#1f2937',
+      color: 'var(--setlog-card-text)',
       marginBottom: '10px',
       lineHeight: 1.25,
     }
@@ -192,9 +193,10 @@ function ConcertDetailPage() {
           width: '100%',
           maxWidth: '1280px',
           borderRadius: '16px',
-          border: '1px solid #dbe3ea',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
-          padding: '0.35rem'
+          border: '1px solid var(--setlog-card-border)',
+          boxShadow: '0 4px 14px var(--setlog-card-bg)',
+          padding: '0.35rem',
+          background: 'var(--setlog-card-bg)',
         }}
       >
         <Card.Body>
@@ -255,11 +257,13 @@ function ConcertDetailPage() {
                     maxWidth: '360px',
                     height: '290px',
                     borderRadius: '12px',
-                    background: '#e5e7eb',
+                    background: "var(--setlog-card-bg-secondary)",
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#9ca3af',
+                    border: '1px solid var(--setlog-card-border)',
+                    color: "var(--setlog-card-text-secondary)",
+                    fontSize: "13px",
                     fontWeight: 700,
                   }}
                 >
@@ -271,7 +275,7 @@ function ConcertDetailPage() {
             <Col lg={6}>
               <Row>
                 <Col>
-                  <div style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '2px' }}>{concert.artist}</div>
+                  <div style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '2px', color: 'var(--setlog-card-text)' }}>{concert.artist}</div>
 
                   { /* Location Segment */}
                   <div
@@ -282,14 +286,14 @@ function ConcertDetailPage() {
                       marginBottom: '1.1rem',
                     }}
                   >
-                    <MapPin size={22} color={colors.setlogPrimary} style={{ marginTop: '3px', flexShrink: 0 }} />
+                    <MapPin size={22} color='var(--setlog-primary)' style={{ marginTop: '3px', flexShrink: 0 }} />
                     <div>
-                      <div style={{ fontSize: '1.15rem', fontWeight: '500', lineHeight: 1.2 }}>{concert.venue}</div>
+                      <div style={{ fontSize: '1.15rem', fontWeight: '500', lineHeight: 1.2, color: 'var(--setlog-card-text)' }}>{concert.venue}</div>
 
                       <div
                         style={{
                           fontSize: '0.95rem',
-                          color: '#6b7280',
+                          color: 'var(--setlog-card-text-secondary)',
                           lineHeight: 1.2,
                           marginTop: '0.25rem',
                         }}
@@ -302,18 +306,18 @@ function ConcertDetailPage() {
                   { /* Tags Row */}
                   <Row>
                     <Col xs="auto" style={{ gap: '12px', display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-                      <span style={{ ...styles.concertTags, background: '#eef2ff', color: '#4f46e5' }}>
+                      <span style={{ ...styles.concertTags, background: "var(--tag-genre-bg)", color: "var(--tag-genre-text)" }}>
                         {concert.genre}
                       </span>
 
                       {concert.attended && (
-                        <span style={{ ...styles.concertTags, background: '#dcfce7', color: '#166534' }}>
+                        <span style={{ ...styles.concertTags, background: "var(--tag-attended-bg)", color: "var(--tag-attended-text)" }}>
                           Attended
                         </span>
                       )}
 
                       {concert.favorite && (
-                        <span style={{ ...styles.concertTags, background: '#fef3c7', color: '#92400e' }}>
+                        <span style={{ ...styles.concertTags, background: "var(--tag-favorite-bg)", color: "var(--tag-favorite-text)" }}>
                           Favorite
                         </span>
                       )}
@@ -335,10 +339,10 @@ function ConcertDetailPage() {
                         gap: '12px',
                       }}
                     >
-                      <span style={{ fontSize: '1.55rem', fontWeight: '700' }}>
+                      <span style={{ fontSize: '1.55rem', fontWeight: '700', color: "var(--setlog-card-text)" }}>
                         {concert.rating}.0
                       </span>
-                      <span style={{ fontSize: '1rem', color: 'gray' }}>
+                      <span style={{ fontSize: '1rem', color: "var(--setlog-card-text-secondary)" }}>
                         ({getRatingLabel(concert.rating)})
                       </span>
                     </Col>
@@ -363,15 +367,15 @@ function ConcertDetailPage() {
                   style={{
                     display: 'flex',
                     justifyContent: 'center',
-                    borderRight: '1px solid #e5e7eb',
+                    borderRight: '1px solid var(--setlog-card-border)',
                     padding: '0 0.9rem',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Music size={22} color={colors.setlogPrimary} />
+                    <Music size={22} color='var(--setlog-primary)' />
                     <div>
-                      <div style={{ fontSize: '1rem', fontWeight: 500 }}>{concert.songCount}</div>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7280' }}>
+                      <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--setlog-card-text)' }}>{concert.songCount}</div>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--setlog-card-text-secondary)' }}>
                         SONGS
                       </div>
                     </div>
@@ -383,17 +387,17 @@ function ConcertDetailPage() {
                   style={{
                     display: 'flex',
                     justifyContent: 'center',
-                    borderRight: '1px solid #e5e7eb',
+                    borderRight: '1px solid var(--setlog-card-border)',
                     padding: '0 0.9rem',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <CalendarDays size={22} color={colors.setlogPrimary} />
+                    <CalendarDays size={22} color='var(--setlog-primary)' />
                     <div>
-                      <div style={{ fontSize: '1rem', fontWeight: 500 }}>
+                      <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--setlog-card-text)' }}>
                         {dayOfWeek}
                       </div>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7280' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--setlog-card-text-secondary)' }}>
                         {fullDateLabel}
                       </div>
                     </div>
@@ -409,14 +413,14 @@ function ConcertDetailPage() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <MapPin size={22} color={colors.setlogPrimary} />
+                    <MapPin size={22} color='var(--setlog-primary)' />
                     <div>
-                      <div style={{ fontSize: '1rem', fontWeight: 500 }}>
+                      <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--setlog-card-text)' }}>
                         {concert.coords
                           ? `${concert.coords[0]}, ${concert.coords[1]}`
                           : 'No coords'}
                       </div>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6b7280' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--setlog-card-text-secondary)' }}>
                         COORDINATES
                       </div>
                     </div>
@@ -431,7 +435,7 @@ function ConcertDetailPage() {
               title={
                 <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
                   <FileText size={16} color={colors.setlogPrimary} />
-                  <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#1f2937' }}>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--setlog-card-text)' }}>
                     NOTES
                   </span>
                 </div>
@@ -439,8 +443,8 @@ function ConcertDetailPage() {
             >
               <div
                 style={{
-                  background: '#f9fafb',
-                  border: '1px solid #e5e7eb',
+                  background: "var(--setlog-card-bg-secondary)",
+                  border: '1px solid var(--setlog-card-border)',
                   borderRadius: '10px',
                   padding: '10px 12px',
                 }}
@@ -450,7 +454,7 @@ function ConcertDetailPage() {
                     fontSize: '0.85rem',
                     lineHeight: 1.55,
                     fontWeight: 500,
-                    color: concert.notes?.trim() ? '#1f2937' : '#6b7280',
+                    color: concert.notes?.trim() ? '#var(--setlog-card-text)' : 'var(--setlog-card-text-secondary)',
                     whiteSpace: 'pre-line',
                   }}
                 >
@@ -466,11 +470,11 @@ function ConcertDetailPage() {
                 <SectionCard
                   title={
                     <div style={{ display: 'flex', alignItems: 'center', gap: '7px', width: '100%' }}>
-                      <ListMusic size={16} color={colors.setlogPrimary} />
-                      <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#1f2937' }}>
+                      <ListMusic size={16} color='var(--setlog-primary)' />
+                      <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--setlog-card-text)' }}>
                         SETLIST
                       </span>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#6b7280', marginLeft: 'auto' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--setlog-card-text-secondary)', marginLeft: 'auto' }}>
                         {concert.songCount} songs
                       </span>
                     </div>
@@ -486,24 +490,25 @@ function ConcertDetailPage() {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '10px',
+                            background: 'var(--setlog-card-bg-secondary)',
                             fontSize: '0.85rem',
                           }}
                         >
                           <span
                             style={{
                               width: '22px',
-                              color: '#6b7280',
+                              color: 'var(--setlog-card-text-secondary)',
                               fontWeight: 700,
                             }}
                           >
                             {idx + 1}
                           </span>
-                          <span style={{ color: '#1f2937' }}>{song}</span>
+                          <span style={{ color: 'var(--setlog-card-text)' }}>{song}</span>
                         </ListGroup.Item>
                       ))}
                     </ListGroup>
                   ) : (
-                    <div style={{ color: '#6b7280' }}>No setlist available.</div>
+                    <div style={{ color: 'var(--setlog-card-text-secondary' }}>No setlist available.</div>
                   )}
                 </SectionCard>
               </div>
@@ -513,8 +518,8 @@ function ConcertDetailPage() {
                 <SectionCard
                   title={
                     <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-                      <Info size={16} color={colors.setlogPrimary} />
-                      <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#1f2937' }}>
+                      <Info size={16} color='var(--setlog-primary)' />
+                      <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--setlog-card-text)' }}>
                         AT A GLANCE
                       </span>
                     </div>
@@ -538,11 +543,11 @@ function ConcertDetailPage() {
                     <div style={styles.infoLabel}>Attendance</div>
                     <div style={styles.infoValue}>
                       {concert.attended ? (
-                        <span style={{ ...styles.concertTags, background: '#dcfce7', color: '#166534' }}>
+                        <span style={{ ...styles.concertTags, background: "var(--tag-attended-bg)", color: "var(--tag-attended-text)" }}>
                           Attended
                         </span>
                       ) : (
-                        <span style={{ ...styles.concertTags, background: '#fcdcdc', color: '#651616' }}>
+                        <span style={{ ...styles.concertTags, background: "var(--tag-not-attended-bg)", color: "var(--tag-not-attended-text)" }}>
                           Not Attended
                         </span>
                       )}
@@ -552,11 +557,11 @@ function ConcertDetailPage() {
                     <div style={styles.infoLabel}>Favorite</div>
                     <div style={styles.infoValue}>
                       {concert.favorite ? (
-                        <span style={{ ...styles.concertTags, background: '#fef3c7', color: '#92400e' }}>
+                        <span style={{ ...styles.concertTags, background: "var(--tag-favorite-bg)", color: "var(--tag-favorite-text)" }}>
                           Yes
                         </span>
                       ) : (
-                        <span style={{ ...styles.concertTags, background: '#fef3c7', color: '#92400e' }}>
+                        <span style={{ ...styles.concertTags, background: "var(--tag-favorite-bg)", color: "var(--tag-favorite-text)" }}>
                           No
                         </span>
                       )}

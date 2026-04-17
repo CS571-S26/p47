@@ -26,8 +26,12 @@
   --tag-attended-bg: #dcfce7;
   --tag-attended-text: #166534;
 
+  --tag-not-attended-bg: #fee2e2;
+  --tag-not-attended-text: #b91c1c;
+
   --tag-favorite-bg: #fef3c7;
   --tag-favorite-text: #92400e;
+
 }
 
 /* Dark Mode */
@@ -52,6 +56,9 @@
 
   --tag-attended-bg: #1d3a2b;
   --tag-attended-text: #86efac;
+
+  --tag-not-attended-bg: #4a1f24;
+  --tag-not-attended-text: #fca5a5;
 
   --tag-favorite-bg: #4a3820;
   --tag-favorite-text: #fcd34d;
