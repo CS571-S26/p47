@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { Card, Row, Col, Button, ListGroup } from 'react-bootstrap'
 import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info } from 'lucide-react'
 
@@ -9,9 +9,13 @@ import SectionCard from '../components/SectionCard'
 function ConcertDetailPage() {
   const { concerts, deleteConcert } = useContext(ConcertsContext)
   const navigate = useNavigate()
+  const location = useLocation()
   const { id } = useParams()
 
   const concert = concerts.find((c) => c.id === id)
+
+  const backTo = location.state?.from || '/'
+  const backLabel = location.state?.backLabel || 'Back to Timeline'
 
   function handleDelete() {
     const ok = window.confirm(
@@ -19,7 +23,7 @@ function ConcertDetailPage() {
     )
     if (ok) {
       deleteConcert(concert.id)
-      navigate('/')
+      navigate(-1)
     }
   }
 
@@ -87,14 +91,14 @@ function ConcertDetailPage() {
 
             <Button
               variant="primary"
-              onClick={() => navigate('/')}
+              onClick={() => navigate(-1)}
               style={{
                 fontWeight: 700,
                 borderRadius: '10px',
                 padding: '8px 14px',
               }}
             >
-              Back to Timeline
+              {backLabel}
             </Button>
           </Card.Body>
         </Card>
@@ -204,7 +208,7 @@ function ConcertDetailPage() {
             <Col>
               <Button
                 variant="link"
-                onClick={() => navigate('/')}
+                onClick={() => navigate(-1)}
                 style={{
                   padding: 0,
                   textDecoration: 'none',
@@ -214,7 +218,7 @@ function ConcertDetailPage() {
                 }}
               >
                 <ArrowLeft size={14} style={{ marginRight: '5px' }} />
-                Back to Timeline
+                {backLabel}
               </Button>
             </Col>
             <Col xs="auto" style={{ display: 'flex', gap: '8px' }}>

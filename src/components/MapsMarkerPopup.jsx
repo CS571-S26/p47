@@ -23,7 +23,9 @@ function MapsMarkerPopup({ concerts }) {
   }
 
   function handleViewDetails() {
-    navigate(`/concerts/${concert.id}`)
+    navigate(`/concerts/${concert.id}`, {
+      state: { from: '/maps', backLabel: 'Back to Map' },
+    })
   }
 
   const styles = {

@@ -17,9 +17,11 @@ function TimelineConcert({ concert }) {
     }
 
     function handleViewDetails() {
-        navigate(`/concerts/${concert.id}`)
+        navigate(`/concerts/${concert.id}`, {
+            state: { from: '/', backLabel: 'Back to Timeline' },
+        })
     }
-    
+
     const setlistCount = Array.isArray(concert.setlist) ? concert.setlist.length : null
     const songCount = typeof setlistCount === 'number' ? setlistCount : (concert.songCount ?? 0)
     const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
