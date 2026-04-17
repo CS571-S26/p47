@@ -1,12 +1,26 @@
 .map-box {
   flex: 1;
   width: 100%;
-  border: 1px solid #ccc;
+  border: 1px solid var(--setlog-card-border);
   border-radius: 8px;
   overflow: hidden;
+  background: var(--setlog-card-bg);
 }
 
 .map-box .leaflet-container {
   height: 50vw;
   width: 100%;
+  background: var(--setlog-card-bg);
+}
+
+[data-theme='dark'] .leaflet-popup-content-wrapper,
+[data-theme='dark'] .leaflet-popup-tip {
+  background: var(--setlog-card-bg);
+  color: var(--setlog-card-text);
+}
+
+[data-theme='dark'] .leaflet-control-zoom a {
+  background: var(--setlog-card-bg);
+  color: var(--setlog-card-text);
+  border-color: var(--setlog-card-border);
 }

@@ -1,22 +1,14 @@
 import { Container, Nav, Navbar, FormControl, Row, Col, Form, Button } from 'react-bootstrap'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Map, CirclePlus, Settings, List, Search, Moon, Sun, User, LogOut } from 'lucide-react'
-import { useEffect, useState } from 'react'
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
 import './NavBar.css'
 
-function NavBar() {
+function NavBar({ theme, setTheme }) {
   const { loginStatus, logout } = useAuth()
   const navigate = useNavigate()
-
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light')
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('theme', theme)
-  }, [theme])
 
   function handleToggleTheme() {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))

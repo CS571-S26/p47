@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import NavBar from './components/NavBar.jsx'
 import MapsPage from './pages/MapsPage.jsx'
 import SettingsPage from './pages/SettingsPage.jsx'
@@ -14,17 +15,17 @@ import { useAuth } from './contexts/authContext.js'
 
 import './App.css'
 
-function AppShell() {
+function AppShell({ theme, setTheme }) {
   const { user } = useAuth()
   const concertsKey = user?.uid ?? 'guest'
 
   return (
     <ConcertsProvider key={concertsKey}>
-      <NavBar />
+      <NavBar theme={theme} setTheme={setTheme} />
       <main className="app-main">
         <Routes>
           <Route path="/" element={<TimelinePage />} />
-          <Route path="/maps" element={<MapsPage />} />
+          <Route path="/maps" element={<MapsPage theme={theme} />} />
           <Route path="/add-concert" element={<AddConcertPage />} />
           <Route path="/concerts/:id" element={<ConcertDetailPage />} />
           <Route path="/settings" element={<SettingsPage />} />
@@ -38,9 +39,18 @@ function AppShell() {
 }
 
 function App() {
+  const [theme, setTheme] = useState(
+    localStorage.getItem('theme') || 'light'
+  )
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
   return (
     <AuthProvider>
-      <AppShell />
+      <AppShell theme={theme} setTheme={setTheme} />
     </AuthProvider>
   )
 }
