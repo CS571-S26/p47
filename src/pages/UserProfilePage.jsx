@@ -31,8 +31,8 @@ function UserProfilePage() {
           Signed in as <strong>{loginStatus.username}</strong>
         </p>
         <p className="text-secondary">
-          This account exists only in this browser (local storage). Clearing site data will remove
-          it. Your logged concerts are stored under your username on this device.
+          Your account is managed by Firebase. Your logged concerts are stored online under your
+          account, so you can access them from other devices when you log in.
         </p>
       </div>
     </section>

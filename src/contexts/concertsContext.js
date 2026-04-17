@@ -1,3 +1,13 @@
 import { createContext } from 'react'
 
-export const ConcertsContext = createContext(null)
+const noop = async () => {}
+
+export const ConcertsContext = createContext({
+  concerts: [],
+  loading: false,
+  error: '',
+  addConcert: noop,
+  updateConcert: noop,
+  deleteConcert: noop,
+  getConcert: () => undefined,
+})
