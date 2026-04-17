@@ -24,7 +24,7 @@ function MapsMarkerPopup({ concerts }) {
 
   function handleViewDetails() {
     navigate(`/concerts/${concert.id}`, {
-      state: { from: '/maps', backLabel: 'Back to Map' },
+      state: { from: '/', backLabel: 'Back to Timeline' },
     })
   }
 
@@ -152,7 +152,7 @@ function MapsMarkerPopup({ concerts }) {
           )}
         </>
       ) : (
-        <Button variant="primary" style={styles.navButton}>View Show</Button>
+        <Button variant="primary" style={styles.navButton} onClick={() => { handleViewDetails() }}>View Details</Button>
       )
       }
     </Card>
