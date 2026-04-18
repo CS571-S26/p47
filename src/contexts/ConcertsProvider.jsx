@@ -32,7 +32,7 @@ function normalizeString(v) {
 }
 
 export function ConcertsProvider({ children }) {
-  const { user } = useAuth()
+  const { user, loading: authInitializing } = useAuth()
   const [allConcerts, setAllConcerts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -121,7 +121,9 @@ export function ConcertsProvider({ children }) {
     return () => unsub()
   }, [user])
 
-  const concerts = user ? allConcerts : demoConcerts
+  // Avoid showing demo concerts until Firebase has settled auth; otherwise logged-in
+  // users briefly see the guest sample list on cold load.
+  const concerts = user ? allConcerts : authInitializing ? [] : demoConcerts
 
   const addConcert = useCallback(
     async (concert) => {
