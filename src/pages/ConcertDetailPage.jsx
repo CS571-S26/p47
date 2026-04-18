@@ -217,7 +217,11 @@ function ConcertDetailPage() {
               </Button>
             </Col>
             <Col xs="auto" style={{ display: 'flex', gap: '8px' }}>
-              <Button variant="outline-primary" style={styles.topButton}>
+              <Button
+                variant="outline-primary"
+                style={styles.topButton}
+                onClick={() => navigate(`/concerts/${concert.id}/edit`)}
+              >
                 <Edit size={13} />
                 Edit Concert
               </Button>
