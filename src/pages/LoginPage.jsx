@@ -35,18 +35,18 @@ function LoginPage() {
   return (
     <section id="center">
       <div style={{ maxWidth: '420px', margin: '0 auto' }}>
-        <h1>Log in</h1>
-        <p className="text-secondary mb-4">
+        <h1 style={{color: 'var(--setlog-primary-text)'}}>Log in</h1>
+        <p  style={{color: 'var(--setlog-secondary-text)'}}>
           Log in to sync your concerts across devices.
         </p>
         {error ? (
-          <Alert variant="danger" className="mb-3">
+          <Alert variant="danger" className="mb-3" style={{ marginTop: '0.6rem', marginBottom: 0, background: "var(--tag-not-attended-bg)", color: "var(--tag-not-attended-text)" }}>
             {error}
           </Alert>
         ) : null}
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="loginEmail">
-            <Form.Label>Email</Form.Label>
+            <Form.Label style={{color: 'var(--setlog-primary-text)'}}>Email</Form.Label>
             <Form.Control
               type="email"
               value={email}
@@ -55,7 +55,7 @@ function LoginPage() {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="loginPassword">
-            <Form.Label>Password</Form.Label>
+            <Form.Label style={{color: 'var(--setlog-primary-text)'}}>Password</Form.Label>
             <Form.Control
               type="password"
               value={password}

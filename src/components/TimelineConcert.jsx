@@ -4,11 +4,13 @@ import { Row, Col, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
-import { colors } from '../data/Colors'
+import { useAuth } from '../contexts/authContext.js'
 
 function TimelineConcert({ concert }) {
     const { deleteConcert } = useContext(ConcertsContext)
     const navigate = useNavigate()
+
+    const { loginStatus } = useAuth()
 
     function handleDelete() {
         const ok = window.confirm(
@@ -18,8 +20,11 @@ function TimelineConcert({ concert }) {
     }
 
     function handleViewDetails() {
-        navigate(`/concerts/${concert.id}`)
+        navigate(`/concerts/${concert.id}`, {
+            state: { from: '/', backLabel: 'Back to Timeline' },
+        })
     }
+
     const setlistCount = Array.isArray(concert.setlist) ? concert.setlist.length : null
     const songCount = typeof setlistCount === 'number' ? setlistCount : (concert.songCount ?? 0)
     const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
@@ -31,25 +36,26 @@ function TimelineConcert({ concert }) {
 
     const styles = {
         concertCard: {
-            background: 'white',
-            border: '1px solid lightgray',
+            background: 'var(--setlog-card-bg)',
+            border: '1px solid var(--setlog-card-border)',
             borderRadius: '16px',
             padding: '14px 16px',
             width: '100%',
-            boxShadow: '0 4px 14px lightgray',
+            boxShadow: '0 4px 14px var(--setlog-card-bg)',
             display: 'flex',
             gap: '16px'
         },
         dateCard: {
-            border: '1px solid lightgray',
+            border: '1px solid var(--setlog-card-border)',
+            background: 'var(--setlog-card-bg-secondary)',
             borderRadius: '16px',
             overflow: 'hidden',
             textAlign: 'center',
             width: '115px',
-            boxShadow: '0 4px 14px lightgray',
+            boxShadow: '0 4px 14px var(--setlog-card-bg)',
         },
         dateMonth: {
-            background: colors.setlogPrimary,
+            background: 'var(--setlog-primary)',
             color: 'white',
             fontSize: '0.75rem',
             fontWeight: 800,
@@ -59,14 +65,14 @@ function TimelineConcert({ concert }) {
         dateDay: {
             fontSize: '2rem',
             fontWeight: 800,
-            color: "black",
+            color: "var(--setlog-card-text)",
             lineHeight: 1,
             paddingTop: '10px',
         },
 
         dateYear: {
             fontSize: '0.8rem',
-            color: "gray",
+            color: "var(--setlog-card-text-secondary)",
             padding: '6px 0 10px',
         },
         concertTags: {
@@ -110,11 +116,12 @@ function TimelineConcert({ concert }) {
                             height: "125px",
                             borderRadius: "10px",
                             marginBottom: "6px",
-                            background: "#e5e7eb",
+                            background: "var(--setlog-card-bg-secondary)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            color: "#9ca3af",
+                            color: "var(--setlog-card-text-secondary)",
+                            border: '1px solid var(--setlog-card-border)',
                             fontSize: "13px",
                             fontWeight: 600,
                         }}
@@ -126,8 +133,8 @@ function TimelineConcert({ concert }) {
 
             { /* Concert Information */}
             <Col>
-                <div style={{ fontSize: "24px", fontWeight: "700", marginBottom: "2px", }}>{concert.artist}</div>
-                <div style={{ fontSize: "14px", fontStyle: "italic", color: "gray", marginBottom: "6px", lineHeight: "1.05" }}>
+                <div style={{ fontSize: "24px", fontWeight: "700", marginBottom: "2px", color: "var(--setlog-card-text)" }}>{concert.artist}</div>
+                <div style={{ fontSize: "14px", fontStyle: "italic", color: "var(--setlog-card-text-secondary)", marginBottom: "6px", lineHeight: "1.05" }}>
                     {concert.venue} • {concert.city}
                 </div>
 
@@ -140,24 +147,24 @@ function TimelineConcert({ concert }) {
                         </span>
                     </Col>
                     <Col>
-                        <span style={{ fontSize: "16px", fontWeight: "700" }}>
+                        <span style={{ fontSize: "16px", fontWeight: "700", color: "var(--setlog-card-text)" }}>
                             {concert.rating}.0
                         </span>
                     </Col>
 
                     <Col xs="auto">
-                        <span style={{ ...styles.concertTags, background: "#eef2ff", color: "#4f46e5" }}>
+                        <span style={{ ...styles.concertTags, background: "var(--tag-genre-bg)", color: "var(--tag-genre-text)" }}>
                             {concert.genre}
                         </span>
 
                         {concert.attended && (
-                            <span style={{ ...styles.concertTags, background: '#dcfce7', color: '#166534' }}>
+                            <span style={{ ...styles.concertTags, background: "var(--tag-attended-bg)", color: "var(--tag-attended-text)" }}>
                                 Attended
                             </span>
                         )}
 
                         {concert.favorite && (
-                            <span style={{ ...styles.concertTags, background: '#fef3c7', color: '#92400e' }}>
+                            <span style={{ ...styles.concertTags, background: "var(--tag-favorite-bg)", color: "var(--tag-favorite-text)" }}>
                                 Favorite
                             </span>
                         )}
@@ -169,10 +176,10 @@ function TimelineConcert({ concert }) {
                 { /* Song Count Row */}
                 <Row style={{ alignItems: "center" }}>
                     <Col xs="auto">
-                        <Clock size={16} />
+                        <Clock size={16} style={{ color: 'var(--setlog-card-text)' }} />
                     </Col>
                     <Col xs="auto">
-                        <span style={{ fontSize: "14px", fontWeight: "200" }}>{songCount} songs</span>
+                        <span style={{ fontSize: "14px", fontWeight: "200", color: "var(--setlog-card-text)" }}>{songCount} songs</span>
                     </Col>
 
                     <Col
@@ -192,17 +199,18 @@ function TimelineConcert({ concert }) {
                         >
                             View Details
                         </Button>
-                        <Button
-                            variant="outline-danger"
-                            style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', gap: '6px', alignItems: 'center' }}
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                handleDelete()
-                            }}
-                        >
-                            <Trash size={16} />
-                            Delete
-                        </Button>
+                        {loginStatus.loggedIn && (
+                            <Button
+                                variant="outline-danger"
+                                style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', gap: '6px', alignItems: 'center' }}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDelete()
+                                }}
+                            >
+                                <Trash size={16} />
+                                Delete
+                            </Button>)}
                     </Col>
 
                 </Row>
