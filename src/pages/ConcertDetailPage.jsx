@@ -4,6 +4,7 @@ import { Card, Row, Col, Button, ListGroup } from 'react-bootstrap'
 import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
+import { useAuth } from '../contexts/authContext.js'
 import { colors } from '../data/Colors'
 import SectionCard from '../components/SectionCard'
 
@@ -11,6 +12,7 @@ function ConcertDetailPage() {
   const { concerts, deleteConcert } = useContext(ConcertsContext)
   const navigate = useNavigate()
   const { id } = useParams()
+  const { loginStatus } = useAuth()
 
   const concert = concerts.find((c) => c.id === id)
 
@@ -217,22 +219,26 @@ function ConcertDetailPage() {
               </Button>
             </Col>
             <Col xs="auto" style={{ display: 'flex', gap: '8px' }}>
-              <Button
-                variant="outline-primary"
-                style={styles.topButton}
-                onClick={() => navigate(`/concerts/${concert.id}/edit`)}
-              >
-                <Edit size={13} />
-                Edit Concert
-              </Button>
-              <Button
-                variant="outline-danger"
-                style={styles.topButton}
-                onClick={handleDelete}
-              >
-                <Trash size={13} />
-                Delete
-              </Button>
+              {loginStatus.loggedIn && (
+                <Button
+                  variant="outline-primary"
+                  style={styles.topButton}
+                  onClick={() => navigate(`/concerts/${concert.id}/edit`)}
+                >
+                  <Edit size={13} />
+                  Edit Concert
+                </Button>
+              )}
+              {loginStatus.loggedIn && (
+                <Button
+                  variant="outline-danger"
+                  style={styles.topButton}
+                  onClick={handleDelete}
+                >
+                  <Trash size={13} />
+                  Delete
+                </Button>
+              )}
             </Col>
           </Row>
 
