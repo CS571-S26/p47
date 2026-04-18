@@ -5,17 +5,13 @@ import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusi
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
-import { colors } from '../data/Colors'
 import SectionCard from '../components/SectionCard'
-import { useAuth } from '../contexts/authContext.js'
 
 function ConcertDetailPage() {
   const { concerts, deleteConcert } = useContext(ConcertsContext)
   const navigate = useNavigate()
   const location = useLocation()
   const { id } = useParams()
-  const { loginStatus } = useAuth()
-
   const { loginStatus } = useAuth()
 
   const concert = concerts.find((c) => c.id === id)
@@ -524,7 +520,7 @@ function ConcertDetailPage() {
                       ))}
                     </ListGroup>
                   ) : (
-                    <div style={{ color: 'var(--setlog-card-text-secondary' }}>No setlist available.</div>
+                    <div style={{ color: 'var(--setlog-card-text-secondary)' }}>No setlist available.</div>
                   )}
                 </SectionCard>
               </div>
