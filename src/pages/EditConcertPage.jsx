@@ -1,7 +1,8 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { Row, Col, Button, Card, Form, Alert, Spinner, InputGroup, ListGroup } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Plus, ArrowDown, ArrowUp, Trash } from 'lucide-react'
+
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
 import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js'
@@ -15,14 +16,14 @@ import {
   toTitleCase,
 } from '../utils/concertForm.js'
 
-function newConcertId() {
-  return `c-${Date.now()}-${Math.random().toString(16).slice(2)}`
-}
-
-function AddConcertPage() {
-  const { addConcert } = useContext(ConcertsContext)
+function EditConcertPage() {
+  const { id } = useParams()
+  const { updateConcert, getConcert, loading } = useContext(ConcertsContext)
   const { loginStatus } = useAuth()
   const navigate = useNavigate()
+
+  const hydratedIdRef = useRef(null)
+  const [formReady, setFormReady] = useState(false)
 
   const [artist, setArtist] = useState('')
   const [genre, setGenre] = useState('')
@@ -45,6 +46,35 @@ function AddConcertPage() {
   const stars = [1, 2, 3, 4, 5]
   const normalizedSetlist = normalizeSetlist(setlist)
 
+  useEffect(() => {
+    hydratedIdRef.current = null
+    setFormReady(false)
+  }, [id])
+
+  useEffect(() => {
+    if (!loginStatus.loggedIn || loading || !id) return
+    const c = getConcert(id)
+    if (!c) return
+    if (hydratedIdRef.current === id) return
+
+    setArtist(typeof c.artist === 'string' ? c.artist : '')
+    setGenre(typeof c.genre === 'string' ? c.genre : '')
+    setDate(typeof c.date === 'string' ? c.date : '')
+    setVenue(typeof c.venue === 'string' ? c.venue : '')
+    setCity(typeof c.city === 'string' ? c.city : '')
+    const r = Number(c.rating)
+    setRating(Number.isFinite(r) ? Math.min(5, Math.max(1, Math.round(r))) : 5)
+    setAttended(!!c.attended)
+    setFavorite(!!c.favorite)
+    setImage(typeof c.image === 'string' ? c.image : '')
+    setNotes(typeof c.notes === 'string' ? c.notes : '')
+    setSetlist(Array.isArray(c.setlist) ? c.setlist.filter((s) => typeof s === 'string') : [])
+    setNewSongTitle('')
+
+    hydratedIdRef.current = id
+    setFormReady(true)
+  }, [id, loading, getConcert, loginStatus.loggedIn])
+
   const styles = {
     formControl: {
       height: '40px',
@@ -55,7 +85,7 @@ function AddConcertPage() {
       fontWeight: '600',
       marginBottom: '0.4rem',
       marginTop: '0rem',
-      color: 'var(--setlog-primary-text)',
+      color: '#374151',
       fontSize: '0.95rem',
     },
   }
@@ -63,6 +93,11 @@ function AddConcertPage() {
   async function handleSubmit(e) {
     e.preventDefault()
     setFormError('')
+
+    if (!id?.trim()) {
+      setFormError('Missing concert id.')
+      return
+    }
 
     const cleanedCity = formatCityState(city)
 
@@ -73,6 +108,12 @@ function AddConcertPage() {
 
     if (!CITY_STATE_PATTERN.test(cleanedCity)) {
       setFormError('City must be in the format City, ST (for example: San Francisco, CA).')
+      return
+    }
+
+    const existing = getConcert(id)
+    if (!existing) {
+      setFormError('This concert no longer exists.')
       return
     }
 
@@ -88,18 +129,17 @@ function AddConcertPage() {
       window.alert(GEOCODE_LOOKUP_FAILED_MESSAGE)
     }
 
-    const normalizedSetlist = normalizeSetlist(setlist)
-    const concert = {
-      id: newConcertId(),
+    const nextSetlist = normalizeSetlist(setlist)
+    const patch = {
       date: date.trim(),
       artist: artist.trim(),
       venue: venue.trim(),
       city: cleanedCity,
       genre: toTitleCase(genre.trim()),
       rating,
-      setlist: normalizedSetlist,
-      songCount: normalizedSetlist.length,
-      duration: '',
+      setlist: nextSetlist,
+      songCount: nextSetlist.length,
+      duration: typeof existing.duration === 'string' ? existing.duration : '',
       image: image.trim(),
       notes: notes.trim(),
       attended,
@@ -107,9 +147,14 @@ function AddConcertPage() {
       ...(coords ? { coords } : {}),
     }
 
-    addConcert(concert)
-    setSaving(false)
-    navigate('/')
+    try {
+      await updateConcert(id, patch)
+      navigate(`/concerts/${id}`)
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Failed to save changes.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const canImportFromSetlistFm = !!(artist.trim() && venue.trim() && date.trim())
@@ -141,6 +186,12 @@ function AddConcertPage() {
         return
       }
 
+      const current = normalizeSetlist(setlist)
+      if (current.length > 0) {
+        const ok = window.confirm('Replace the current setlist with the imported one?')
+        if (!ok) return
+      }
+
       setSetlist(titles)
     } catch (err) {
       setImportError(err instanceof Error ? err.message : 'Failed to import setlist from setlist.fm.')
@@ -154,9 +205,7 @@ function AddConcertPage() {
     if (!t) return
     setSetlist((prev) => {
       const base = Array.isArray(prev) ? prev : []
-      const next = [...base]
-      next.push(t)
-      return next
+      return [...base, t]
     })
     setNewSongTitle('')
   }
@@ -203,15 +252,14 @@ function AddConcertPage() {
             width: '100%',
             maxWidth: '560px',
             borderRadius: '20px',
-            border: '1px solid var(--setlog-card-border)',
-            background: 'var(--setlog-card-bg)',
-            boxShadow: '0 8px 24px var(--setlog-card-bg)',
+            border: '1px solid #dbe3ea',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
             padding: '1rem',
           }}
         >
           <Card.Body>
-            <div style={{ fontSize: '36px', fontWeight: '700', color: 'var(--setlog-card-text)' }}>Log a New Concert</div>
-            <p style={{ color: 'var(--setlog-card-text-secondary)' }} className="mt-3 mb-4">
+            <div style={{ fontSize: '36px', fontWeight: '700' }}>Edit Concert</div>
+            <p className="text-secondary mt-3 mb-4">
               Concerts you log are tied to your account on this device. Log in or register to
               continue.
             </p>
@@ -223,6 +271,79 @@ function AddConcertPage() {
             </Button>
           </Card.Body>
         </Card>
+      </section>
+    )
+  }
+
+  if (loginStatus.loggedIn && loading) {
+    return (
+      <section
+        id="center"
+        style={{
+          flex: 1,
+          width: '100%',
+          padding: '2rem 1rem',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Spinner animation="border" role="status" />
+      </section>
+    )
+  }
+
+  if (loginStatus.loggedIn && !loading && id && !getConcert(id)) {
+    return (
+      <section
+        id="center"
+        style={{
+          flex: 1,
+          width: '100%',
+          padding: '2rem 1rem',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+        }}
+      >
+        <Card
+          style={{
+            width: '100%',
+            maxWidth: '560px',
+            borderRadius: '20px',
+            border: '1px solid #dbe3ea',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+            padding: '1rem',
+          }}
+        >
+          <Card.Body>
+            <div style={{ fontSize: '28px', fontWeight: '700' }}>Concert not found</div>
+            <p className="text-secondary mt-3 mb-4">
+              This concert doesn’t exist or may have been deleted.
+            </p>
+            <Button variant="primary" onClick={() => navigate('/')}>
+              Back to Timeline
+            </Button>
+          </Card.Body>
+        </Card>
+      </section>
+    )
+  }
+
+  if (loginStatus.loggedIn && id && getConcert(id) && !formReady) {
+    return (
+      <section
+        id="center"
+        style={{
+          flex: 1,
+          width: '100%',
+          padding: '2rem 1rem',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Spinner animation="border" role="status" />
       </section>
     )
   }
@@ -244,9 +365,8 @@ function AddConcertPage() {
           width: '100%',
           maxWidth: '1400px',
           borderRadius: '18px',
-          border: '1px solid var(--setlog-card-border)',
-          background: 'var(--setlog-card-bg)',
-          boxShadow: '0 8px 24px var(--setlog-card-bg)',
+          border: '1px solid #dbe3ea',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
           padding: '0.5rem',
         }}
       >
@@ -257,19 +377,18 @@ function AddConcertPage() {
               lineHeight: 1.1,
               fontWeight: '700',
               marginBottom: '0.6rem',
-              color: 'var(--setlog-card-text)'
             }}
           >
-            Log a New Concert
+            Edit Concert
           </div>
 
           {formError ? (
-            <Alert variant="danger" className="mb-3" style={{ marginTop: '0.6rem', marginBottom: 0, background: "var(--tag-not-attended-bg)", color: "var(--tag-not-attended-text)" }}>
+            <Alert variant="danger" style={{ marginTop: '0.6rem', marginBottom: 0 }}>
               {formError}
             </Alert>
           ) : null}
 
-          <div style={{ fontSize: '0.85rem', color: 'var(--setlog-card-text-secondary)', marginBottom: '0.7rem' }}>
+          <div style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.7rem' }}>
             <span style={{ color: '#dc3545', fontWeight: 700 }}>*</span> Required fields
           </div>
 
@@ -378,7 +497,7 @@ function AddConcertPage() {
               <Col lg={6} style={{ display: 'flex' }}>
                 <SectionCard
                   title="Setlist"
-                  subtitle="Add songs manually or import them from setlist.fm"
+                  subtitle="Add songs manually or reimport from setlist.fm"
                 >
                   <Row>
                     <Col md={12}>
@@ -387,14 +506,14 @@ function AddConcertPage() {
                           <Col lg={5}>
                             <div
                               style={{
-                                border: '1px solid var(--setlog-card-border)',
+                                border: '1px solid #e5e7eb',
                                 borderRadius: '10px',
                                 padding: '10px',
-                                background: 'var(--setlog-card-bg-secondary)',
+                                background: '#fafafa',
                                 height: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                justifyContent: 'space-between'
+                                justifyContent: 'space-between',
                               }}
                             >
                               <InputGroup>
@@ -412,7 +531,7 @@ function AddConcertPage() {
                                   }}
                                 />
                                 <Button
-                                  variant="primary"
+                                  variant="outline-primary"
                                   style={{ borderRadius: '10px', paddingLeft: '12px', paddingRight: '12px' }}
                                   onClick={handleAddSong}
                                   disabled={!newSongTitle.trim()}
@@ -438,12 +557,13 @@ function AddConcertPage() {
                                   }}
                                 >
                                   {importingSetlist ? (
-                                    <>Import from setlist.fm
+                                    <>
+                                      Reimport from setlist.fm
                                       <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
                                       Importing...
                                     </>
                                   ) : (
-                                    'Import from setlist.fm'
+                                    'Reimport from setlist.fm'
                                   )}
                                 </Button>
                               </div>
@@ -459,13 +579,13 @@ function AddConcertPage() {
                           <Col lg={7}>
                             <div
                               style={{
-                                border: '1px solid var(--setlog-card-border)',
+                                border: '1px solid #e5e7eb',
                                 borderRadius: '10px',
                                 padding: '10px',
-                                background: 'var(--setlog-card-bg-secondary)',
+                                background: '#fff',
                               }}
                             >
-                              <div style={{ fontWeight: 600, color: 'var(--setlog-card-text)', marginBottom: '8px', fontSize: '0.95rem' }}>
+                              <div style={{ fontWeight: 600, color: '#374151', marginBottom: '8px', fontSize: '0.95rem' }}>
                                 Current setlist ({normalizedSetlist.length})
                               </div>
                               {normalizedSetlist.length ? (
@@ -479,8 +599,6 @@ function AddConcertPage() {
                                           alignItems: 'center',
                                           justifyContent: 'space-between',
                                           gap: '10px',
-                                          background: 'var(--setlog-card-bg)',
-                                          border: '1px solid var(--setlog-card-border)',
                                           paddingTop: '0.55rem',
                                           paddingBottom: '0.55rem',
                                         }}
@@ -489,7 +607,6 @@ function AddConcertPage() {
                                           style={{
                                             fontWeight: 500,
                                             fontSize: '0.95rem',
-                                            color: 'var(--setlog-card-text)'
                                           }}
                                         >
                                           {idx + 1}. {title}
@@ -498,7 +615,7 @@ function AddConcertPage() {
                                           <Button
                                             type="button"
                                             size="sm"
-                                            variant="secondary"
+                                            variant="outline-secondary"
                                             onClick={() => handleMoveSong(idx, -1)}
                                             disabled={idx === 0}
                                           >
@@ -507,7 +624,7 @@ function AddConcertPage() {
                                           <Button
                                             type="button"
                                             size="sm"
-                                            variant="secondary"
+                                            variant="outline-secondary"
                                             onClick={() => handleMoveSong(idx, 1)}
                                             disabled={idx === normalizedSetlist.length - 1}
                                           >
@@ -527,8 +644,8 @@ function AddConcertPage() {
                                   </ListGroup>
                                 </div>
                               ) : (
-                                <div style={{ marginTop: '0.45rem', color: 'var(--setlog-card-text-secondary)', fontSize: '0.85rem' }}>
-                                  No songs yet. Add one on the left or import from setlist.fm.
+                                <div style={{ marginTop: '0.45rem', color: '#6b7280', fontSize: '0.85rem' }}>
+                                  No songs yet. Add one on the left or reimport from setlist.fm.
                                 </div>
                               )}
                             </div>
@@ -552,9 +669,9 @@ function AddConcertPage() {
                       style={{
                         width: '100%',
                         minHeight: '270px',
-                        border: '1px solid var(--setlog-card-border)',
+                        border: '1px solid #e5e7eb',
                         borderRadius: '10px',
-                        background: "var(--setlog-card-bg-secondary)",
+                        background: '#f9fafb',
                         overflow: 'hidden',
                         display: 'flex',
                         alignItems: 'center',
@@ -575,7 +692,7 @@ function AddConcertPage() {
                       ) : (
                         <div
                           style={{
-                            color: "var(--setlog-card-text-secondary)",
+                            color: '#6b7280',
                             fontSize: '0.9rem',
                             textAlign: 'center',
                             padding: '1rem',
@@ -620,7 +737,7 @@ function AddConcertPage() {
                             padding: '0 12px',
                             display: 'flex',
                             alignItems: 'center',
-                            border: '1px solid var(--setlog-card-border)',
+                            border: '1px solid #dee2e6',
                             borderRadius: '10px',
                             justifyContent: 'space-between',
                           }}
@@ -649,7 +766,7 @@ function AddConcertPage() {
                               </span>
                             ))}
                           </div>
-                          <span style={{ fontWeight: '600', color: 'var(--setlog-card-text-secondary)', fontSize: '0.92rem' }}>
+                          <span style={{ fontWeight: '600', color: '#374151', fontSize: '0.92rem' }}>
                             {getRatingLabel(rating)}
                           </span>
                         </div>
@@ -688,7 +805,12 @@ function AddConcertPage() {
 
                     <Col xs={12}>
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.7rem' }}>
-                        <Button type="button" variant="outline-danger" disabled={saving} onClick={() => navigate("/")}>
+                        <Button
+                          type="button"
+                          variant="outline-danger"
+                          disabled={saving}
+                          onClick={() => navigate(id ? `/concerts/${id}` : '/')}
+                        >
                           Cancel
                         </Button>
 
@@ -699,7 +821,7 @@ function AddConcertPage() {
                               Saving…
                             </>
                           ) : (
-                            'Save Concert'
+                            'Save changes'
                           )}
                         </Button>
                       </div>
@@ -715,4 +837,4 @@ function AddConcertPage() {
   )
 }
 
-export default AddConcertPage
+export default EditConcertPage

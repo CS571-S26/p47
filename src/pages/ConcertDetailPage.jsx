@@ -4,15 +4,14 @@ import { Card, Row, Col, Button, ListGroup } from 'react-bootstrap'
 import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
-import SectionCard from '../components/SectionCard'
 import { useAuth } from '../contexts/authContext.js'
+import SectionCard from '../components/SectionCard'
 
 function ConcertDetailPage() {
   const { concerts, deleteConcert } = useContext(ConcertsContext)
   const navigate = useNavigate()
   const location = useLocation()
   const { id } = useParams()
-
   const { loginStatus } = useAuth()
 
   const concert = concerts.find((c) => c.id === id)
@@ -225,10 +224,15 @@ function ConcertDetailPage() {
             </Col>
             <Col xs="auto" style={{ display: 'flex', gap: '8px' }}>
               {loginStatus.loggedIn && (
-                <Button variant="outline-primary" style={styles.topButton}>
+                <Button
+                  variant="outline-primary"
+                  style={styles.topButton}
+                  onClick={() => navigate(`/concerts/${concert.id}/edit`)}
+                >
                   <Edit size={13} />
                   Edit Concert
-                </Button>)}
+                </Button>
+              )}
               {loginStatus.loggedIn && (
                 <Button
                   variant="outline-danger"
@@ -516,7 +520,7 @@ function ConcertDetailPage() {
                       ))}
                     </ListGroup>
                   ) : (
-                    <div style={{ color: 'var(--setlog-card-text-secondary' }}>No setlist available.</div>
+                    <div style={{ color: 'var(--setlog-card-text-secondary)' }}>No setlist available.</div>
                   )}
                 </SectionCard>
               </div>

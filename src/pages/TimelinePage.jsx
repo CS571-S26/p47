@@ -54,7 +54,7 @@ function TimelinePage() {
               <div style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)' }}>
                 Log in to see your shows
               </div>
-              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary' }}>
+              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
                 Your logged concerts are tied to your account on this device. Create an account or
                 log in to view and add shows.
               </p>
@@ -154,7 +154,7 @@ function TimelinePage() {
               <div style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)' }}>
                 No shows yet
               </div>
-              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary' }}>
+              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
                 Log a concert to build your timeline. Data is saved in this browser only
                 (local storage).
               </p>
