@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import TimelineConcert from '../components/TimelineConcert'
 import TimelineStats from '../components/TimelineStats'
-import { Container, Row, Col, Button } from 'react-bootstrap'
+import { Container, Row, Col, Button, Spinner } from 'react-bootstrap'
 import { Plus } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
@@ -9,14 +9,31 @@ import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
 
 function TimelinePage() {
-  const { concerts } = useContext(ConcertsContext)
-  const { loginStatus } = useAuth()
-
-  console.log(concerts)
+  const { concerts, loading: concertsLoading } = useContext(ConcertsContext)
+  const { loginStatus, loading: authLoading } = useAuth()
 
   const sorted = [...concerts].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   )
+
+  if (authLoading) {
+    return (
+      <Container fluid style={{ padding: '1rem' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '45vh',
+          }}
+        >
+          <Spinner animation="border" role="status" variant="primary">
+            <span className="visually-hidden">Loading session…</span>
+          </Spinner>
+        </div>
+      </Container>
+    )
+  }
 
   return (
     <Container fluid style={{ padding: '1rem' }}>
@@ -111,6 +128,19 @@ function TimelinePage() {
 
             </>
 
+          ) : concertsLoading && sorted.length === 0 ? (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '200px',
+              }}
+            >
+              <Spinner animation="border" role="status" variant="primary">
+                <span className="visually-hidden">Loading your shows…</span>
+              </Spinner>
+            </div>
           ) : sorted.length === 0 ? (
             <div
               style={{

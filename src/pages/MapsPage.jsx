@@ -27,7 +27,7 @@ function applyFilter(list, filter) {
 
 function MapsPage({ theme }) {
   const { concerts } = useContext(ConcertsContext)
-  const { loginStatus } = useAuth()
+  const { loginStatus, loading: authLoading } = useAuth()
   const [filter, setFilter] = useState('all')
 
   const filteredConcerts = applyFilter(concerts, filter)
@@ -91,7 +91,7 @@ function MapsPage({ theme }) {
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
       <span style={{ fontSize: '48px', fontWeight: '700', color: 'var(--setlog-primary-text)' }}>Concert Map</span>
 
-      {!loginStatus.loggedIn ? (
+      {!authLoading && !loginStatus.loggedIn ? (
         <p className="mb-2" style={{ fontSize: '15px', color: 'var(--setlog-secondary-text)' }}>
           Log in to see your shows on the map. Only concerts logged under your account appear here.
         </p>
