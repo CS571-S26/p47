@@ -154,6 +154,7 @@ function UserProfilePage() {
     localStorage.setItem(avatarStorageKey, clean)
     setAvatarOverride(clean)
     setAvatarDraft(clean)
+    window.dispatchEvent(new Event('avatarUpdated'))
   }
 
   function handleClearAvatar() {
@@ -161,6 +162,7 @@ function UserProfilePage() {
     localStorage.removeItem(avatarStorageKey)
     setAvatarOverride('')
     setAvatarDraft('')
+    window.dispatchEvent(new Event('avatarUpdated'))
   }
 
   return (
