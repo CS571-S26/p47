@@ -3,7 +3,7 @@
   --white: #ffffff;
 }
 
-/* Dark Mode */
+/* Light Mode */
 [data-theme='light'] {
   --setlog-primary: #df6c20;
   --setlog-primary-hover: #b4571a;
@@ -14,11 +14,12 @@
       #f6f4ef 100%);
   --setlog-primary-text: #000000;
   --setlog-secondary-text: #444040;
+  --setlog-blue-text: #4338ca;
   --setlog-card-bg: #fffaf5;
   --setlog-card-bg-secondary: #f1f5f9;
   --setlog-card-border: #e7d8cc;
   --setlog-card-text: #1f2937;
-  --setlog-card-text-secondary: #6b7280;
+  --setlog-card-text-secondary: #4b5563;
 
   --tag-genre-bg: #eef2ff;
   --tag-genre-text: #4f46e5;
@@ -38,17 +39,18 @@
   --setlog-primary: #d08a63;
   --setlog-primary-hover: #b8744f;
   --setlog-page-bg: linear-gradient(180deg,
-      #1c1730 0%,
-      #2b1f22 38%,
-      #3a3122 72%,
+      #2b263e 0%,
+      #2a1f2b 38%,
+      #332a24 72%,
       #121316 100%);
   --setlog-primary-text: #ffffff;
-  --setlog-secondary-text: #ffffff;
+  --setlog-secondary-text: #cbd5e1;
+  --setlog-blue-text: #9a93ff;
   --setlog-card-bg: #1f1b2e;
-  --setlog-card-bg-secondary: #2a243c;
-  --setlog-card-border: #3a3247;
+  --setlog-card-bg-secondary: #2b2740;
+  --setlog-card-border: #4a4458;
   --setlog-card-text: #f3f4f6;
-  --setlog-card-text-secondary: #b8bcc8;
+  --setlog-card-text-secondary: #c4c9d4;
 
   --tag-genre-bg: #2a2448;
   --tag-genre-text: #c7c2ff;
@@ -110,22 +112,8 @@ body {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23df6c20'/%3e%3c/svg%3e") !important;
 }
 
-[data-theme='light'] .form-switch .form-check-input:focus {
-  border-color: var(--setlog-primary) !important;
-  box-shadow: 0 0 0 0.2rem var(--setlog-focus-ring) !important;
-  background-color: var(--setlog-card-bg-secondary) !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23df6c20'/%3e%3c/svg%3e") !important;
-}
-
 [data-theme='dark'] .form-switch .form-check-input {
   border-color: var(--setlog-primary) !important;
-  background-color: var(--setlog-card-bg-secondary) !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23d08a63'/%3e%3c/svg%3e") !important;
-}
-
-[data-theme='dark'] .form-switch .form-check-input:focus {
-  border-color: var(--setlog-primary) !important;
-  box-shadow: 0 0 0 0.2rem var(--setlog-focus-ring) !important;
   background-color: var(--setlog-card-bg-secondary) !important;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23d08a63'/%3e%3c/svg%3e") !important;
 }
@@ -134,6 +122,12 @@ body {
   background-color: var(--setlog-primary) !important;
   border-color: var(--setlog-primary) !important;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e") !important;
+}
+
+[data-theme='light'] .form-switch .form-check-input:focus,
+[data-theme='dark'] .form-switch .form-check-input:focus {
+  border-color: var(--setlog-primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(208, 138, 99, 0.2) !important;
 }
 
 .form-control {

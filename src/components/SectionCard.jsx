@@ -6,7 +6,7 @@ function SectionCard({ title, subtitle, children }) {
       style={{
         width: '100%',
         borderRadius: '18px',
-        background: 'var(--setlog-card)',
+        background: 'var(--setlog-card-bg)',
         border: '1px solid var(--setlog-card-border)',
         boxShadow: '0 3px 12px var(--setlog-card-bg)',
         marginBottom: '0.5rem',

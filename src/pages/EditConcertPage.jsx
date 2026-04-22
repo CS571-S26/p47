@@ -85,7 +85,7 @@ function EditConcertPage() {
       fontWeight: '600',
       marginBottom: '0.4rem',
       marginTop: '0rem',
-      color: '#374151',
+      color: 'var(--setlog-primary-text)',
       fontSize: '0.95rem',
     },
   }
@@ -252,14 +252,15 @@ function EditConcertPage() {
             width: '100%',
             maxWidth: '560px',
             borderRadius: '20px',
-            border: '1px solid #dbe3ea',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+            border: '1px solid var(--setlog-card-border)',
+            background: 'var(--setlog-card-bg)',
+            boxShadow: '0 8px 24px var(--setlog-card-bg)',
             padding: '1rem',
           }}
         >
           <Card.Body>
-            <div style={{ fontSize: '36px', fontWeight: '700' }}>Edit Concert</div>
-            <p className="text-secondary mt-3 mb-4">
+            <div style={{ fontSize: '36px', fontWeight: '700', color: 'var(--setlog-card-text)' }}>Edit Concert</div>
+            <p style={{ color: 'var(--setlog-card-text-secondary)' }} className="mt-3 mb-4">
               Concerts you log are tied to your account on this device. Log in or register to
               continue.
             </p>
@@ -309,16 +310,27 @@ function EditConcertPage() {
         <Card
           style={{
             width: '100%',
-            maxWidth: '560px',
-            borderRadius: '20px',
-            border: '1px solid #dbe3ea',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
-            padding: '1rem',
+            maxWidth: '1400px',
+            borderRadius: '18px',
+            border: '1px solid var(--setlog-card-border)',
+            background: 'var(--setlog-card-bg)',
+            boxShadow: '0 8px 24px var(--setlog-card-bg)',
+            padding: '0.5rem',
           }}
         >
           <Card.Body>
-            <div style={{ fontSize: '28px', fontWeight: '700' }}>Concert not found</div>
-            <p className="text-secondary mt-3 mb-4">
+            <div
+              style={{
+                fontSize: '2.15rem',
+                lineHeight: 1.1,
+                fontWeight: '700',
+                marginBottom: '0.6rem',
+                color: 'var(--setlog-card-text)'
+              }}
+            >
+              Concert not found
+            </div>
+            <p className="mt-3 mb-4" style={{ color: 'var(--setlog-card-text-secondary)' }}>
               This concert doesn’t exist or may have been deleted.
             </p>
             <Button variant="primary" onClick={() => navigate('/')}>
@@ -365,8 +377,9 @@ function EditConcertPage() {
           width: '100%',
           maxWidth: '1400px',
           borderRadius: '18px',
-          border: '1px solid #dbe3ea',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+          border: '1px solid var(--setlog-card-border)',
+          background: 'var(--setlog-card-bg)',
+          boxShadow: '0 8px 24px var(--setlog-card-bg)',
           padding: '0.5rem',
         }}
       >
@@ -377,18 +390,19 @@ function EditConcertPage() {
               lineHeight: 1.1,
               fontWeight: '700',
               marginBottom: '0.6rem',
+              color: 'var(--setlog-card-text)'
             }}
           >
             Edit Concert
           </div>
 
           {formError ? (
-            <Alert variant="danger" style={{ marginTop: '0.6rem', marginBottom: 0 }}>
+            <Alert variant="danger" className="mb-3" style={{ marginTop: '0.6rem', marginBottom: 0, background: "var(--tag-not-attended-bg)", color: "var(--tag-not-attended-text)" }}>
               {formError}
             </Alert>
           ) : null}
 
-          <div style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '0.7rem' }}>
+          <div style={{ fontSize: '0.85rem', color: 'var(--setlog-card-text-secondary)', marginBottom: '0.7rem' }}>
             <span style={{ color: '#dc3545', fontWeight: 700 }}>*</span> Required fields
           </div>
 
@@ -506,14 +520,14 @@ function EditConcertPage() {
                           <Col lg={5}>
                             <div
                               style={{
-                                border: '1px solid #e5e7eb',
+                                border: '1px solid var(--setlog-card-border)',
                                 borderRadius: '10px',
                                 padding: '10px',
-                                background: '#fafafa',
+                                background: 'var(--setlog-card-bg-secondary)',
                                 height: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                justifyContent: 'space-between',
+                                justifyContent: 'space-between'
                               }}
                             >
                               <InputGroup>
@@ -531,7 +545,7 @@ function EditConcertPage() {
                                   }}
                                 />
                                 <Button
-                                  variant="outline-primary"
+                                  variant="primary"
                                   style={{ borderRadius: '10px', paddingLeft: '12px', paddingRight: '12px' }}
                                   onClick={handleAddSong}
                                   disabled={!newSongTitle.trim()}
@@ -553,7 +567,7 @@ function EditConcertPage() {
                                     backgroundColor: !canImportFromSetlistFm || importingSetlist ? '#d1d5db' : undefined,
                                     borderColor: !canImportFromSetlistFm || importingSetlist ? '#d1d5db' : undefined,
                                     color: !canImportFromSetlistFm || importingSetlist ? '#6b7280' : undefined,
-                                    fontSize: '0.92rem',
+                                    fontSize: '0.90rem',
                                   }}
                                 >
                                   {importingSetlist ? (
@@ -579,13 +593,13 @@ function EditConcertPage() {
                           <Col lg={7}>
                             <div
                               style={{
-                                border: '1px solid #e5e7eb',
+                                border: '1px solid var(--setlog-card-border)',
                                 borderRadius: '10px',
                                 padding: '10px',
-                                background: '#fff',
+                                background: 'var(--setlog-card-bg-secondary)',
                               }}
                             >
-                              <div style={{ fontWeight: 600, color: '#374151', marginBottom: '8px', fontSize: '0.95rem' }}>
+                              <div style={{ fontWeight: 600, color: 'var(--setlog-card-text)', marginBottom: '8px', fontSize: '0.95rem' }}>
                                 Current setlist ({normalizedSetlist.length})
                               </div>
                               {normalizedSetlist.length ? (
@@ -599,6 +613,8 @@ function EditConcertPage() {
                                           alignItems: 'center',
                                           justifyContent: 'space-between',
                                           gap: '10px',
+                                          background: 'var(--setlog-card-bg)',
+                                          border: '1px solid var(--setlog-card-border)',
                                           paddingTop: '0.55rem',
                                           paddingBottom: '0.55rem',
                                         }}
@@ -607,6 +623,7 @@ function EditConcertPage() {
                                           style={{
                                             fontWeight: 500,
                                             fontSize: '0.95rem',
+                                            color: 'var(--setlog-card-text)'
                                           }}
                                         >
                                           {idx + 1}. {title}
@@ -615,7 +632,7 @@ function EditConcertPage() {
                                           <Button
                                             type="button"
                                             size="sm"
-                                            variant="outline-secondary"
+                                            variant="secondary"
                                             onClick={() => handleMoveSong(idx, -1)}
                                             disabled={idx === 0}
                                           >
@@ -624,7 +641,7 @@ function EditConcertPage() {
                                           <Button
                                             type="button"
                                             size="sm"
-                                            variant="outline-secondary"
+                                            variant="secondary"
                                             onClick={() => handleMoveSong(idx, 1)}
                                             disabled={idx === normalizedSetlist.length - 1}
                                           >
@@ -644,8 +661,8 @@ function EditConcertPage() {
                                   </ListGroup>
                                 </div>
                               ) : (
-                                <div style={{ marginTop: '0.45rem', color: '#6b7280', fontSize: '0.85rem' }}>
-                                  No songs yet. Add one on the left or reimport from setlist.fm.
+                                <div style={{ marginTop: '0.45rem', color: 'var(--setlog-card-text-secondary)', fontSize: '0.85rem' }}>
+                                  No songs yet. Add one on the left or import from setlist.fm.
                                 </div>
                               )}
                             </div>
@@ -669,9 +686,9 @@ function EditConcertPage() {
                       style={{
                         width: '100%',
                         minHeight: '270px',
-                        border: '1px solid #e5e7eb',
+                        border: '1px solid var(--setlog-card-border)',
                         borderRadius: '10px',
-                        background: '#f9fafb',
+                        background: "var(--setlog-card-bg-secondary)",
                         overflow: 'hidden',
                         display: 'flex',
                         alignItems: 'center',
@@ -692,7 +709,7 @@ function EditConcertPage() {
                       ) : (
                         <div
                           style={{
-                            color: '#6b7280',
+                            color: "var(--setlog-card-text-secondary)",
                             fontSize: '0.9rem',
                             textAlign: 'center',
                             padding: '1rem',
@@ -737,7 +754,7 @@ function EditConcertPage() {
                             padding: '0 12px',
                             display: 'flex',
                             alignItems: 'center',
-                            border: '1px solid #dee2e6',
+                            border: '1px solid var(--setlog-card-border)',
                             borderRadius: '10px',
                             justifyContent: 'space-between',
                           }}
@@ -766,7 +783,7 @@ function EditConcertPage() {
                               </span>
                             ))}
                           </div>
-                          <span style={{ fontWeight: '600', color: '#374151', fontSize: '0.92rem' }}>
+                          <span style={{ fontWeight: '600', color: 'var(--setlog-card-text-secondary)', fontSize: '0.92rem' }}>
                             {getRatingLabel(rating)}
                           </span>
                         </div>

@@ -1,4 +1,5 @@
 import { Container, Nav, Navbar, FormControl, Row, Col, Form, Button } from 'react-bootstrap'
+import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Map, CirclePlus, Settings, List, Search, Moon, Sun, User, LogOut } from 'lucide-react'
 
@@ -6,9 +7,51 @@ import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
 import './NavBar.css'
 
+const AVATAR_STORAGE_PREFIX = 'p47:profileAvatar:'
+
+function normalizeString(value) {
+  return typeof value === 'string' ? value.trim() : ''
+}
+
 function NavBar({ theme, setTheme }) {
-  const { loginStatus, logout } = useAuth()
+  const { loginStatus, logout, user } = useAuth()
   const navigate = useNavigate()
+  const [avatarUrl, setAvatarUrl] = useState('')
+
+  function loadAvatar() {
+    const uid = user?.uid
+
+    if (!uid) {
+      setAvatarUrl('')
+      return
+    }
+
+    const savedAvatar = normalizeString(localStorage.getItem(`${AVATAR_STORAGE_PREFIX}${uid}`))
+    const authAvatar = normalizeString(user?.photoURL)
+
+    if (savedAvatar) {
+      setAvatarUrl(savedAvatar)
+    } else if (authAvatar) {
+      setAvatarUrl(authAvatar)
+    } else {
+      setAvatarUrl('')
+    }
+  }
+
+  useEffect(() => {
+    loadAvatar()
+  }, [user])
+
+  useEffect(() => {
+    function handleAvatarUpdated() {
+      loadAvatar()
+    }
+    window.addEventListener('avatarUpdated', handleAvatarUpdated)
+
+    return () => {
+      window.removeEventListener('avatarUpdated', handleAvatarUpdated)
+    }
+  }, [user])
 
   function handleToggleTheme() {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
@@ -18,6 +61,18 @@ function NavBar({ theme, setTheme }) {
     logout()
     navigate('/')
   }
+
+  function createInitials(label) {
+    const clean = normalizeString(label)
+    if (!clean) return '?'
+    const parts = clean.split(/\s+/).filter(Boolean)
+    if (parts.length === 0) return '?'
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+    return `${parts[0][0] ?? ''}${parts[1][0] ?? ''}`.toUpperCase()
+  }
+
+  const label = loginStatus.username ?? 'User'
+  const initials = createInitials(label)
 
   return (
     <Navbar
@@ -96,7 +151,7 @@ function NavBar({ theme, setTheme }) {
 
             <Col xs="auto">
               {loginStatus.loggedIn ? (
-                <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span
                     className="text-light small me-2 d-none d-md-inline"
                     style={{ verticalAlign: 'middle' }}
@@ -107,14 +162,51 @@ function NavBar({ theme, setTheme }) {
                     variant="outline-light"
                     as={NavLink}
                     to="/user-profile"
-                    className="me-1"
+                    style={{
+                      width: '46px',
+                      height: '46px',
+                      borderRadius: '999px',
+                      padding: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                    }}
                   >
-                    <User size={32} />
+                    {avatarUrl ? (
+                      <img
+                        src={avatarUrl}
+                        alt="User avatar"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: '88px',
+                          height: '88px',
+                          borderRadius: '999px',
+                          border: '2px solid var(--setlog-card-border)',
+                          background: 'var(--setlog-card-bg-secondary)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '20px',
+                          fontWeight: 700,
+                          color: 'var(--setlog-primary)',
+                        }}
+                      >
+                        {initials}
+                      </div>
+                    )}
                   </Button>
                   <Button variant="outline-light" onClick={handleLogout} title="Log out">
                     <LogOut size={28} />
                   </Button>
-                </>
+                </div>
               ) : (
                 <>
                   <Button variant="outline-light" as={NavLink} to="/login" className="me-1">
