@@ -1,3 +1,15 @@
+.maps-filter-row {
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}
+
+.maps-filter-row-inner {
+  flex-wrap: nowrap;
+  margin: 0;
+  min-width: min-content;
+}
+
 .map-box {
   flex: 1;
   width: 100%;
