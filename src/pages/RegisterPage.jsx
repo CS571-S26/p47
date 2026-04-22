@@ -119,63 +119,6 @@ function RegisterPage() {
         </Card.Body>
       </Card>
     </section>
-
-    // <section id="center">
-    //   <div style={{ maxWidth: '420px', margin: '0 auto' }}>
-    //     <h1 style={{color: 'var(--setlog-primary-text)'}}>Create account</h1>
-    //     <p  style={{color: 'var(--setlog-secondary-text)'}}>
-    //       Create an account to sync your concerts across devices.
-    //     </p>
-    //     {error ? (
-    //       <Alert variant="danger" className="mb-3" style={{ marginTop: '0.6rem', marginBottom: 0, background: "var(--tag-not-attended-bg)", color: "var(--tag-not-attended-text)" }}>
-    //         {error}
-    //       </Alert>
-    //     ) : null}
-    //     <Form onSubmit={handleSubmit}>
-    //       <Form.Group className="mb-3" controlId="registerDisplayName">
-    //         <Form.Label style={{color: 'var(--setlog-primary-text)'}}>Display name</Form.Label>
-    //         <Form.Control
-    //           value={displayName}
-    //           onChange={(e) => setDisplayName(e.target.value)}
-    //           autoComplete="nickname"
-    //         />
-    //       </Form.Group>
-    //       <Form.Group className="mb-3" controlId="registerEmail">
-    //         <Form.Label style={{color: 'var(--setlog-primary-text)'}}>Email</Form.Label>
-    //         <Form.Control
-    //           type="email"
-    //           value={email}
-    //           onChange={(e) => setEmail(e.target.value)}
-    //           autoComplete="email"
-    //         />
-    //       </Form.Group>
-    //       <Form.Group className="mb-3" controlId="registerPassword">
-    //         <Form.Label style={{color: 'var(--setlog-primary-text)'}}>Password</Form.Label>
-    //         <Form.Control
-    //           type="password"
-    //           value={password}
-    //           onChange={(e) => setPassword(e.target.value)}
-    //           autoComplete="new-password"
-    //         />
-    //       </Form.Group>
-    //       <Form.Group className="mb-3" controlId="registerConfirmPassword">
-    //         <Form.Label style={{color: 'var(--setlog-primary-text)'}}>Confirm password</Form.Label>
-    //         <Form.Control
-    //           type="password"
-    //           value={confirmPassword}
-    //           onChange={(e) => setConfirmPassword(e.target.value)}
-    //           autoComplete="new-password"
-    //         />
-    //       </Form.Group>
-    //       <Button type="submit" variant="primary" className="me-2">
-    //         Register
-    //       </Button>
-    //       <Button as={Link} to="/login" variant="outline-secondary">
-    //         Back to log in
-    //       </Button>
-    //     </Form>
-    //   </div>
-    // </section>
   )
 }
 
