@@ -7,6 +7,7 @@
 [data-theme='light'] {
   --setlog-primary: #df6c20;
   --setlog-primary-hover: #b4571a;
+  --setlog-button-text: #ffffff;
   --setlog-page-bg: linear-gradient(180deg,
       #d5cef3 0%,
       #e8d7cf 38%,
@@ -38,13 +39,14 @@
 [data-theme='dark'] {
   --setlog-primary: #d08a63;
   --setlog-primary-hover: #b8744f;
+  --setlog-button-text: #ffffff;
   --setlog-page-bg: linear-gradient(180deg,
       #2b263e 0%,
       #2a1f2b 38%,
       #332a24 72%,
       #121316 100%);
   --setlog-primary-text: #ffffff;
-  --setlog-secondary-text: #cbd5e1;
+  --setlog-secondary-text: #3a2b22;
   --setlog-blue-text: #93c5fd;
   --setlog-card-bg: #1f1b2e;
   --setlog-card-bg-secondary: #2b2740;
@@ -98,7 +100,7 @@ body {
 .btn-primary {
   background-color: var(--setlog-primary) !important;
   border-color: var(--setlog-primary) !important;
-  color: var(--white) !important;
+  color: var(--setlog-button-text) !important;
 }
 
 .btn-primary:hover {
