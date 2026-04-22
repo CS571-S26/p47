@@ -129,7 +129,7 @@ function ConcertDetailPage() {
       fontSize: '14px',
       display: 'inline-flex',
       gap: '5px',
-      alignItems: 'center'
+      alignItems: 'center',
     },
     concertTags: {
       fontSize: '0.85rem',
@@ -214,7 +214,7 @@ function ConcertDetailPage() {
                   padding: 0,
                   textDecoration: 'none',
                   fontWeight: 700,
-                  color: '#4338ca',
+                  color: 'var(--setlog-blue-text)',
                   fontSize: '0.9rem',
                 }}
               >
