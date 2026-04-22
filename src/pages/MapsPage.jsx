@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Button, Row, Col } from 'react-bootstrap'
 import L from 'leaflet'
 import { MapPin } from 'lucide-react'
@@ -7,30 +7,31 @@ import { renderToStaticMarkup } from 'react-dom/server'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
+import {
+  applyMapFilter,
+  getMapFilterOptions,
+  isStaleMapFilter,
+  mapFiltersEqual,
+} from '../utils/mapFilters.js'
 import './MapsPage.css'
 import MapsMarkerPopup from '../components/MapsMarkerPopup'
-
-
-// TODO: Improve filtering (e.g. dynamic years/genres from stored concerts, partial genre match).
-function applyFilter(list, filter) {
-  if (filter === 'all') return list
-  if (filter === '2025' || filter === '2024') {
-    return list.filter((c) => String(c.date ?? '').startsWith(filter))
-  }
-  if (filter === 'Rock' || filter === 'Pop') {
-    return list.filter(
-      (c) => String(c.genre ?? '').toLowerCase() === filter.toLowerCase(),
-    )
-  }
-  return list
-}
 
 function MapsPage({ theme }) {
   const { concerts } = useContext(ConcertsContext)
   const { loginStatus, loading: authLoading } = useAuth()
-  const [filter, setFilter] = useState('all')
+  const [filter, setFilter] = useState({ kind: 'all' })
 
-  const filteredConcerts = applyFilter(concerts, filter)
+  const { years, genres } = getMapFilterOptions(concerts)
+
+  useEffect(() => {
+    const { years: yList, genres: gList } = getMapFilterOptions(concerts)
+    setFilter((prev) => {
+      if (isStaleMapFilter(prev, yList, gList)) return { kind: 'all' }
+      return prev
+    })
+  }, [concerts])
+
+  const filteredConcerts = applyMapFilter(concerts, filter)
 
   const mappable = filteredConcerts.filter((c) => c.coords?.length === 2)
   const skippedCount = filteredConcerts.length - mappable.length
@@ -48,17 +49,6 @@ function MapsPage({ theme }) {
     className: '',
     iconSize: [28, 28],
     iconAnchor: [14, 28],
-  })
-
-  function getButtonStyle(value) {
-    return filter === value ? styles.selectedButton : styles.unselectedButton
-  }
-
-  const grouped = {}
-  mappable.forEach((concert) => {
-    const key = concert.coords.join(',')
-    if (!grouped[key]) grouped[key] = []
-    grouped[key].push(concert)
   })
 
   const styles = {
@@ -82,10 +72,22 @@ function MapsPage({ theme }) {
       fontWeight: 700,
     },
     filterCol: {
-      padding: '12px',
-      width: '10%',
+      padding: '4px 6px',
     },
   }
+
+  function getButtonStyle(value) {
+    return mapFiltersEqual(filter, value)
+      ? styles.selectedButton
+      : styles.unselectedButton
+  }
+
+  const grouped = {}
+  mappable.forEach((concert) => {
+    const key = concert.coords.join(',')
+    if (!grouped[key]) grouped[key] = []
+    grouped[key].push(concert)
+  })
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
@@ -104,56 +106,41 @@ function MapsPage({ theme }) {
         </p>
       ) : null}
 
-      <Row style={{ gap: '8px' }}>
-        <Col xs="auto" style={styles.filterCol}>
-          <Button
-            style={getButtonStyle('all')}
-            onClick={() => setFilter('all')}
-            variant="light"
-          >
-            All
-          </Button>
-        </Col>
-        <Col xs="auto" style={styles.filterCol}>
-          <Button
-            style={getButtonStyle('2025')}
-            onClick={() => setFilter('2025')}
-            variant="light"
-          >
-            2025
-          </Button>
-        </Col>
-        <Col xs="auto" style={styles.filterCol}>
-          <Button
-            style={getButtonStyle('2024')}
-            onClick={() => setFilter('2024')}
-            variant="light"
-          >
-            2024
-          </Button>
-        </Col>
-        <Col xs="auto" style={styles.filterCol}>
-          <Button
-            style={getButtonStyle('Rock')}
-            onClick={() => setFilter('Rock')}
-            variant="light"
-          >
-            Rock
-          </Button>
-        </Col>
-        <Col xs="auto" style={styles.filterCol}>
-          <Button
-            style={getButtonStyle('Pop')}
-            onClick={() => setFilter('Pop')}
-            variant="light"
-          >
-            Pop
-          </Button>
-        </Col>
-        <Col xs="auto" style={styles.filterCol}>
-          <Button style={styles.unselectedButton}>More</Button>
-        </Col>
-      </Row>
+      <div className="maps-filter-row">
+        <Row className="maps-filter-row-inner flex-nowrap g-2">
+          <Col xs="auto" style={styles.filterCol}>
+            <Button
+              style={getButtonStyle({ kind: 'all' })}
+              onClick={() => setFilter({ kind: 'all' })}
+              variant="light"
+            >
+              All
+            </Button>
+          </Col>
+          {years.map((year) => (
+            <Col key={`y-${year}`} xs="auto" style={styles.filterCol}>
+              <Button
+                style={getButtonStyle({ kind: 'year', year })}
+                onClick={() => setFilter({ kind: 'year', year })}
+                variant="light"
+              >
+                {year}
+              </Button>
+            </Col>
+          ))}
+          {genres.map((genre) => (
+            <Col key={`g-${genre}`} xs="auto" style={styles.filterCol}>
+              <Button
+                style={getButtonStyle({ kind: 'genre', genre })}
+                onClick={() => setFilter({ kind: 'genre', genre })}
+                variant="light"
+              >
+                {genre}
+              </Button>
+            </Col>
+          ))}
+        </Row>
+      </div>
 
       <div className="map-box">
         <MapContainer key={theme} center={[39.5, -98.35]} zoom={4} scrollWheelZoom>
