@@ -226,10 +226,15 @@ function ConcertDetailPage() {
               {loginStatus.loggedIn && (
                 <Button
                   variant="outline-primary"
-                  style={styles.topButton}
+                  style={{
+                    ...styles.topButton,
+                    background: 'transparent',
+                    border: '1px solid var(--setlog-blue-text)',
+                    color: 'var(--setlog-blue-text)',
+                  }}
                   onClick={() => navigate(`/concerts/${concert.id}/edit`)}
                 >
-                  <Edit size={13} />
+                  <Edit size={13} color="var(--setlog-blue-text)" />
                   Edit Concert
                 </Button>
               )}
