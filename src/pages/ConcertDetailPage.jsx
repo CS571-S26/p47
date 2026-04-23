@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { Alert, Card, Row, Col, Button, ListGroup, Spinner } from 'react-bootstrap'
 import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info } from 'lucide-react'
@@ -37,15 +37,11 @@ function ConcertDetailPage() {
   })
 
   const concert = concerts.find((c) => c.id === id)
-  const setlistSongs = useMemo(
-    () =>
-      Array.isArray(concert?.setlist)
-        ? concert.setlist
-            .map((song) => (typeof song === 'string' ? song.trim() : ''))
-            .filter(Boolean)
-        : [],
-    [concert?.setlist],
-  )
+  const setlistSongs = Array.isArray(concert?.setlist)
+    ? concert.setlist
+        .map((song) => (typeof song === 'string' ? song.trim() : ''))
+        .filter(Boolean)
+    : []
 
   const backLabel = location.state?.backLabel || 'Back to Timeline'
   const backTo = typeof location.state?.from === 'string' ? location.state.from : '/'

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { SpotifyContext } from './spotifyContext.js'
 import {
@@ -161,32 +161,19 @@ export function SpotifyProvider({ children }) {
     [config.error, config.isConfigured, connect, session],
   )
 
-  const value = useMemo(
-    () => ({
-      session,
-      loading,
-      authenticating,
-      error: error || config.error,
-      configError: config.error,
-      isConfigured: config.isConfigured,
-      isConnected: hasSpotifyConnection(session),
-      connect,
-      disconnect,
-      ensureAccessToken,
-      clearError: () => setError(''),
-    }),
-    [
-      authenticating,
-      config.error,
-      config.isConfigured,
-      connect,
-      ensureAccessToken,
-      error,
-      loading,
-      session,
-      disconnect,
-    ],
-  )
+  const value = {
+    session,
+    loading,
+    authenticating,
+    error: error || config.error,
+    configError: config.error,
+    isConfigured: config.isConfigured,
+    isConnected: hasSpotifyConnection(session),
+    connect,
+    disconnect,
+    ensureAccessToken,
+    clearError: () => setError(''),
+  }
 
   return <SpotifyContext.Provider value={value}>{children}</SpotifyContext.Provider>
 }
