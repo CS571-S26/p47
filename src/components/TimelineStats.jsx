@@ -48,37 +48,38 @@ function TimelineStats() {
         background: 'var(--setlog-card-bg)',
       }}
     >
-      <div
+      <h2
         style={{
+          margin: 0,
           fontSize: '20px',
           fontWeight: '500',
           marginBottom: '16px',
           lineHeight: '1.05',
-          color: 'var(--setlog-card-text)'
+          color: 'var(--setlog-card-text)',
         }}
       >
         Your Stats
-      </div>
+      </h2>
       <StatRow
-        icon={<Calendar size={20} color='var(--setlog-primary)' />}
+        icon={<Calendar size={20} color="var(--setlog-card-text)" aria-hidden />}
         value={stats.showsLogged}
         label="Shows Logged"
       />
 
       <StatRow
-        icon={<Users size={20} color='var(--setlog-primary)' />}
+        icon={<Users size={20} color="var(--setlog-card-text)" aria-hidden />}
         value={stats.artistsSeen}
         label="Artist Seen"
       />
 
       <StatRow
-        icon={<MapPin size={20} color='var(--setlog-primary)' />}
+        icon={<MapPin size={20} color="var(--setlog-card-text)" aria-hidden />}
         value={stats.citiesVisited}
         label="Cities Visited"
       />
 
       <StatRow
-        icon={<Star size={20} color='var(--setlog-primary)' />}
+        icon={<Star size={20} color="var(--setlog-card-text)" aria-hidden />}
         value={stats.avgRating}
         label="Average Rating"
       />

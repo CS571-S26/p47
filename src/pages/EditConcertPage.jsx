@@ -237,7 +237,7 @@ function EditConcertPage() {
   if (!loginStatus.loggedIn) {
     return (
       <section
-        id="center"
+        className="page-shell"
         style={{
           flex: 1,
           width: '100%',
@@ -259,7 +259,7 @@ function EditConcertPage() {
           }}
         >
           <Card.Body>
-            <div style={{ fontSize: '36px', fontWeight: '700', color: 'var(--setlog-card-text)' }}>Edit Concert</div>
+            <h1 style={{ fontSize: '36px', fontWeight: '700', color: 'var(--setlog-card-text)', margin: 0 }}>Edit Concert</h1>
             <p style={{ color: 'var(--setlog-card-text-secondary)' }} className="mt-3 mb-4">
               Concerts you log are tied to your account on this device. Log in or register to
               continue.
@@ -279,7 +279,7 @@ function EditConcertPage() {
   if (loginStatus.loggedIn && loading) {
     return (
       <section
-        id="center"
+        className="page-shell"
         style={{
           flex: 1,
           width: '100%',
@@ -289,7 +289,9 @@ function EditConcertPage() {
           alignItems: 'center',
         }}
       >
-        <Spinner animation="border" role="status" />
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading concert…</span>
+        </Spinner>
       </section>
     )
   }
@@ -297,7 +299,7 @@ function EditConcertPage() {
   if (loginStatus.loggedIn && !loading && id && !getConcert(id)) {
     return (
       <section
-        id="center"
+        className="page-shell"
         style={{
           flex: 1,
           width: '100%',
@@ -319,17 +321,18 @@ function EditConcertPage() {
           }}
         >
           <Card.Body>
-            <div
+            <h1
               style={{
                 fontSize: '2.15rem',
                 lineHeight: 1.1,
                 fontWeight: '700',
                 marginBottom: '0.6rem',
-                color: 'var(--setlog-card-text)'
+                marginTop: 0,
+                color: 'var(--setlog-card-text)',
               }}
             >
               Concert not found
-            </div>
+            </h1>
             <p className="mt-3 mb-4" style={{ color: 'var(--setlog-card-text-secondary)' }}>
               This concert doesn’t exist or may have been deleted.
             </p>
@@ -345,7 +348,7 @@ function EditConcertPage() {
   if (loginStatus.loggedIn && id && getConcert(id) && !formReady) {
     return (
       <section
-        id="center"
+        className="page-shell"
         style={{
           flex: 1,
           width: '100%',
@@ -355,14 +358,16 @@ function EditConcertPage() {
           alignItems: 'center',
         }}
       >
-        <Spinner animation="border" role="status" />
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Preparing form…</span>
+        </Spinner>
       </section>
     )
   }
 
   return (
     <section
-      id="center"
+      className="page-shell"
       style={{
         flex: 1,
         width: '100%',
@@ -384,17 +389,18 @@ function EditConcertPage() {
         }}
       >
         <Card.Body>
-          <div
+          <h1
             style={{
               fontSize: '2.15rem',
               lineHeight: 1.1,
               fontWeight: '700',
               marginBottom: '0.6rem',
-              color: 'var(--setlog-card-text)'
+              marginTop: 0,
+              color: 'var(--setlog-card-text)',
             }}
           >
             Edit Concert
-          </div>
+          </h1>
 
           {formError ? (
             <Alert variant="danger" className="mb-3" style={{ marginTop: '0.6rem', marginBottom: 0, background: "var(--tag-not-attended-bg)", color: "var(--tag-not-attended-text)" }}>
@@ -775,7 +781,7 @@ function EditConcertPage() {
                                 style={{
                                   fontSize: '1.2rem',
                                   cursor: 'pointer',
-                                  color: star <= rating ? '#f59e0b' : '#d1d5db',
+                                  color: star <= rating ? 'var(--setlog-rating-filled)' : 'var(--setlog-rating-empty)',
                                   lineHeight: 1,
                                 }}
                               >

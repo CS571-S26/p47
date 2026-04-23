@@ -34,7 +34,7 @@ function LoginPage() {
 
   return (
     <section
-      id="center"
+      className="page-shell"
       style={{
         flex: 1,
         width: '100%',
@@ -56,7 +56,7 @@ function LoginPage() {
         }}
       >
         <Card.Body>
-          <div style={{ fontSize: '36px', fontWeight: '700', color: 'var(--setlog-card-text)' }}>Log in</div>
+          <h1 style={{ fontSize: '36px', fontWeight: '700', color: 'var(--setlog-card-text)', margin: 0 }}>Log in</h1>
           <p style={{ color: 'var(--setlog-card-text-secondary)' }} className="mt-3 mb-4">
             Log in to sync your concerts across devices.
           </p>

@@ -3,66 +3,71 @@
   --white: #ffffff;
 }
 
-/* Light Mode */
+/* Light Mode — primaries tuned for ≥4.5:1 with white button text (WCAG AA) */
 [data-theme='light'] {
-  --setlog-primary: #df6c20;
-  --setlog-primary-hover: #b4571a;
+  --setlog-primary: #a84a0d;
+  --setlog-primary-hover: #863c0b;
   --setlog-page-bg: linear-gradient(180deg,
       #d5cef3 0%,
       #e8d7cf 38%,
       #ead7ad 72%,
       #f6f4ef 100%);
   --setlog-primary-text: #000000;
-  --setlog-secondary-text: #444040;
-  --setlog-blue-text: #4338ca;
+  --setlog-secondary-text: #2a2630;
+  --setlog-blue-text: #3730a3;
   --setlog-card-bg: #fffaf5;
   --setlog-card-bg-secondary: #f1f5f9;
   --setlog-card-border: #e7d8cc;
   --setlog-card-text: #1f2937;
-  --setlog-card-text-secondary: #4b5563;
+  --setlog-card-text-secondary: #374151;
 
   --tag-genre-bg: #eef2ff;
-  --tag-genre-text: #4f46e5;
+  --tag-genre-text: #3730a3;
 
   --tag-attended-bg: #dcfce7;
-  --tag-attended-text: #166534;
+  --tag-attended-text: #14532d;
 
   --tag-not-attended-bg: #fee2e2;
-  --tag-not-attended-text: #b91c1c;
+  --tag-not-attended-text: #991b1b;
 
   --tag-favorite-bg: #fef3c7;
-  --tag-favorite-text: #92400e;
+  --tag-favorite-text: #78350f;
+
+  --setlog-rating-filled: #b45309;
+  --setlog-rating-empty: #64748b;
 }
 
-/* Dark Mode */
+/* Dark Mode — stronger text on fills; primary dark enough for white label text */
 [data-theme='dark'] {
-  --setlog-primary: #d08a63;
-  --setlog-primary-hover: #b8744f;
+  --setlog-primary: #8f4a24;
+  --setlog-primary-hover: #743c1c;
   --setlog-page-bg: linear-gradient(180deg,
       #2b263e 0%,
       #2a1f2b 38%,
       #332a24 72%,
       #121316 100%);
   --setlog-primary-text: #ffffff;
-  --setlog-secondary-text: #cbd5e1;
-  --setlog-blue-text: #9a93ff;
+  --setlog-secondary-text: #e2e8f0;
+  --setlog-blue-text: #c4b5fd;
   --setlog-card-bg: #1f1b2e;
   --setlog-card-bg-secondary: #2b2740;
   --setlog-card-border: #4a4458;
   --setlog-card-text: #f3f4f6;
-  --setlog-card-text-secondary: #c4c9d4;
+  --setlog-card-text-secondary: #d1d5db;
 
-  --tag-genre-bg: #2a2448;
-  --tag-genre-text: #c7c2ff;
+  --tag-genre-bg: #312a55;
+  --tag-genre-text: #e8e4ff;
 
-  --tag-attended-bg: #1d3a2b;
-  --tag-attended-text: #86efac;
+  --tag-attended-bg: #163c28;
+  --tag-attended-text: #bbf7d0;
 
   --tag-not-attended-bg: #4a1f24;
-  --tag-not-attended-text: #fca5a5;
+  --tag-not-attended-text: #fecaca;
 
   --tag-favorite-bg: #4a3820;
-  --tag-favorite-text: #fcd34d;
+  --setlog-rating-filled: #fbbf24;
+  --setlog-rating-empty: #94a3b8;
+  --tag-favorite-text: #fde68a;
 }
 
 /*
@@ -71,6 +76,26 @@
  */
 html {
   background: var(--setlog-page-bg);
+}
+
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1200;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background: var(--setlog-primary);
+  color: var(--white);
+  text-decoration: none;
+}
+
+.skip-to-main:focus {
+  left: 0.75rem;
+  top: 0.6rem;
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
 }
 
 html,
@@ -95,6 +120,20 @@ body {
   min-width: 0;
 }
 
+.timeline-concert-card:focus {
+  outline: 2px solid var(--setlog-primary);
+  outline-offset: 2px;
+}
+
+.timeline-concert-card:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.timeline-concert-card:focus-visible {
+  outline: 2px solid var(--setlog-primary);
+  outline-offset: 2px;
+}
+
 .btn-primary {
   background-color: var(--setlog-primary) !important;
   border-color: var(--setlog-primary) !important;
@@ -106,16 +145,74 @@ body {
   border-color: var(--setlog-primary-hover) !important;
 }
 
+/* Outline buttons on tinted cards — darker defaults for WCAG contrast */
+[data-theme='light'] .btn-outline-primary {
+  color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+[data-theme='light'] .btn-outline-primary:hover,
+[data-theme='light'] .btn-outline-primary:focus-visible {
+  color: #fff !important;
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+[data-theme='light'] .btn-outline-secondary {
+  color: #374151 !important;
+  border-color: #4b5563 !important;
+}
+
+[data-theme='light'] .btn-outline-secondary:hover,
+[data-theme='light'] .btn-outline-secondary:focus-visible {
+  color: #fff !important;
+  background-color: #374151 !important;
+  border-color: #374151 !important;
+}
+
+[data-theme='dark'] .btn-outline-primary {
+  color: #c4d9fb !important;
+  border-color: #93c5fd !important;
+}
+
+[data-theme='dark'] .btn-outline-primary:hover,
+[data-theme='dark'] .btn-outline-primary:focus-visible {
+  color: #0f172a !important;
+  background-color: #93c5fd !important;
+  border-color: #93c5fd !important;
+}
+
+[data-theme='dark'] .btn-outline-secondary {
+  color: #e5e7eb !important;
+  border-color: #9ca3af !important;
+}
+
+[data-theme='dark'] .btn-outline-secondary:hover,
+[data-theme='dark'] .btn-outline-secondary:focus-visible {
+  color: #111827 !important;
+  background-color: #e5e7eb !important;
+  border-color: #e5e7eb !important;
+}
+
+/* Page subtitle under h1 — real heading, visually de-emphasized */
+.timeline-page-subtitle {
+  font-size: 1.33rem;
+  font-weight: 300;
+  margin: 0 0 15px;
+  line-height: 1.35;
+  color: var(--setlog-secondary-text);
+}
+
 [data-theme='light'] .form-switch .form-check-input {
   border-color: var(--setlog-primary) !important;
   background-color: var(--setlog-card-bg-secondary) !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23df6c20'/%3e%3c/svg%3e") !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23a84a0d'/%3e%3c/svg%3e") !important;
 }
 
 [data-theme='dark'] .form-switch .form-check-input {
   border-color: var(--setlog-primary) !important;
   background-color: var(--setlog-card-bg-secondary) !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23d08a63'/%3e%3c/svg%3e") !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%238f4a24'/%3e%3c/svg%3e") !important;
 }
 
 .form-switch .form-check-input:checked {

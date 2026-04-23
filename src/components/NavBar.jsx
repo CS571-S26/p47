@@ -1,4 +1,13 @@
-import { Container, Nav, Navbar, FormControl, Row, Col, Form, Button } from 'react-bootstrap'
+import {
+  Container,
+  Nav,
+  Navbar,
+  FormControl,
+  Row,
+  Col,
+  Form,
+  Button,
+} from 'react-bootstrap'
 import { useEffect, useState } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { Map, CirclePlus, Settings, List, Search, Moon, Sun, LogOut } from 'lucide-react'
@@ -8,6 +17,8 @@ import { useAuth } from '../contexts/authContext.js'
 import './NavBar.css'
 
 const AVATAR_STORAGE_PREFIX = 'p47:profileAvatar:'
+const NAV_COLLAPSE_ID = 'setlog-navbar-collapse'
+const TIMELINE_SEARCH_ID = 'timeline-search-query'
 
 function normalizeString(value) {
   return typeof value === 'string' ? value.trim() : ''
@@ -111,7 +122,9 @@ function NavBar({ theme, setTheme }) {
           <span style={{ marginRight: "50px", fontWeight: "700" }}>SetLog</span>
         </Navbar.Brand>
 
-        <Navbar.Collapse>
+        <Navbar.Toggle aria-controls={NAV_COLLAPSE_ID} />
+
+        <Navbar.Collapse id={NAV_COLLAPSE_ID}>
           {/* Left Side */}
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to="/">
@@ -136,19 +149,23 @@ function NavBar({ theme, setTheme }) {
                 <Row className="align-items-center">
                   <Col xs="auto">
                     <Button type="submit" variant="dark" aria-label="Search">
-                      <Search size={24} className="search-icon" />
+                      <Search size={24} className="search-icon" aria-hidden />
                     </Button>
                   </Col>
                   <Col>
+                    <Form.Label htmlFor={TIMELINE_SEARCH_ID} className="visually-hidden">
+                      Search concerts
+                    </Form.Label>
                     <FormControl
+                      id={TIMELINE_SEARCH_ID}
                       type="search"
                       placeholder="Search artists, venues, cities, genres, songs…"
                       value={searchInput}
                       onChange={handleSearchChange}
+                      className="setlog-nav-search-input"
                       style={{
-                        borderRadius: "24px",
-                        padding: "0.3rem 0.75rem",
-                        minWidth: "400px",
+                        borderRadius: '24px',
+                        padding: '0.3rem 0.75rem',
                       }}
                     />
                   </Col>
@@ -158,20 +175,19 @@ function NavBar({ theme, setTheme }) {
 
             {/* Icon Buttons */}
             <Col xs="auto">
-              {/* Dark Mode */}
-              <Button variant="dark" onClick={handleToggleTheme}>
-                {theme === 'light' ? <Moon size={32} /> : <Sun size={32} />}
+              <Button
+                variant="dark"
+                type="button"
+                onClick={handleToggleTheme}
+                aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
+              >
+                {theme === 'light' ? <Moon size={32} aria-hidden /> : <Sun size={32} aria-hidden />}
               </Button>
             </Col>
 
             <Col xs="auto">
-              {/* Settings */}
-              <Button
-                as={NavLink}
-                to="/settings"
-                variant="dark"
-              >
-                <Settings size={32} />
+              <Button as={NavLink} to="/settings" variant="dark" aria-label="Open settings">
+                <Settings size={32} aria-hidden />
               </Button>
             </Col>
 
@@ -188,6 +204,7 @@ function NavBar({ theme, setTheme }) {
                     variant="outline-light"
                     as={NavLink}
                     to="/user-profile"
+                    aria-label={`User profile for ${label}`}
                     style={{
                       width: '46px',
                       height: '46px',
@@ -202,7 +219,7 @@ function NavBar({ theme, setTheme }) {
                     {avatarUrl ? (
                       <img
                         src={avatarUrl}
-                        alt="User avatar"
+                        alt=""
                         style={{
                           width: '100%',
                           height: '100%',
@@ -211,6 +228,7 @@ function NavBar({ theme, setTheme }) {
                       />
                     ) : (
                       <div
+                        aria-hidden
                         style={{
                           width: '88px',
                           height: '88px',
@@ -229,8 +247,14 @@ function NavBar({ theme, setTheme }) {
                       </div>
                     )}
                   </Button>
-                  <Button variant="outline-light" onClick={handleLogout} title="Log out">
-                    <LogOut size={28} />
+                  <Button
+                    variant="outline-light"
+                    type="button"
+                    onClick={handleLogout}
+                    aria-label="Log out"
+                    title="Log out"
+                  >
+                    <LogOut size={28} aria-hidden />
                   </Button>
                 </div>
               ) : (

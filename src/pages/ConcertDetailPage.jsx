@@ -39,7 +39,7 @@ function ConcertDetailPage() {
   if (!concert) {
     return (
       <section
-        id="center"
+        className="page-shell"
         style={{
           flex: 1,
           width: '100%',
@@ -69,16 +69,17 @@ function ConcertDetailPage() {
               textAlign: 'center',
             }}
           >
-            <div
+            <h1
               style={{
                 fontSize: '1.8rem',
                 fontWeight: 800,
-                color: '#1f2937',
+                color: 'var(--setlog-card-text)',
                 marginBottom: '0.5rem',
+                marginTop: 0,
               }}
             >
               Concert not found
-            </div>
+            </h1>
 
             <div
               style={{
@@ -182,7 +183,7 @@ function ConcertDetailPage() {
 
   return (
     <section
-      id="center"
+      className="page-shell"
       style={{
         flex: 1,
         width: '100%',
@@ -287,7 +288,7 @@ function ConcertDetailPage() {
             <Col lg={6}>
               <Row>
                 <Col>
-                  <div style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '2px', color: 'var(--setlog-card-text)' }}>{concert.artist}</div>
+                  <h1 style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '2px', marginTop: 0, color: 'var(--setlog-card-text)' }}>{concert.artist}</h1>
 
                   { /* Location Segment */}
                   <div
@@ -339,8 +340,14 @@ function ConcertDetailPage() {
                   { /* Stars Row */}
                   <Row>
                     <Col xs="auto">
-                      <span style={{ color: 'orange', fontSize: '1.55rem' }}>
-                        {'★'.repeat(concert.rating)}
+                      <span
+                        style={{
+                          fontSize: '1.55rem',
+                          color: 'var(--setlog-rating-empty)',
+                        }}
+                        aria-hidden
+                      >
+                        <span style={{ color: 'var(--setlog-rating-filled)' }}>{'★'.repeat(concert.rating)}</span>
                         {'☆'.repeat(5 - concert.rating)}
                       </span>
                     </Col>
@@ -608,13 +615,14 @@ function ConcertDetailPage() {
                     >
                       <span
                         style={{
-                          color: 'orange',
                           fontSize: '0.9rem',
                           lineHeight: 1,
                           letterSpacing: '1px',
+                          color: 'var(--setlog-rating-empty)',
                         }}
+                        aria-hidden
                       >
-                        {'★'.repeat(concert.rating)}
+                        <span style={{ color: 'var(--setlog-rating-filled)' }}>{'★'.repeat(concert.rating)}</span>
                         {'☆'.repeat(5 - concert.rating)}
                       </span>
 
@@ -622,7 +630,7 @@ function ConcertDetailPage() {
                         style={{
                           fontSize: '1rem',
                           fontWeight: 700,
-                          color: '#111827',
+                          color: 'var(--setlog-card-text)',
                           lineHeight: 1.6,
                         }}
                       >
@@ -647,7 +655,7 @@ function ConcertDetailPage() {
 
         </Card.Body>
       </Card>
-    </section >
+    </section>
   )
 }
 

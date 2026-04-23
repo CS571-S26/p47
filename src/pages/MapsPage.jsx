@@ -55,6 +55,7 @@ function MapsPage({ theme }) {
     selectedButton: {
       width: '100%',
       backgroundColor: 'var(--setlog-primary)',
+      color: 'var(--white)',
       border: 'none',
       borderRadius: '32px',
       padding: '6px',
@@ -63,9 +64,9 @@ function MapsPage({ theme }) {
     },
     unselectedButton: {
       width: '100%',
-      backgroundColor: 'lightgray',
-      color: 'gray',
-      border: 'none',
+      backgroundColor: 'var(--setlog-card-bg-secondary)',
+      color: 'var(--setlog-card-text)',
+      border: '1px solid var(--setlog-card-border)',
       borderRadius: '32px',
       padding: '6px',
       fontSize: '13px',
@@ -91,7 +92,7 @@ function MapsPage({ theme }) {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
-      <span style={{ fontSize: '48px', fontWeight: '700', color: 'var(--setlog-primary-text)' }}>Concert Map</span>
+      <h1 style={{ fontSize: '48px', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>Concert Map</h1>
 
       {!authLoading && !loginStatus.loggedIn ? (
         <p className="mb-2" style={{ fontSize: '15px', color: 'var(--setlog-secondary-text)' }}>
@@ -110,6 +111,7 @@ function MapsPage({ theme }) {
         <Row className="maps-filter-row-inner flex-nowrap g-2">
           <Col xs="auto" style={styles.filterCol}>
             <Button
+              type="button"
               style={getButtonStyle({ kind: 'all' })}
               onClick={() => setFilter({ kind: 'all' })}
               variant="light"
@@ -120,6 +122,7 @@ function MapsPage({ theme }) {
           {years.map((year) => (
             <Col key={`y-${year}`} xs="auto" style={styles.filterCol}>
               <Button
+                type="button"
                 style={getButtonStyle({ kind: 'year', year })}
                 onClick={() => setFilter({ kind: 'year', year })}
                 variant="light"
@@ -131,6 +134,7 @@ function MapsPage({ theme }) {
           {genres.map((genre) => (
             <Col key={`g-${genre}`} xs="auto" style={styles.filterCol}>
               <Button
+                type="button"
                 style={getButtonStyle({ kind: 'genre', genre })}
                 onClick={() => setFilter({ kind: 'genre', genre })}
                 variant="light"

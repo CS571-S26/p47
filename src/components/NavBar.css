@@ -14,3 +14,13 @@
 .navbar .nav-link.active svg {
   color: var(--setlog-primary);
 }
+
+.setlog-nav-search-input {
+  min-width: min(100%, 400px);
+}
+
+@media (min-width: 768px) {
+  .setlog-nav-search-input {
+    min-width: 400px;
+  }
+}
