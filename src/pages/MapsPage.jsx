@@ -123,6 +123,7 @@ function MapsPage({ theme }) {
         }}
       >
         <Form.Select
+          aria-label="Filter map by year"
           value={filter.year}
           onChange={(e) =>
             setFilter((prev) => ({ ...prev, year: e.target.value }))
@@ -138,6 +139,7 @@ function MapsPage({ theme }) {
         </Form.Select>
 
         <Form.Select
+          aria-label="Filter map by genre"
           value={filter.genre}
           onChange={(e) =>
             setFilter((prev) => ({ ...prev, genre: e.target.value }))
