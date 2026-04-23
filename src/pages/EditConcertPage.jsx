@@ -409,7 +409,7 @@ function EditConcertPage() {
           ) : null}
 
           <div style={{ fontSize: '0.85rem', color: 'var(--setlog-card-text-secondary)', marginBottom: '0.7rem' }}>
-            <span style={{ color: '#842029', fontWeight: 700 }}>*</span> Required fields
+            <span style={{ color: 'var(--setlog-required-indicator)', fontWeight: 700 }}>*</span> Required fields
           </div>
 
           <Form onSubmit={handleSubmit}>
@@ -423,7 +423,7 @@ function EditConcertPage() {
                     <Col md={6}>
                       <Form.Group controlId="concert-artist" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Artist/Band <span style={{ color: '#842029' }}>*</span>
+                          Artist/Band <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
                           id="concert-artist"
@@ -439,7 +439,7 @@ function EditConcertPage() {
                     <Col md={6}>
                       <Form.Group controlId="concert-genre" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Music Genre <span style={{ color: '#842029' }}>*</span>
+                          Music Genre <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
                           id="concert-genre"
@@ -455,7 +455,7 @@ function EditConcertPage() {
                     <Col md={6}>
                       <Form.Group controlId="concert-date" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Date <span style={{ color: '#842029' }}>*</span>
+                          Date <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
                           id="concert-date"
@@ -470,7 +470,7 @@ function EditConcertPage() {
                     <Col md={6}>
                       <Form.Group controlId="concert-venue" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Venue <span style={{ color: '#842029' }}>*</span>
+                          Venue <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
                           id="concert-venue"
@@ -486,7 +486,7 @@ function EditConcertPage() {
                     <Col md={6}>
                       <Form.Group controlId="concert-city" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          City, State <span style={{ color: '#842029' }}>*</span>
+                          City, State <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
                           id="concert-city"
@@ -577,9 +577,9 @@ function EditConcertPage() {
                                   disabled={!canImportFromSetlistFm || importingSetlist}
                                   style={{
                                     width: '100%',
-                                    backgroundColor: !canImportFromSetlistFm || importingSetlist ? '#e5e7eb' : undefined,
-                                    borderColor: !canImportFromSetlistFm || importingSetlist ? '#e5e7eb' : undefined,
-                                    color: !canImportFromSetlistFm || importingSetlist ? '#374151' : undefined,
+                                    backgroundColor: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-bg)' : undefined,
+                                    borderColor: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-border)' : undefined,
+                                    color: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-text)' : undefined,
                                     fontSize: '0.90rem',
                                   }}
                                 >
@@ -763,7 +763,7 @@ function EditConcertPage() {
                     <Col md={4}>
                       <Form.Group style={{ marginBottom: '1rem' }}>
                         <div id="concert-rating-label" style={styles.formLabel}>
-                          Rating <span style={{ color: '#842029' }}>*</span>
+                          Rating <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </div>
                         <div
                           role="group"

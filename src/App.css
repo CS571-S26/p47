@@ -35,12 +35,17 @@
 
   --setlog-rating-filled: #b45309;
   --setlog-rating-empty: #64748b;
+
+  --setlog-required-indicator: #842029;
+  --setlog-disabled-btn-bg: #e5e7eb;
+  --setlog-disabled-btn-border: #e5e7eb;
+  --setlog-disabled-btn-text: #374151;
 }
 
 /* Dark Mode — stronger text on fills; primary dark enough for white label text */
 [data-theme='dark'] {
-  --setlog-primary: #8f4a24;
-  --setlog-primary-hover: #743c1c;
+  --setlog-primary: #6f381a;
+  --setlog-primary-hover: #5c2e15;
   --setlog-page-bg: linear-gradient(180deg,
       #2b263e 0%,
       #2a1f2b 38%,
@@ -68,6 +73,11 @@
   --setlog-rating-filled: #fbbf24;
   --setlog-rating-empty: #94a3b8;
   --tag-favorite-text: #fde68a;
+
+  --setlog-required-indicator: #fca5a5;
+  --setlog-disabled-btn-bg: #2b2740;
+  --setlog-disabled-btn-border: #4a4458;
+  --setlog-disabled-btn-text: #d1d5db;
 }
 
 /*
@@ -206,6 +216,18 @@ body {
   border-color: #e5e7eb !important;
 }
 
+[data-theme='dark'] .btn-outline-danger {
+  color: #fca5a5 !important;
+  border-color: #fca5a5 !important;
+}
+
+[data-theme='dark'] .btn-outline-danger:hover,
+[data-theme='dark'] .btn-outline-danger:focus-visible {
+  color: #111827 !important;
+  background-color: #fca5a5 !important;
+  border-color: #fca5a5 !important;
+}
+
 /* Page subtitle under h1 — real heading, visually de-emphasized */
 .timeline-page-subtitle {
   font-size: 1.33rem;
@@ -224,7 +246,7 @@ body {
 [data-theme='dark'] .form-switch .form-check-input {
   border-color: var(--setlog-primary) !important;
   background-color: var(--setlog-card-bg-secondary) !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%238f4a24'/%3e%3c/svg%3e") !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%236f381a'/%3e%3c/svg%3e") !important;
 }
 
 .form-switch .form-check-input:checked {

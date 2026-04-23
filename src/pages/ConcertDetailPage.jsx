@@ -17,6 +17,11 @@ function ConcertDetailPage() {
   const concert = concerts.find((c) => c.id === id)
 
   const backLabel = location.state?.backLabel || 'Back to Timeline'
+  const backTo = typeof location.state?.from === 'string' ? location.state.from : '/'
+
+  function handleBack() {
+    navigate(backTo)
+  }
 
   function handleDelete() {
     const ok = window.confirm(
@@ -24,7 +29,7 @@ function ConcertDetailPage() {
     )
     if (ok) {
       deleteConcert(concert.id)
-      navigate(-1)
+      navigate(backTo)
     }
   }
 
@@ -93,7 +98,7 @@ function ConcertDetailPage() {
 
             <Button
               variant="primary"
-              onClick={() => navigate(-1)}
+              onClick={handleBack}
               style={{
                 fontWeight: 700,
                 borderRadius: '10px',
@@ -210,7 +215,7 @@ function ConcertDetailPage() {
             <Col>
               <Button
                 variant="link"
-                onClick={() => navigate(-1)}
+                onClick={handleBack}
                 style={{
                   padding: 0,
                   textDecoration: 'none',
@@ -252,7 +257,7 @@ function ConcertDetailPage() {
               {imageUrl ? (
                 <img
                   src={imageUrl}
-                  alt={concert.artist}
+                  alt=""
                   style={{
                     width: '100%',
                     maxWidth: '360px',
@@ -640,7 +645,7 @@ function ConcertDetailPage() {
                       <span
                         style={{
                           fontSize: '0.9rem',
-                          color: '#6b7280',
+                          color: 'var(--setlog-card-text-secondary)',
                           lineHeight: 1,
                         }}
                       >

@@ -24,7 +24,7 @@ function MapsMarkerPopup({ concerts }) {
 
   function handleViewDetails() {
     navigate(`/concerts/${concert.id}`, {
-      state: { from: '/', backLabel: 'Back to Map' },
+      state: { from: '/maps', backLabel: 'Back to Map' },
     })
   }
 
