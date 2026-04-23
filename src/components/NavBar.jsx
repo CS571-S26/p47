@@ -1,7 +1,7 @@
 import { Container, Nav, Navbar, FormControl, Row, Col, Form, Button } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
-import { Map, CirclePlus, Settings, List, Search, Moon, Sun, User, LogOut } from 'lucide-react'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
+import { Map, CirclePlus, Settings, List, Search, Moon, Sun, LogOut } from 'lucide-react'
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
@@ -16,7 +16,31 @@ function normalizeString(value) {
 function NavBar({ theme, setTheme }) {
   const { loginStatus, logout, user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [avatarUrl, setAvatarUrl] = useState('')
+  const [searchInput, setSearchInput] = useState('')
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      const q = new URLSearchParams(location.search).get('q') ?? ''
+      setSearchInput(q)
+    } else {
+      setSearchInput('')
+    }
+  }, [location.pathname, location.search])
+
+  function handleSearchChange(e) {
+    const v = e.target.value
+    setSearchInput(v)
+    const sp = new URLSearchParams()
+    if (v.trim() !== '') sp.set('q', v)
+    const search = sp.toString()
+    navigate({ pathname: '/', search: search ? `?${search}` : '' }, { replace: true })
+  }
+
+  function handleSearchSubmit(e) {
+    e.preventDefault()
+  }
 
   function loadAvatar() {
     const uid = user?.uid
@@ -108,17 +132,19 @@ function NavBar({ theme, setTheme }) {
 
             {/* Search */}
             <Col xs="auto">
-              <Form>
+              <Form onSubmit={handleSearchSubmit}>
                 <Row className="align-items-center">
                   <Col xs="auto">
-                    <Button variant="dark">
+                    <Button type="submit" variant="dark" aria-label="Search">
                       <Search size={24} className="search-icon" />
                     </Button>
                   </Col>
                   <Col>
                     <FormControl
                       type="search"
-                      placeholder="Search artists, venues, cities..."
+                      placeholder="Search artists, venues, cities, genres, songs…"
+                      value={searchInput}
+                      onChange={handleSearchChange}
                       style={{
                         borderRadius: "24px",
                         padding: "0.3rem 0.75rem",

@@ -3,16 +3,24 @@ import TimelineConcert from '../components/TimelineConcert'
 import TimelineStats from '../components/TimelineStats'
 import { Container, Row, Col, Button, Spinner } from 'react-bootstrap'
 import { Plus } from 'lucide-react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useSearchParams } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
+import {
+  filterConcertsByQuery,
+  normalizeConcertSearchQuery,
+} from '../utils/concertSearch.js'
 
 function TimelinePage() {
   const { concerts, loading: concertsLoading } = useContext(ConcertsContext)
   const { loginStatus, loading: authLoading } = useAuth()
+  const [searchParams] = useSearchParams()
+  const queryRaw = searchParams.get('q') ?? ''
+  const hasActiveQuery = normalizeConcertSearchQuery(queryRaw) !== ''
 
-  const sorted = [...concerts].sort(
+  const filtered = filterConcertsByQuery(concerts, queryRaw)
+  const sorted = [...filtered].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   )
 
@@ -118,17 +126,59 @@ function TimelinePage() {
             {loginStatus.loggedIn ? 'Your logged shows, newest first' : 'Sample concerts, newest first'}
           </div>
 
+          {hasActiveQuery ? (
+            <div
+              style={{
+                fontSize: '16px',
+                fontWeight: '500',
+                marginBottom: '12px',
+                color: 'var(--setlog-card-text-secondary)',
+              }}
+            >
+              Showing {sorted.length} of {concerts.length} show{concerts.length === 1 ? '' : 's'}
+            </div>
+          ) : null}
+
           {!loginStatus.loggedIn ? (
             <>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {sorted.map((concert) => (
-                  <TimelineConcert key={concert.id} concert={concert} />
-                ))}
-              </div>
-
+              {sorted.length === 0 && concerts.length > 0 && hasActiveQuery ? (
+                <div
+                  style={{
+                    maxWidth: '520px',
+                    padding: '2rem',
+                    borderRadius: '16px',
+                    border: '1px solid var(--setlog-card-border)',
+                    background: 'var(--setlog-card-bg)',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: '20px',
+                      fontWeight: '600',
+                      marginBottom: '8px',
+                      color: 'var(--setlog-card-text)',
+                    }}
+                  >
+                    No shows match your search
+                  </div>
+                  <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
+                    Try another artist, venue, city, genre, or song title. Use the search box above to
+                    change or clear your query.
+                  </p>
+                  <Button as={NavLink} to="/" variant="primary">
+                    Clear search
+                  </Button>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {sorted.map((concert) => (
+                    <TimelineConcert key={concert.id} concert={concert} />
+                  ))}
+                </div>
+              )}
             </>
 
-          ) : concertsLoading && sorted.length === 0 ? (
+          ) : concertsLoading && concerts.length === 0 ? (
             <div
               style={{
                 display: 'flex',
@@ -141,7 +191,7 @@ function TimelinePage() {
                 <span className="visually-hidden">Loading your shows…</span>
               </Spinner>
             </div>
-          ) : sorted.length === 0 ? (
+          ) : concerts.length === 0 ? (
             <div
               style={{
                 maxWidth: '520px',
@@ -161,6 +211,34 @@ function TimelinePage() {
               <Button as={NavLink} to="/add-concert" variant="primary">
                 <Plus size={18} className="me-1" />
                 Log a New Show
+              </Button>
+            </div>
+          ) : sorted.length === 0 && hasActiveQuery ? (
+            <div
+              style={{
+                maxWidth: '520px',
+                padding: '2rem',
+                borderRadius: '16px',
+                border: '1px solid var(--setlog-card-border)',
+                background: 'var(--setlog-card-bg)',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  marginBottom: '8px',
+                  color: 'var(--setlog-card-text)',
+                }}
+              >
+                No shows match your search
+              </div>
+              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
+                Try another artist, venue, city, genre, or song title. Use the search box above to
+                change or clear your query.
+              </p>
+              <Button as={NavLink} to="/" variant="primary">
+                Clear search
               </Button>
             </div>
           ) : (
