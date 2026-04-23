@@ -45,42 +45,13 @@ function TimelinePage() {
 
   return (
     <Container fluid style={{ padding: '1rem' }}>
-      <Row>
-        <Col md={2}>
-          <TimelineStats />
-          {!loginStatus.loggedIn ? (
-            <div
-              style={{
-                maxWidth: '520px',
-                padding: '2rem',
-                borderRadius: '16px',
-                border: '1px solid var(--setlog-card-border)',
-                background: 'var(--setlog-card-bg)',
-                marginTop: '3rem'
-              }}
-            >
-              <div style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)' }}>
-                Log in to see your shows
-              </div>
-              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
-                Your logged concerts are tied to your account on this device. Create an account or
-                log in to view and add shows.
-              </p>
-              <Button as={NavLink} to="/login" variant="primary" className="me-2">
-                Log in
-              </Button>
-              <Button as={NavLink} to="/register" variant="outline-primary">
-                Register
-              </Button>
-            </div>
-          ) : null}
-        </Col>
-        <Col>
+      <Row className="align-items-start">
+        <Col md={10} className="order-1 order-md-2">
           <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
             <Col xs="auto">
-              <div style={{ fontSize: '48px', fontWeight: '700', color: 'var(--setlog-primary-text)' }}>
-                {!loginStatus.loggedIn ? "Demo Concert Timeline" : "My Concert Timeline"}
-              </div>
+              <h1 style={{ fontSize: '48px', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>
+                {!loginStatus.loggedIn ? 'Demo Concert Timeline' : 'My Concert Timeline'}
+              </h1>
             </Col>
             <Col xs="auto">
               {loginStatus.loggedIn ? (
@@ -115,16 +86,9 @@ function TimelinePage() {
             </Col>
           </Row>
 
-          <div
-            style={{
-              fontSize: '24px',
-              fontWeight: '300',
-              marginBottom: '15px',
-              color: 'var(--setlog-secondary-text)'
-            }}
-          >
+          <h2 className="timeline-page-subtitle">
             {loginStatus.loggedIn ? 'Your logged shows, newest first' : 'Sample concerts, newest first'}
-          </div>
+          </h2>
 
           {hasActiveQuery ? (
             <div
@@ -151,16 +115,17 @@ function TimelinePage() {
                     background: 'var(--setlog-card-bg)',
                   }}
                 >
-                  <div
+                  <h2
                     style={{
                       fontSize: '20px',
                       fontWeight: '600',
                       marginBottom: '8px',
                       color: 'var(--setlog-card-text)',
+                      marginTop: 0,
                     }}
                   >
                     No shows match your search
-                  </div>
+                  </h2>
                   <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
                     Try another artist, venue, city, genre, or song title. Use the search box above to
                     change or clear your query.
@@ -201,9 +166,9 @@ function TimelinePage() {
                 background: 'var(--setlog-card-bg)',
               }}
             >
-              <div style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)', marginTop: 0 }}>
                 No shows yet
-              </div>
+              </h2>
               <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
                 Log a concert to build your timeline. Data is saved in this browser only
                 (local storage).
@@ -223,16 +188,17 @@ function TimelinePage() {
                 background: 'var(--setlog-card-bg)',
               }}
             >
-              <div
+              <h2
                 style={{
                   fontSize: '20px',
                   fontWeight: '600',
                   marginBottom: '8px',
                   color: 'var(--setlog-card-text)',
+                  marginTop: 0,
                 }}
               >
                 No shows match your search
-              </div>
+              </h2>
               <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
                 Try another artist, venue, city, genre, or song title. Use the search box above to
                 change or clear your query.
@@ -248,6 +214,35 @@ function TimelinePage() {
               ))}
             </div>
           )}
+        </Col>
+        <Col md={2} className="order-2 order-md-1">
+          <TimelineStats />
+          {!loginStatus.loggedIn ? (
+            <div
+              style={{
+                maxWidth: '520px',
+                padding: '2rem',
+                borderRadius: '16px',
+                border: '1px solid var(--setlog-card-border)',
+                background: 'var(--setlog-card-bg)',
+                marginTop: '3rem',
+              }}
+            >
+              <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)', marginTop: 0 }}>
+                Log in to see your shows
+              </h2>
+              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
+                Your logged concerts are tied to your account on this device. Create an account or
+                log in to view and add shows.
+              </p>
+              <Button as={NavLink} to="/login" variant="primary" className="me-2">
+                Log in
+              </Button>
+              <Button as={NavLink} to="/register" variant="outline-primary">
+                Register
+              </Button>
+            </div>
+          ) : null}
         </Col>
       </Row>
     </Container>

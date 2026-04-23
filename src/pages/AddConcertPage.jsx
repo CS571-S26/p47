@@ -188,7 +188,7 @@ function AddConcertPage() {
   if (!loginStatus.loggedIn) {
     return (
       <section
-        id="center"
+        className="page-shell"
         style={{
           flex: 1,
           width: '100%',
@@ -210,7 +210,7 @@ function AddConcertPage() {
           }}
         >
           <Card.Body>
-            <div style={{ fontSize: '36px', fontWeight: '700', color: 'var(--setlog-card-text)' }}>Log a New Concert</div>
+            <h1 style={{ fontSize: '36px', fontWeight: '700', color: 'var(--setlog-card-text)', margin: 0 }}>Log a New Concert</h1>
             <p style={{ color: 'var(--setlog-card-text-secondary)' }} className="mt-3 mb-4">
               Concerts you log are tied to your account on this device. Log in or register to
               continue.
@@ -229,7 +229,7 @@ function AddConcertPage() {
 
   return (
     <section
-      id="center"
+      className="page-shell"
       style={{
         flex: 1,
         width: '100%',
@@ -251,17 +251,18 @@ function AddConcertPage() {
         }}
       >
         <Card.Body>
-          <div
+          <h1
             style={{
               fontSize: '2.15rem',
               lineHeight: 1.1,
               fontWeight: '700',
               marginBottom: '0.6rem',
-              color: 'var(--setlog-card-text)'
+              marginTop: 0,
+              color: 'var(--setlog-card-text)',
             }}
           >
             Log a New Concert
-          </div>
+          </h1>
 
           {formError ? (
             <Alert variant="danger" className="mb-3" style={{ marginTop: '0.6rem', marginBottom: 0, background: "var(--tag-not-attended-bg)", color: "var(--tag-not-attended-text)" }}>
@@ -270,7 +271,7 @@ function AddConcertPage() {
           ) : null}
 
           <div style={{ fontSize: '0.85rem', color: 'var(--setlog-card-text-secondary)', marginBottom: '0.7rem' }}>
-            <span style={{ color: '#dc3545', fontWeight: 700 }}>*</span> Required fields
+            <span style={{ color: 'var(--setlog-required-indicator)', fontWeight: 700 }}>*</span> Required fields
           </div>
 
           <Form onSubmit={handleSubmit}>
@@ -282,11 +283,12 @@ function AddConcertPage() {
                 >
                   <Row>
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-artist" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Artist/Band <span style={{ color: '#dc3545' }}>*</span>
+                          Artist/Band <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
+                          id="concert-artist"
                           type="text"
                           placeholder="e.g., Dead & Company"
                           style={styles.formControl}
@@ -297,11 +299,12 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-genre" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Music Genre <span style={{ color: '#dc3545' }}>*</span>
+                          Music Genre <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
+                          id="concert-genre"
                           type="text"
                           placeholder="e.g., Jam Band"
                           style={styles.formControl}
@@ -312,11 +315,12 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-date" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Date <span style={{ color: '#dc3545' }}>*</span>
+                          Date <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
+                          id="concert-date"
                           type="date"
                           style={styles.formControl}
                           value={date}
@@ -326,11 +330,12 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-venue" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Venue <span style={{ color: '#dc3545' }}>*</span>
+                          Venue <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
+                          id="concert-venue"
                           type="text"
                           placeholder="e.g., Oracle Park"
                           style={styles.formControl}
@@ -341,11 +346,12 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-city" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          City, State <span style={{ color: '#dc3545' }}>*</span>
+                          City, State <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
+                          id="concert-city"
                           type="text"
                           placeholder="e.g., San Francisco, CA"
                           style={styles.formControl}
@@ -360,9 +366,10 @@ function AddConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-image" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>Cover image URL</Form.Label>
                         <Form.Control
+                          id="concert-image"
                           type="url"
                           placeholder="https://…"
                           style={styles.formControl}
@@ -399,6 +406,7 @@ function AddConcertPage() {
                             >
                               <InputGroup>
                                 <Form.Control
+                                  aria-label="New song title"
                                   type="text"
                                   placeholder="Add a song title..."
                                   style={styles.formControl}
@@ -417,6 +425,7 @@ function AddConcertPage() {
                                   onClick={handleAddSong}
                                   disabled={!newSongTitle.trim()}
                                   type="button"
+                                  aria-label="Add song"
                                 >
                                   <Plus size={14} />
                                 </Button>
@@ -430,10 +439,9 @@ function AddConcertPage() {
                                   disabled={!canImportFromSetlistFm || importingSetlist}
                                   style={{
                                     width: '100%',
-                                    opacity: !canImportFromSetlistFm || importingSetlist ? 0.55 : 1,
-                                    backgroundColor: !canImportFromSetlistFm || importingSetlist ? '#d1d5db' : undefined,
-                                    borderColor: !canImportFromSetlistFm || importingSetlist ? '#d1d5db' : undefined,
-                                    color: !canImportFromSetlistFm || importingSetlist ? '#6b7280' : undefined,
+                                    backgroundColor: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-bg)' : undefined,
+                                    borderColor: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-border)' : undefined,
+                                    color: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-text)' : undefined,
                                     fontSize: '0.92rem',
                                   }}
                                 >
@@ -501,6 +509,7 @@ function AddConcertPage() {
                                             variant="secondary"
                                             onClick={() => handleMoveSong(idx, -1)}
                                             disabled={idx === 0}
+                                            aria-label={`Move "${title}" up`}
                                           >
                                             <ArrowUp size={14} />
                                           </Button>
@@ -510,6 +519,7 @@ function AddConcertPage() {
                                             variant="secondary"
                                             onClick={() => handleMoveSong(idx, 1)}
                                             disabled={idx === normalizedSetlist.length - 1}
+                                            aria-label={`Move "${title}" down`}
                                           >
                                             <ArrowDown size={14} />
                                           </Button>
@@ -518,6 +528,7 @@ function AddConcertPage() {
                                             size="sm"
                                             variant="outline-danger"
                                             onClick={() => handleRemoveSong(idx)}
+                                            aria-label={`Remove "${title}"`}
                                           >
                                             <Trash size={16} />
                                           </Button>
@@ -596,9 +607,10 @@ function AddConcertPage() {
                 >
                   <Row>
                     <Col md={12}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-notes" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>Notes</Form.Label>
                         <Form.Control
+                          id="concert-notes"
                           as="textarea"
                           rows={2}
                           placeholder="Memories, highlights…"
@@ -612,7 +624,7 @@ function AddConcertPage() {
                     <Col md={4}>
                       <Form.Group style={{ marginBottom: '1rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Rating <span style={{ color: '#dc3545' }}>*</span>
+                          Rating <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <div
                           style={{
@@ -631,6 +643,8 @@ function AddConcertPage() {
                                 key={star}
                                 role="button"
                                 tabIndex={0}
+                                aria-label={`Set rating to ${star} out of 5`}
+                                aria-pressed={star === rating}
                                 onClick={() => setRating(star)}
                                 onKeyDown={(ev) => {
                                   if (ev.key === 'Enter' || ev.key === ' ') {
@@ -641,7 +655,7 @@ function AddConcertPage() {
                                 style={{
                                   fontSize: '1.2rem',
                                   cursor: 'pointer',
-                                  color: star <= rating ? '#f59e0b' : '#d1d5db',
+                                  color: star <= rating ? 'var(--setlog-rating-filled)' : 'var(--setlog-rating-empty)',
                                   lineHeight: 1,
                                 }}
                               >
@@ -671,6 +685,7 @@ function AddConcertPage() {
                         <Form.Check
                           type="switch"
                           label="I Attended"
+                          id="concert-attended"
                           checked={attended}
                           onChange={() => setAttended(!attended)}
                           style={styles.formLabel}
@@ -679,6 +694,7 @@ function AddConcertPage() {
                         <Form.Check
                           type="switch"
                           label="Add to Favorites"
+                          id="concert-favorite"
                           checked={favorite}
                           onChange={() => setFavorite(!favorite)}
                           style={styles.formLabel}

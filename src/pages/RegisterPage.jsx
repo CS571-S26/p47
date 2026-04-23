@@ -42,7 +42,7 @@ function RegisterPage() {
 
   return (
     <section
-      id="center"
+      className="page-shell"
       style={{
         flex: 1,
         width: '100%',
@@ -64,7 +64,7 @@ function RegisterPage() {
         }}
       >
         <Card.Body>
-          <div style={{ fontSize: '36px', fontWeight: '700', color: 'var(--setlog-card-text)' }}>Create account</div>
+          <h1 style={{ fontSize: '36px', fontWeight: '700', color: 'var(--setlog-card-text)', margin: 0 }}>Create account</h1>
           <p style={{ color: 'var(--setlog-card-text-secondary)' }} className="mt-3 mb-4">
             Create an account to sync your concerts across devices.
           </p>

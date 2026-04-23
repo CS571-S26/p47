@@ -23,7 +23,7 @@ function StatRow({ icon, value, label }) {
           style={{
             fontSize: "20px",
             fontWeight: "600",
-            color: 'var(--setlog-primary)'
+            color: 'var(--setlog-card-text)'
           }}
         >
           {value}
