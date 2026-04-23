@@ -295,7 +295,6 @@ function NavBar({ theme, setTheme }) {
                     {loginStatus.username}
                   </span>
                   <Button
-                    variant="outline-light"
                     as={NavLink}
                     to="/user-profile"
                     aria-label={`User profile for ${label}`}
