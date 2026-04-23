@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import NavBar from './components/NavBar.jsx'
 import MapsPage from './pages/MapsPage.jsx'
@@ -16,14 +16,38 @@ import { useAuth } from './contexts/authContext.js'
 
 import './App.css'
 
+function documentTitleForPath(pathname) {
+  const base = 'SetLog'
+  if (pathname === '/') return `${base} — Timeline`
+  if (pathname === '/maps') return `${base} — Map`
+  if (pathname === '/add-concert') return `${base} — Log concert`
+  if (pathname === '/settings') return `${base} — Settings`
+  if (pathname === '/user-profile') return `${base} — Profile`
+  if (pathname === '/login') return `${base} — Log in`
+  if (pathname === '/register') return `${base} — Register`
+  if (pathname.startsWith('/concerts/') && pathname.endsWith('/edit')) {
+    return `${base} — Edit concert`
+  }
+  if (pathname.startsWith('/concerts/')) return `${base} — Concert`
+  return base
+}
+
 function AppShell({ theme, setTheme }) {
   const { user } = useAuth()
   const concertsKey = user?.uid ?? 'guest'
+  const location = useLocation()
+
+  useEffect(() => {
+    document.title = documentTitleForPath(location.pathname)
+  }, [location.pathname])
 
   return (
     <ConcertsProvider key={concertsKey}>
+      <a href="#main-content" className="skip-to-main">
+        Skip to main content
+      </a>
       <NavBar theme={theme} setTheme={setTheme} />
-      <main className="app-main">
+      <main id="main-content" className="app-main" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<TimelinePage />} />
           <Route path="/maps" element={<MapsPage theme={theme} />} />

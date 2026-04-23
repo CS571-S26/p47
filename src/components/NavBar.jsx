@@ -1,45 +1,105 @@
-import { Container, Nav, Navbar, FormControl, Row, Col, Form, Button } from 'react-bootstrap'
-import { useEffect, useState } from 'react'
+import {
+  Container,
+  Nav,
+  Navbar,
+  FormControl,
+  Row,
+  Col,
+  Form,
+  Button,
+} from 'react-bootstrap'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { Map, CirclePlus, Settings, List, Search, Moon, Sun, LogOut } from 'lucide-react'
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
+import { ConcertsContext } from '../contexts/concertsContext.js'
+import { filterConcertsByQuery, normalizeConcertSearchQuery } from '../utils/concertSearch.js'
 import './NavBar.css'
 
 const AVATAR_STORAGE_PREFIX = 'p47:profileAvatar:'
+const NAV_COLLAPSE_ID = 'setlog-navbar-collapse'
+const TIMELINE_SEARCH_ID = 'timeline-search-query'
+const DROPDOWN_MAX_RESULTS = 5
 
 function normalizeString(value) {
   return typeof value === 'string' ? value.trim() : ''
 }
 
+function formatConcertDate(dateStr) {
+  const [year, month, day] = dateStr.split('-').map(Number)
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
 function NavBar({ theme, setTheme }) {
   const { loginStatus, logout, user } = useAuth()
+  const { concerts } = useContext(ConcertsContext)
   const navigate = useNavigate()
   const location = useLocation()
   const [avatarUrl, setAvatarUrl] = useState('')
   const [searchInput, setSearchInput] = useState('')
+  const [showDropdown, setShowDropdown] = useState(false)
+  const searchWrapperRef = useRef(null)
+
+  const activeQuery = normalizeConcertSearchQuery(searchInput)
+  const allMatches = activeQuery ? filterConcertsByQuery(concerts, searchInput) : []
+  const dropdownResults = allMatches.slice(0, DROPDOWN_MAX_RESULTS)
 
   useEffect(() => {
-    if (location.pathname === '/') {
-      const q = new URLSearchParams(location.search).get('q') ?? ''
-      setSearchInput(q)
-    } else {
-      setSearchInput('')
+    function handleMouseDown(e) {
+      if (searchWrapperRef.current && !searchWrapperRef.current.contains(e.target)) {
+        setShowDropdown(false)
+      }
     }
-  }, [location.pathname, location.search])
+    document.addEventListener('mousedown', handleMouseDown)
+    return () => document.removeEventListener('mousedown', handleMouseDown)
+  }, [])
+
+  useEffect(() => {
+    setSearchInput('')
+    setShowDropdown(false)
+  }, [location.pathname])
 
   function handleSearchChange(e) {
     const v = e.target.value
     setSearchInput(v)
-    const sp = new URLSearchParams()
-    if (v.trim() !== '') sp.set('q', v)
-    const search = sp.toString()
-    navigate({ pathname: '/', search: search ? `?${search}` : '' }, { replace: true })
+    setShowDropdown(v.trim() !== '')
+  }
+
+  function handleSearchFocus() {
+    if (searchInput.trim() !== '') setShowDropdown(true)
+  }
+
+  function handleSearchKeyDown(e) {
+    if (e.key === 'Escape') {
+      setShowDropdown(false)
+    }
   }
 
   function handleSearchSubmit(e) {
     e.preventDefault()
+    setShowDropdown(false)
+    const sp = new URLSearchParams()
+    if (searchInput.trim() !== '') sp.set('q', searchInput)
+    navigate({ pathname: '/', search: sp.toString() ? `?${sp.toString()}` : '' })
+  }
+
+  function handleDropdownItemClick(concertId) {
+    setShowDropdown(false)
+    navigate(`/concerts/${concertId}`)
+  }
+
+  function handleSeeAllClick(e) {
+    e.preventDefault()
+    setShowDropdown(false)
+    const sp = new URLSearchParams()
+    if (searchInput.trim() !== '') sp.set('q', searchInput)
+    navigate({ pathname: '/', search: sp.toString() ? `?${sp.toString()}` : '' })
   }
 
   function loadAvatar() {
@@ -111,7 +171,9 @@ function NavBar({ theme, setTheme }) {
           <span style={{ marginRight: "50px", fontWeight: "700" }}>SetLog</span>
         </Navbar.Brand>
 
-        <Navbar.Collapse>
+        <Navbar.Toggle aria-controls={NAV_COLLAPSE_ID} />
+
+        <Navbar.Collapse id={NAV_COLLAPSE_ID}>
           {/* Left Side */}
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to="/">
@@ -132,46 +194,94 @@ function NavBar({ theme, setTheme }) {
 
             {/* Search */}
             <Col xs="auto">
-              <Form onSubmit={handleSearchSubmit}>
-                <Row className="align-items-center">
-                  <Col xs="auto">
-                    <Button type="submit" variant="dark" aria-label="Search">
-                      <Search size={24} className="search-icon" />
-                    </Button>
-                  </Col>
-                  <Col>
-                    <FormControl
-                      type="search"
-                      placeholder="Search artists, venues, cities, genres, songs…"
-                      value={searchInput}
-                      onChange={handleSearchChange}
-                      style={{
-                        borderRadius: "24px",
-                        padding: "0.3rem 0.75rem",
-                        minWidth: "400px",
-                      }}
-                    />
-                  </Col>
-                </Row>
-              </Form>
+              <div ref={searchWrapperRef} className="search-wrapper">
+                <Form onSubmit={handleSearchSubmit}>
+                  <Row className="align-items-center">
+                    <Col xs="auto">
+                      <Button type="submit" variant="dark" aria-label="Search">
+                        <Search size={24} className="search-icon" aria-hidden />
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Form.Label htmlFor={TIMELINE_SEARCH_ID} className="visually-hidden">
+                        Search concerts
+                      </Form.Label>
+                      <FormControl
+                        id={TIMELINE_SEARCH_ID}
+                        type="search"
+                        placeholder="Search artists, venues, cities, genres, songs…"
+                        value={searchInput}
+                        onChange={handleSearchChange}
+                        onFocus={handleSearchFocus}
+                        onKeyDown={handleSearchKeyDown}
+                        className="setlog-nav-search-input"
+                        autoComplete="off"
+                        style={{
+                          borderRadius: '24px',
+                          padding: '0.3rem 0.75rem',
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                </Form>
+
+                {showDropdown && (
+                  <div className="search-dropdown" role="listbox" aria-label="Search results">
+                    {dropdownResults.length === 0 ? (
+                      <div className="search-dropdown-empty">No matches found</div>
+                    ) : (
+                      <>
+                        {dropdownResults.map((concert) => (
+                          <div
+                            key={concert.id}
+                            className="search-dropdown-item"
+                            role="option"
+                            aria-selected="false"
+                            tabIndex={0}
+                            onClick={() => handleDropdownItemClick(concert.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault()
+                                handleDropdownItemClick(concert.id)
+                              }
+                            }}
+                          >
+                            <div className="search-dropdown-item-artist">{concert.artist}</div>
+                            <div className="search-dropdown-item-meta">
+                              {concert.venue} · {concert.city} &mdash; {formatConcertDate(concert.date)}
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          className="search-dropdown-footer"
+                          onClick={handleSeeAllClick}
+                          aria-label={`See all ${allMatches.length} search result${allMatches.length === 1 ? '' : 's'}`}
+                        >
+                          See all {allMatches.length} result{allMatches.length === 1 ? '' : 's'} &rarr;
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
             </Col>
 
             {/* Icon Buttons */}
             <Col xs="auto">
-              {/* Dark Mode */}
-              <Button variant="dark" onClick={handleToggleTheme}>
-                {theme === 'light' ? <Moon size={32} /> : <Sun size={32} />}
+              <Button
+                variant="dark"
+                type="button"
+                onClick={handleToggleTheme}
+                aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
+              >
+                {theme === 'light' ? <Moon size={32} aria-hidden /> : <Sun size={32} aria-hidden />}
               </Button>
             </Col>
 
             <Col xs="auto">
-              {/* Settings */}
-              <Button
-                as={NavLink}
-                to="/settings"
-                variant="dark"
-              >
-                <Settings size={32} />
+              <Button as={NavLink} to="/settings" variant="dark" aria-label="Open settings">
+                <Settings size={32} aria-hidden />
               </Button>
             </Col>
 
@@ -188,6 +298,7 @@ function NavBar({ theme, setTheme }) {
                     variant="outline-light"
                     as={NavLink}
                     to="/user-profile"
+                    aria-label={`User profile for ${label}`}
                     style={{
                       width: '46px',
                       height: '46px',
@@ -202,7 +313,7 @@ function NavBar({ theme, setTheme }) {
                     {avatarUrl ? (
                       <img
                         src={avatarUrl}
-                        alt="User avatar"
+                        alt=""
                         style={{
                           width: '100%',
                           height: '100%',
@@ -211,6 +322,7 @@ function NavBar({ theme, setTheme }) {
                       />
                     ) : (
                       <div
+                        aria-hidden
                         style={{
                           width: '88px',
                           height: '88px',
@@ -229,8 +341,14 @@ function NavBar({ theme, setTheme }) {
                       </div>
                     )}
                   </Button>
-                  <Button variant="outline-light" onClick={handleLogout} title="Log out">
-                    <LogOut size={28} />
+                  <Button
+                    variant="outline-light"
+                    type="button"
+                    onClick={handleLogout}
+                    aria-label="Log out"
+                    title="Log out"
+                  >
+                    <LogOut size={28} aria-hidden />
                   </Button>
                 </div>
               ) : (

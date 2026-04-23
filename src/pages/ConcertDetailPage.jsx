@@ -17,6 +17,11 @@ function ConcertDetailPage() {
   const concert = concerts.find((c) => c.id === id)
 
   const backLabel = location.state?.backLabel || 'Back to Timeline'
+  const backTo = typeof location.state?.from === 'string' ? location.state.from : '/'
+
+  function handleBack() {
+    navigate(backTo)
+  }
 
   function handleDelete() {
     const ok = window.confirm(
@@ -24,7 +29,7 @@ function ConcertDetailPage() {
     )
     if (ok) {
       deleteConcert(concert.id)
-      navigate(-1)
+      navigate(backTo)
     }
   }
 
@@ -39,7 +44,7 @@ function ConcertDetailPage() {
   if (!concert) {
     return (
       <section
-        id="center"
+        className="page-shell"
         style={{
           flex: 1,
           width: '100%',
@@ -69,16 +74,17 @@ function ConcertDetailPage() {
               textAlign: 'center',
             }}
           >
-            <div
+            <h1
               style={{
                 fontSize: '1.8rem',
                 fontWeight: 800,
-                color: '#1f2937',
+                color: 'var(--setlog-card-text)',
                 marginBottom: '0.5rem',
+                marginTop: 0,
               }}
             >
               Concert not found
-            </div>
+            </h1>
 
             <div
               style={{
@@ -92,7 +98,7 @@ function ConcertDetailPage() {
 
             <Button
               variant="primary"
-              onClick={() => navigate(-1)}
+              onClick={handleBack}
               style={{
                 fontWeight: 700,
                 borderRadius: '10px',
@@ -182,7 +188,7 @@ function ConcertDetailPage() {
 
   return (
     <section
-      id="center"
+      className="page-shell"
       style={{
         flex: 1,
         width: '100%',
@@ -209,7 +215,7 @@ function ConcertDetailPage() {
             <Col>
               <Button
                 variant="link"
-                onClick={() => navigate(-1)}
+                onClick={handleBack}
                 style={{
                   padding: 0,
                   textDecoration: 'none',
@@ -251,7 +257,7 @@ function ConcertDetailPage() {
               {imageUrl ? (
                 <img
                   src={imageUrl}
-                  alt={concert.artist}
+                  alt=""
                   style={{
                     width: '100%',
                     maxWidth: '360px',
@@ -287,7 +293,7 @@ function ConcertDetailPage() {
             <Col lg={6}>
               <Row>
                 <Col>
-                  <div style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '2px', color: 'var(--setlog-card-text)' }}>{concert.artist}</div>
+                  <h1 style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '2px', marginTop: 0, color: 'var(--setlog-card-text)' }}>{concert.artist}</h1>
 
                   { /* Location Segment */}
                   <div
@@ -339,8 +345,14 @@ function ConcertDetailPage() {
                   { /* Stars Row */}
                   <Row>
                     <Col xs="auto">
-                      <span style={{ color: 'orange', fontSize: '1.55rem' }}>
-                        {'★'.repeat(concert.rating)}
+                      <span
+                        style={{
+                          fontSize: '1.55rem',
+                          color: 'var(--setlog-rating-empty)',
+                        }}
+                        aria-hidden
+                      >
+                        <span style={{ color: 'var(--setlog-rating-filled)' }}>{'★'.repeat(concert.rating)}</span>
                         {'☆'.repeat(5 - concert.rating)}
                       </span>
                     </Col>
@@ -608,13 +620,14 @@ function ConcertDetailPage() {
                     >
                       <span
                         style={{
-                          color: 'orange',
                           fontSize: '0.9rem',
                           lineHeight: 1,
                           letterSpacing: '1px',
+                          color: 'var(--setlog-rating-empty)',
                         }}
+                        aria-hidden
                       >
-                        {'★'.repeat(concert.rating)}
+                        <span style={{ color: 'var(--setlog-rating-filled)' }}>{'★'.repeat(concert.rating)}</span>
                         {'☆'.repeat(5 - concert.rating)}
                       </span>
 
@@ -622,7 +635,7 @@ function ConcertDetailPage() {
                         style={{
                           fontSize: '1rem',
                           fontWeight: 700,
-                          color: '#111827',
+                          color: 'var(--setlog-card-text)',
                           lineHeight: 1.6,
                         }}
                       >
@@ -632,7 +645,7 @@ function ConcertDetailPage() {
                       <span
                         style={{
                           fontSize: '0.9rem',
-                          color: '#6b7280',
+                          color: 'var(--setlog-card-text-secondary)',
                           lineHeight: 1,
                         }}
                       >
@@ -647,7 +660,7 @@ function ConcertDetailPage() {
 
         </Card.Body>
       </Card>
-    </section >
+    </section>
   )
 }
 

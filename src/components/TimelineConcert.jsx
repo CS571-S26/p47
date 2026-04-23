@@ -25,11 +25,24 @@ function TimelineConcert({ concert }) {
         })
     }
 
+    function handleCardKeyDown(ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault()
+            handleViewDetails()
+        }
+    }
+
     const setlistCount = Array.isArray(concert.setlist) ? concert.setlist.length : null
     const songCount = typeof setlistCount === 'number' ? setlistCount : (concert.songCount ?? 0)
     const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
     const [year, month, day] = concert.date.split('-').map(Number)
+    const dateLabel = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+    })
+    const cardAriaLabel = `View details for ${concert.artist}, ${dateLabel}`
     const monthLabel = new Date(year, month - 1, day).toLocaleDateString('en-US', {
         month: 'short',
     }).toUpperCase()
@@ -85,11 +98,16 @@ function TimelineConcert({ concert }) {
 
     return (
         <div
+            className="timeline-concert-card"
+            role="button"
+            tabIndex={0}
+            aria-label={cardAriaLabel}
             style={{
                 ...styles.concertCard,
                 cursor: 'pointer',
             }}
             onClick={handleViewDetails}
+            onKeyDown={handleCardKeyDown}
         >
             { /* Date Card */}
             <Col xs="auto">
@@ -105,7 +123,7 @@ function TimelineConcert({ concert }) {
                 {imageUrl ? (
                     <img
                         src={imageUrl}
-                        alt={concert.artist}
+                        alt=""
                         style={{ width: "250px", height: "125px", objectFit: "cover", borderRadius: "10px", marginBottom: "6px" }}
                     />
                 ) : (
@@ -141,8 +159,15 @@ function TimelineConcert({ concert }) {
                 { /* Rating Row */}
                 <Row style={{ alignItems: "center", marginBottom: "10px" }}>
                     <Col xs="auto">
-                        <span style={{ color: "orange", fontSize: "24px", lineHeight: "1" }}>
-                            {'★'.repeat(concert.rating)}
+                        <span
+                            style={{
+                                fontSize: '24px',
+                                lineHeight: '1',
+                                color: 'var(--setlog-rating-empty)',
+                            }}
+                            aria-hidden
+                        >
+                            <span style={{ color: 'var(--setlog-rating-filled)' }}>{'★'.repeat(concert.rating)}</span>
                             {'☆'.repeat(5 - concert.rating)}
                         </span>
                     </Col>
@@ -176,7 +201,7 @@ function TimelineConcert({ concert }) {
                 { /* Song Count Row */}
                 <Row style={{ alignItems: "center" }}>
                     <Col xs="auto">
-                        <Clock size={16} style={{ color: 'var(--setlog-card-text)' }} />
+                        <Clock size={16} style={{ color: 'var(--setlog-card-text)' }} aria-hidden />
                     </Col>
                     <Col xs="auto">
                         <span style={{ fontSize: "14px", fontWeight: "200", color: "var(--setlog-card-text)" }}>{songCount} songs</span>
@@ -191,6 +216,7 @@ function TimelineConcert({ concert }) {
                         }}
                     >
                         <Button
+                            type="button"
                             style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}
                             onClick={(e) => {
                                 e.stopPropagation()
@@ -201,6 +227,7 @@ function TimelineConcert({ concert }) {
                         </Button>
                         {loginStatus.loggedIn && (
                             <Button
+                                type="button"
                                 variant="outline-danger"
                                 style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', gap: '6px', alignItems: 'center' }}
                                 onClick={(e) => {
@@ -208,7 +235,7 @@ function TimelineConcert({ concert }) {
                                     handleDelete()
                                 }}
                             >
-                                <Trash size={16} />
+                                <Trash size={16} aria-hidden />
                                 Delete
                             </Button>)}
                     </Col>

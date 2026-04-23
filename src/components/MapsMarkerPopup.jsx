@@ -24,7 +24,7 @@ function MapsMarkerPopup({ concerts }) {
 
   function handleViewDetails() {
     navigate(`/concerts/${concert.id}`, {
-      state: { from: '/', backLabel: 'Back to Map' },
+      state: { from: '/maps', backLabel: 'Back to Map' },
     })
   }
 
@@ -48,7 +48,7 @@ function MapsMarkerPopup({ concerts }) {
       {imageUrl ? (
         <img
           src={imageUrl}
-          alt={concert.artist}
+          alt=""
           style={{
             width: "100%",
             height: "120px",
@@ -112,8 +112,15 @@ function MapsMarkerPopup({ concerts }) {
       {/* Rating Row */}
       <Row className="align-items-center">
         <Col xs="auto">
-          <span style={{ color: "orange", fontSize: "24px", lineHeight: "1" }}>
-            {'★'.repeat(concert.rating)}
+          <span
+            style={{
+              fontSize: '24px',
+              lineHeight: '1',
+              color: 'var(--setlog-rating-empty)',
+            }}
+            aria-hidden
+          >
+            <span style={{ color: 'var(--setlog-rating-filled)' }}>{'★'.repeat(concert.rating)}</span>
             {'☆'.repeat(5 - concert.rating)}
           </span>
         </Col>
@@ -128,18 +135,39 @@ function MapsMarkerPopup({ concerts }) {
           <Row className="align-items-center">
 
             <Col xs="auto">
-              <Button variant="secondary" onClick={handlePrev} style={styles.navButtonText}>
-                <ArrowLeft size={14} style={{ marginRight: '5px' }} />
+              <Button
+                type="button"
+                variant="secondary"
+                aria-label="Previous concert"
+                onClick={handlePrev}
+                style={styles.navButtonText}
+              >
+                <ArrowLeft size={14} style={{ marginRight: '5px' }} aria-hidden />
               </Button>
             </Col>
 
             <Col>
-              <Button variant="primary" style={styles.navButton} onClick={() => { handleViewDetails() }}>View Details</Button>
+              <Button
+                type="button"
+                variant="primary"
+                style={styles.navButton}
+                onClick={() => {
+                  handleViewDetails()
+                }}
+              >
+                View Details
+              </Button>
             </Col>
 
             <Col xs="auto">
-              <Button variant="secondary" onClick={handleNext} style={styles.navButtonText}>
-                <ArrowRight size={14} style={{ marginRight: '5px' }} />
+              <Button
+                type="button"
+                variant="secondary"
+                aria-label="Next concert"
+                onClick={handleNext}
+                style={styles.navButtonText}
+              >
+                <ArrowRight size={14} style={{ marginRight: '5px' }} aria-hidden />
               </Button>
             </Col>
 
@@ -152,7 +180,7 @@ function MapsMarkerPopup({ concerts }) {
           )}
         </>
       ) : (
-        <Button variant="primary" style={styles.navButton} onClick={() => { handleViewDetails() }}>View Details</Button>
+        <Button type="button" variant="primary" style={styles.navButton} onClick={() => { handleViewDetails() }}>View Details</Button>
       )
       }
     </Card>

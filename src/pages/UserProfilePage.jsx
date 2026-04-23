@@ -105,7 +105,7 @@ function UserProfilePage() {
 
   if (!loginStatus.loggedIn) {
     return (
-      <section id="center">
+      <section className="page-shell">
         <div>
           <h1 style={{ color: 'var(--setlog-primary-text)' }}>User Profile</h1>
           <p style={{ color: 'var(--setlog-secondary-text)' }}>You are not logged in.</p>
@@ -129,12 +129,12 @@ function UserProfilePage() {
   const avatarUrl = avatarOverride || photoFromAuth
 
   const statCards = [
-    statCard(<Calendar size={18} color="var(--setlog-primary)" />, 'Shows Logged', stats.totalShows),
-    statCard(<Users size={18} color="var(--setlog-primary)" />, 'Artists Tracked', stats.uniqueArtists),
-    statCard(<MapPin size={18} color="var(--setlog-primary)" />, 'Cities', stats.uniqueCities),
-    statCard(<Heart size={18} color="var(--setlog-primary)" />, 'Favorites', stats.favorites),
-    statCard(<Music size={18} color="var(--setlog-primary)" />, 'Songs Logged', stats.songTotal),
-    statCard(<Star size={18} color="var(--setlog-primary)" />, 'Avg Rating', stats.avgRating),
+    statCard(<Calendar size={18} color="var(--setlog-card-text)" aria-hidden />, 'Shows Logged', stats.totalShows),
+    statCard(<Users size={18} color="var(--setlog-card-text)" aria-hidden />, 'Artists Tracked', stats.uniqueArtists),
+    statCard(<MapPin size={18} color="var(--setlog-card-text)" aria-hidden />, 'Cities', stats.uniqueCities),
+    statCard(<Heart size={18} color="var(--setlog-card-text)" aria-hidden />, 'Favorites', stats.favorites),
+    statCard(<Music size={18} color="var(--setlog-card-text)" aria-hidden />, 'Songs Logged', stats.songTotal),
+    statCard(<Star size={18} color="var(--setlog-card-text)" aria-hidden />, 'Avg Rating', stats.avgRating),
   ]
 
   const joinedText = user?.metadata?.creationTime
@@ -196,7 +196,7 @@ function UserProfilePage() {
                     justifyContent: 'center',
                     fontSize: '28px',
                     fontWeight: 700,
-                    color: 'var(--setlog-primary)',
+                    color: 'var(--setlog-card-text)',
                   }}
                 >
                   {initials}

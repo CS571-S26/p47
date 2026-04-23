@@ -13,29 +13,32 @@ function SectionCard({ title, subtitle, children }) {
       }}
     >
       <Card.Body style={{ padding: '1.25rem' }}>
-        <div style={{ marginBottom: '0.9rem' }}>
-          <div
-            style={{
-              fontSize: '1.20rem',
-              fontWeight: 700,
-              color: 'var(--setlog-card-text)',
-            }}
-          >
-            {title}
-          </div>
-
-          {subtitle && (
-            <div
+        {title ? (
+          <div style={{ marginBottom: '0.9rem' }}>
+            <h2
               style={{
-                fontSize: '0.92rem',
-                color: 'var(--setlog-card-text-secondary)',
-                marginTop: '0.1rem',
+                margin: 0,
+                fontSize: '1.20rem',
+                fontWeight: 700,
+                color: 'var(--setlog-card-text)',
               }}
             >
-              {subtitle}
-            </div>
-          )}
-        </div>
+              {title}
+            </h2>
+
+            {subtitle ? (
+              <p
+                style={{
+                  margin: '0.1rem 0 0',
+                  fontSize: '0.92rem',
+                  color: 'var(--setlog-card-text-secondary)',
+                }}
+              >
+                {subtitle}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
 
         {children}
       </Card.Body>
