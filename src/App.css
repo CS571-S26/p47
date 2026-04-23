@@ -5,8 +5,8 @@
 
 /* Light Mode — primaries tuned for ≥4.5:1 with white button text (WCAG AA) */
 [data-theme='light'] {
-  --setlog-primary: #a84a0d;
-  --setlog-primary-hover: #863c0b;
+  --setlog-primary: #9a450c;
+  --setlog-primary-hover: #7a370a;
   --setlog-page-bg: linear-gradient(180deg,
       #d5cef3 0%,
       #e8d7cf 38%,
@@ -151,6 +151,18 @@ body {
   border-color: #1d4ed8 !important;
 }
 
+[data-theme='light'] .btn-outline-danger {
+  color: #842029 !important;
+  border-color: #842029 !important;
+}
+
+[data-theme='light'] .btn-outline-danger:hover,
+[data-theme='light'] .btn-outline-danger:focus-visible {
+  color: #fff !important;
+  background-color: #842029 !important;
+  border-color: #842029 !important;
+}
+
 [data-theme='light'] .btn-outline-primary:hover,
 [data-theme='light'] .btn-outline-primary:focus-visible {
   color: #fff !important;
@@ -206,7 +218,7 @@ body {
 [data-theme='light'] .form-switch .form-check-input {
   border-color: var(--setlog-primary) !important;
   background-color: var(--setlog-card-bg-secondary) !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23a84a0d'/%3e%3c/svg%3e") !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%239a450c'/%3e%3c/svg%3e") !important;
 }
 
 [data-theme='dark'] .form-switch .form-check-input {

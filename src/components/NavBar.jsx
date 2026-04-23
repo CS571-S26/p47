@@ -252,13 +252,14 @@ function NavBar({ theme, setTheme }) {
                             </div>
                           </div>
                         ))}
-                        <a
-                          href="#/"
+                        <button
+                          type="button"
                           className="search-dropdown-footer"
                           onClick={handleSeeAllClick}
+                          aria-label={`See all ${allMatches.length} search result${allMatches.length === 1 ? '' : 's'}`}
                         >
                           See all {allMatches.length} result{allMatches.length === 1 ? '' : 's'} &rarr;
-                        </a>
+                        </button>
                       </>
                     )}
                   </div>

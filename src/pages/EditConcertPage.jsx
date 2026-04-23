@@ -409,7 +409,7 @@ function EditConcertPage() {
           ) : null}
 
           <div style={{ fontSize: '0.85rem', color: 'var(--setlog-card-text-secondary)', marginBottom: '0.7rem' }}>
-            <span style={{ color: '#dc3545', fontWeight: 700 }}>*</span> Required fields
+            <span style={{ color: '#842029', fontWeight: 700 }}>*</span> Required fields
           </div>
 
           <Form onSubmit={handleSubmit}>
@@ -421,11 +421,12 @@ function EditConcertPage() {
                 >
                   <Row>
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-artist" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Artist/Band <span style={{ color: '#dc3545' }}>*</span>
+                          Artist/Band <span style={{ color: '#842029' }}>*</span>
                         </Form.Label>
                         <Form.Control
+                          id="concert-artist"
                           type="text"
                           placeholder="e.g., Dead & Company"
                           style={styles.formControl}
@@ -436,11 +437,12 @@ function EditConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-genre" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Music Genre <span style={{ color: '#dc3545' }}>*</span>
+                          Music Genre <span style={{ color: '#842029' }}>*</span>
                         </Form.Label>
                         <Form.Control
+                          id="concert-genre"
                           type="text"
                           placeholder="e.g., Jam Band"
                           style={styles.formControl}
@@ -451,11 +453,12 @@ function EditConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-date" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Date <span style={{ color: '#dc3545' }}>*</span>
+                          Date <span style={{ color: '#842029' }}>*</span>
                         </Form.Label>
                         <Form.Control
+                          id="concert-date"
                           type="date"
                           style={styles.formControl}
                           value={date}
@@ -465,11 +468,12 @@ function EditConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-venue" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          Venue <span style={{ color: '#dc3545' }}>*</span>
+                          Venue <span style={{ color: '#842029' }}>*</span>
                         </Form.Label>
                         <Form.Control
+                          id="concert-venue"
                           type="text"
                           placeholder="e.g., Oracle Park"
                           style={styles.formControl}
@@ -480,11 +484,12 @@ function EditConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-city" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          City, State <span style={{ color: '#dc3545' }}>*</span>
+                          City, State <span style={{ color: '#842029' }}>*</span>
                         </Form.Label>
                         <Form.Control
+                          id="concert-city"
                           type="text"
                           placeholder="e.g., San Francisco, CA"
                           style={styles.formControl}
@@ -499,9 +504,10 @@ function EditConcertPage() {
                     </Col>
 
                     <Col md={6}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-image" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>Cover image URL</Form.Label>
                         <Form.Control
+                          id="concert-image"
                           type="url"
                           placeholder="https://…"
                           style={styles.formControl}
@@ -538,6 +544,7 @@ function EditConcertPage() {
                             >
                               <InputGroup>
                                 <Form.Control
+                                  aria-label="New song title"
                                   type="text"
                                   placeholder="Add a song title..."
                                   style={styles.formControl}
@@ -556,6 +563,7 @@ function EditConcertPage() {
                                   onClick={handleAddSong}
                                   disabled={!newSongTitle.trim()}
                                   type="button"
+                                  aria-label="Add song"
                                 >
                                   <Plus size={14} />
                                 </Button>
@@ -569,10 +577,9 @@ function EditConcertPage() {
                                   disabled={!canImportFromSetlistFm || importingSetlist}
                                   style={{
                                     width: '100%',
-                                    opacity: !canImportFromSetlistFm || importingSetlist ? 0.55 : 1,
-                                    backgroundColor: !canImportFromSetlistFm || importingSetlist ? '#d1d5db' : undefined,
-                                    borderColor: !canImportFromSetlistFm || importingSetlist ? '#d1d5db' : undefined,
-                                    color: !canImportFromSetlistFm || importingSetlist ? '#6b7280' : undefined,
+                                    backgroundColor: !canImportFromSetlistFm || importingSetlist ? '#e5e7eb' : undefined,
+                                    borderColor: !canImportFromSetlistFm || importingSetlist ? '#e5e7eb' : undefined,
+                                    color: !canImportFromSetlistFm || importingSetlist ? '#374151' : undefined,
                                     fontSize: '0.90rem',
                                   }}
                                 >
@@ -641,6 +648,7 @@ function EditConcertPage() {
                                             variant="secondary"
                                             onClick={() => handleMoveSong(idx, -1)}
                                             disabled={idx === 0}
+                                            aria-label={`Move "${title}" up`}
                                           >
                                             <ArrowUp size={14} />
                                           </Button>
@@ -650,6 +658,7 @@ function EditConcertPage() {
                                             variant="secondary"
                                             onClick={() => handleMoveSong(idx, 1)}
                                             disabled={idx === normalizedSetlist.length - 1}
+                                            aria-label={`Move "${title}" down`}
                                           >
                                             <ArrowDown size={14} />
                                           </Button>
@@ -658,6 +667,7 @@ function EditConcertPage() {
                                             size="sm"
                                             variant="outline-danger"
                                             onClick={() => handleRemoveSong(idx)}
+                                            aria-label={`Remove "${title}"`}
                                           >
                                             <Trash size={16} />
                                           </Button>
@@ -736,9 +746,10 @@ function EditConcertPage() {
                 >
                   <Row>
                     <Col md={12}>
-                      <Form.Group style={{ marginBottom: '0.8rem' }}>
+                      <Form.Group controlId="concert-notes" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>Notes</Form.Label>
                         <Form.Control
+                          id="concert-notes"
                           as="textarea"
                           rows={2}
                           placeholder="Memories, highlights…"
@@ -751,10 +762,12 @@ function EditConcertPage() {
 
                     <Col md={4}>
                       <Form.Group style={{ marginBottom: '1rem' }}>
-                        <Form.Label style={styles.formLabel}>
-                          Rating <span style={{ color: '#dc3545' }}>*</span>
-                        </Form.Label>
+                        <div id="concert-rating-label" style={styles.formLabel}>
+                          Rating <span style={{ color: '#842029' }}>*</span>
+                        </div>
                         <div
+                          role="group"
+                          aria-labelledby="concert-rating-label"
                           style={{
                             height: '44px',
                             padding: '0 12px',
@@ -771,6 +784,8 @@ function EditConcertPage() {
                                 key={star}
                                 role="button"
                                 tabIndex={0}
+                                aria-label={`Set rating to ${star} out of 5`}
+                                aria-pressed={star === rating}
                                 onClick={() => setRating(star)}
                                 onKeyDown={(ev) => {
                                   if (ev.key === 'Enter' || ev.key === ' ') {
@@ -811,6 +826,7 @@ function EditConcertPage() {
                         <Form.Check
                           type="switch"
                           label="I Attended"
+                          id="concert-attended"
                           checked={attended}
                           onChange={() => setAttended(!attended)}
                           style={styles.formLabel}
@@ -819,6 +835,7 @@ function EditConcertPage() {
                         <Form.Check
                           type="switch"
                           label="Add to Favorites"
+                          id="concert-favorite"
                           checked={favorite}
                           onChange={() => setFavorite(!favorite)}
                           style={styles.formLabel}

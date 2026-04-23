@@ -96,6 +96,11 @@
   background: var(--setlog-card-bg-secondary, #252830);
   border-top: 1px solid var(--setlog-card-border, #2e3240);
   transition: opacity 0.12s;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+  width: 100%;
+  cursor: pointer;
 }
 
 .search-dropdown-footer:hover {
