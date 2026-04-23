@@ -9,6 +9,7 @@ import UserProfilePage from './pages/UserProfilePage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import { AuthProvider } from './contexts/AuthProvider.jsx'
+import { SpotifyProvider } from './contexts/SpotifyProvider.jsx'
 import ConcertDetailPage from './pages/ConcertDetailPage.jsx'
 import EditConcertPage from './pages/EditConcertPage.jsx'
 import { ConcertsProvider } from './contexts/ConcertsProvider.jsx'
@@ -76,7 +77,9 @@ function App() {
 
   return (
     <AuthProvider>
-      <AppShell theme={theme} setTheme={setTheme} />
+      <SpotifyProvider>
+        <AppShell theme={theme} setTheme={setTheme} />
+      </SpotifyProvider>
     </AuthProvider>
   )
 }

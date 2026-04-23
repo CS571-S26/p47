@@ -1,23 +1,61 @@
-import { useContext } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
-import { Card, Row, Col, Button, ListGroup } from 'react-bootstrap'
+import { Alert, Card, Row, Col, Button, ListGroup, Spinner } from 'react-bootstrap'
 import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
+import { useSpotify } from '../contexts/spotifyContext.js'
 import SectionCard from '../components/SectionCard'
+import {
+  addItemsToSpotifyPlaylist,
+  buildSpotifyPlaylistDescription,
+  buildSpotifyPlaylistName,
+  createSpotifyPlaylist,
+  resolveSpotifyTrackMatches,
+} from '../utils/spotifyApi.js'
+import {
+  clearStoredSpotifyPendingAction,
+  readStoredSpotifyPendingAction,
+} from '../utils/spotifyAuth.js'
 
 function ConcertDetailPage() {
-  const { concerts, deleteConcert } = useContext(ConcertsContext)
+  const { concerts, deleteConcert, updateConcert } = useContext(ConcertsContext)
   const navigate = useNavigate()
   const location = useLocation()
   const { id } = useParams()
   const { loginStatus } = useAuth()
+  const {
+    ensureAccessToken,
+    loading: spotifyLoading,
+    authenticating: spotifyAuthenticating,
+  } = useSpotify()
+  const [playlistStatus, setPlaylistStatus] = useState({
+    busy: false,
+    error: '',
+    result: null,
+  })
 
   const concert = concerts.find((c) => c.id === id)
+  const setlistSongs = useMemo(
+    () =>
+      Array.isArray(concert?.setlist)
+        ? concert.setlist
+            .map((song) => (typeof song === 'string' ? song.trim() : ''))
+            .filter(Boolean)
+        : [],
+    [concert?.setlist],
+  )
 
   const backLabel = location.state?.backLabel || 'Back to Timeline'
   const backTo = typeof location.state?.from === 'string' ? location.state.from : '/'
+  const storedPlaylistUrl =
+    typeof concert?.spotifyPlaylistUrl === 'string' ? concert.spotifyPlaylistUrl.trim() : ''
+  const storedPlaylistName =
+    typeof concert?.spotifyPlaylistName === 'string' ? concert.spotifyPlaylistName.trim() : ''
+  const currentPlaylistUrl = storedPlaylistUrl || playlistStatus.result?.playlistUrl || ''
+  const currentPlaylistName =
+    storedPlaylistName || playlistStatus.result?.playlistName || 'Spotify Playlist'
 
   function handleBack() {
     navigate(backTo)
@@ -40,6 +78,114 @@ function ConcertDetailPage() {
     if (value === 2) return 'Okay'
     return 'Rough'
   }
+
+  useEffect(() => {
+    setPlaylistStatus({ busy: false, error: '', result: null })
+  }, [concert?.id])
+
+  const exportSetlistToSpotify = useCallback(async () => {
+    if (!concert) return
+
+    if (setlistSongs.length === 0) {
+      setPlaylistStatus({
+        busy: false,
+        error: 'Add at least one song to this setlist before exporting to Spotify.',
+        result: null,
+      })
+      return
+    }
+
+    setPlaylistStatus({ busy: true, error: '', result: null })
+
+    try {
+      const accessToken = await ensureAccessToken({
+        interactive: true,
+        returnTo: `/concerts/${concert.id}`,
+        action: { type: 'create-playlist', concertId: concert.id },
+      })
+
+      if (!accessToken) {
+        setPlaylistStatus({ busy: false, error: '', result: null })
+        return
+      }
+
+      clearStoredSpotifyPendingAction()
+
+      const { matched, unmatched } = await resolveSpotifyTrackMatches({
+        accessToken,
+        songs: setlistSongs,
+        artist: concert.artist,
+        limit: 5,
+      })
+
+      if (matched.length === 0) {
+        throw new Error('Spotify could not match any songs from this setlist.')
+      }
+
+      const playlist = await createSpotifyPlaylist({
+        accessToken,
+        name: buildSpotifyPlaylistName(concert),
+        description: buildSpotifyPlaylistDescription(concert),
+        isPublic: false,
+      })
+
+      await addItemsToSpotifyPlaylist({
+        accessToken,
+        playlistId: playlist.id,
+        uris: matched.map((item) => item.uri),
+      })
+
+      let saveWarning = ''
+      if (loginStatus.loggedIn) {
+        try {
+          await updateConcert(concert.id, {
+            spotifyPlaylistId: playlist.id,
+            spotifyPlaylistName: playlist.name,
+            spotifyPlaylistUrl: playlist.external_urls?.spotify || '',
+            spotifyPlaylistCreatedAt: new Date().toISOString(),
+          })
+        } catch (err) {
+          saveWarning =
+            err?.message || 'The playlist was created, but the link could not be saved to this concert.'
+        }
+      }
+
+      setPlaylistStatus({
+        busy: false,
+        error: '',
+        result: {
+          playlistName: playlist.name,
+          playlistUrl: playlist.external_urls?.spotify || '',
+          matchedCount: matched.length,
+          unmatchedSongs: unmatched.map((item) => item.song),
+          warning: saveWarning,
+        },
+      })
+    } catch (err) {
+      setPlaylistStatus({
+        busy: false,
+        error: err?.message || 'Spotify playlist export failed.',
+        result: null,
+      })
+    }
+  }, [concert, ensureAccessToken, loginStatus.loggedIn, setlistSongs, updateConcert])
+
+  useEffect(() => {
+    if (!concert || spotifyLoading || spotifyAuthenticating || playlistStatus.busy) return
+    const pendingAction = readStoredSpotifyPendingAction()
+    if (
+      pendingAction?.type === 'create-playlist' &&
+      pendingAction.concertId === concert.id
+    ) {
+      void exportSetlistToSpotify()
+    }
+  }, [
+    concert,
+    exportSetlistToSpotify,
+    playlistStatus.busy,
+    spotifyAuthenticating,
+    spotifyLoading,
+  ])
 
   if (!concert) {
     return (
@@ -493,17 +639,94 @@ function ConcertDetailPage() {
               <div style={{ marginTop: '0.85rem' }}>
                 <SectionCard
                   title={
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px', width: '100%' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '7px',
+                        width: '100%',
+                        flexWrap: 'wrap',
+                      }}
+                    >
                       <ListMusic size={16} color='var(--setlog-primary)' />
                       <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--setlog-card-text)' }}>
                         SETLIST
                       </span>
                       <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--setlog-card-text-secondary)', marginLeft: 'auto' }}>
-                        {concert.songCount} songs
+                        {setlistSongs.length} songs
                       </span>
+                      <Button
+                        variant="outline-success"
+                        size="sm"
+                        onClick={() => void exportSetlistToSpotify()}
+                        disabled={playlistStatus.busy || spotifyLoading || spotifyAuthenticating || setlistSongs.length === 0}
+                        style={{ fontWeight: 700 }}
+                      >
+                        {playlistStatus.busy || spotifyAuthenticating ? (
+                          <>
+                            <Spinner animation="border" size="sm" style={{ marginRight: '0.4rem' }} />
+                            Creating...
+                          </>
+                        ) : (
+                          currentPlaylistUrl ? 'Recreate Spotify Playlist' : 'Create Spotify Playlist'
+                        )}
+                      </Button>
+                      {currentPlaylistUrl ? (
+                        <Button
+                          as="a"
+                          href={currentPlaylistUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          variant="success"
+                          size="sm"
+                          style={{ fontWeight: 700 }}
+                        >
+                          Open Playlist
+                        </Button>
+                      ) : null}
                     </div>
                   }
                 >
+                  {playlistStatus.error ? (
+                    <Alert variant="danger" style={{ marginBottom: '0.9rem' }}>
+                      {playlistStatus.error}
+                    </Alert>
+                  ) : null}
+
+                  {playlistStatus.result ? (
+                    <Alert variant="success" style={{ marginBottom: '0.9rem' }}>
+                      <div style={{ fontWeight: 700, marginBottom: '0.35rem' }}>
+                        Playlist created in Spotify.
+                      </div>
+                      <div>
+                        Added {playlistStatus.result.matchedCount} song
+                        {playlistStatus.result.matchedCount === 1 ? '' : 's'} to{' '}
+                        {playlistStatus.result.playlistName}.
+                      </div>
+                      {playlistStatus.result.unmatchedSongs.length > 0 ? (
+                        <div style={{ marginTop: '0.45rem' }}>
+                          Could not match: {playlistStatus.result.unmatchedSongs.join(', ')}
+                        </div>
+                      ) : null}
+                      {playlistStatus.result.warning ? (
+                        <div style={{ marginTop: '0.45rem' }}>
+                          {playlistStatus.result.warning}
+                        </div>
+                      ) : null}
+                      {playlistStatus.result.playlistUrl ? (
+                        <div style={{ marginTop: '0.55rem' }}>
+                          <a
+                            href={playlistStatus.result.playlistUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Open playlist in Spotify
+                          </a>
+                        </div>
+                      ) : null}
+                    </Alert>
+                  ) : null}
+
                   {Array.isArray(concert.setlist) && concert.setlist.length > 0 ? (
                     <ListGroup variant="flush">
                       {concert.setlist.map((song, idx) => (
@@ -563,6 +786,18 @@ function ConcertDetailPage() {
 
                   <div style={styles.infoLabel}>Date</div>
                   <div style={styles.infoValue}>{fullDateLabel}</div>
+
+                  <div style={styles.infoLabel}>Spotify Playlist</div>
+                  <div style={styles.infoValue}>
+                    {currentPlaylistUrl ? (
+                      <a href={currentPlaylistUrl} target="_blank" rel="noreferrer">
+                        {currentPlaylistName}
+                      </a>
+                    ) : (
+                      'No playlist saved yet.'
+                    )}
+                  </div>
+
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem', marginBottom: '0.9rem' }}>
                     <div style={styles.infoLabel}>Attendance</div>
                     <div style={styles.infoValue}>
