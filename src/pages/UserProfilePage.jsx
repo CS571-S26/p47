@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { Calendar, Heart, MapPin, Music, Star, Users } from 'lucide-react'
+import { Calendar, Heart, MapPin, Music, Star, Users, LogOut } from 'lucide-react'
 
 import SectionCard from '../components/SectionCard'
 import { useAuth } from '../contexts/authContext.js'
@@ -32,10 +33,18 @@ function statCard(icon, label, value, helpText = '') {
 }
 
 function UserProfilePage() {
-  const { loginStatus, user } = useAuth()
+  const { loginStatus, logout, user } = useAuth()
   const { concerts } = useContext(ConcertsContext)
   const [avatarDraft, setAvatarDraft] = useState('')
   const [avatarOverride, setAvatarOverride] = useState('')
+  const navigate = useNavigate()
+
+  const iconSize = window.innerWidth < 768 ? 22 : 28
+
+  function handleLogout() {
+    logout()
+    navigate('/')
+  }
 
   useEffect(() => {
     const uid = user?.uid
@@ -211,6 +220,24 @@ function UserProfilePage() {
               <p style={{ margin: '6px 0 0', color: 'var(--setlog-secondary-text)' }}>
                 Member since {joinedText}
               </p>
+
+              <Button
+                variant="outline-light"
+                type="button"
+                onClick={handleLogout}
+                aria-label="Log out"
+                title="Log out"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontWeight: 700,
+                  marginTop: '1rem'
+                }}
+              >
+                <LogOut size={iconSize} aria-hidden />
+                <span>Log out</span>
+              </Button>
             </Col>
           </Row>
         </SectionCard>

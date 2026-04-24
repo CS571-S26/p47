@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { Map, CirclePlus, Settings, List, Search, Moon, Sun, LogOut } from 'lucide-react'
+import { Map, CirclePlus, List, Moon, Sun } from 'lucide-react'
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
@@ -37,7 +37,7 @@ function formatConcertDate(dateStr) {
 }
 
 function NavBar({ theme, setTheme }) {
-  const { loginStatus, logout, user } = useAuth()
+  const { loginStatus, user } = useAuth()
   const { concerts } = useContext(ConcertsContext)
   const navigate = useNavigate()
   const location = useLocation()
@@ -142,11 +142,6 @@ function NavBar({ theme, setTheme }) {
 
   function handleToggleTheme() {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
-  }
-
-  function handleLogout() {
-    logout()
-    navigate('/')
   }
 
   function createInitials(label) {
@@ -389,15 +384,6 @@ function NavBar({ theme, setTheme }) {
                         {initials}
                       </div>
                     )}
-                  </Button>
-                  <Button
-                    variant="outline-light"
-                    type="button"
-                    onClick={handleLogout}
-                    aria-label="Log out"
-                    title="Log out"
-                  >
-                    <LogOut size={iconSize} aria-hidden />
                   </Button>
                 </div>
               ) : (
