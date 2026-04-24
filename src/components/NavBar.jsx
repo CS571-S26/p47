@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { Map, CirclePlus, List, Moon, Sun } from 'lucide-react'
+import { Map, CirclePlus, List, Moon, Sun, UserPlus } from 'lucide-react'
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
@@ -125,6 +125,30 @@ function NavBar({ theme, setTheme }) {
     }
   }
 
+  function accountButton(className, size) {
+    return (
+      <Button
+        as={NavLink}
+        to="/login"
+        variant="outline-light"
+        className={className}
+        onClick={() => setExpanded(false)}
+        aria-label="Log in or register"
+        style={{
+          width: size,
+          height: size,
+          borderRadius: '999px',
+          padding: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <UserPlus size={22} aria-hidden />
+      </Button>
+    )
+  }
+
   useEffect(() => {
     loadAvatar()
   }, [user])
@@ -182,7 +206,7 @@ function NavBar({ theme, setTheme }) {
             {theme === 'light' ? <Moon size={iconSize} aria-hidden /> : <Sun size={iconSize} aria-hidden />}
           </Button>
 
-          {loginStatus.loggedIn && (
+          {loginStatus.loggedIn ? (
             <Button
               as={NavLink}
               to="/user-profile"
@@ -221,6 +245,8 @@ function NavBar({ theme, setTheme }) {
                 </div>
               )}
             </Button>
+          ) : (
+            accountButton('', '42px')
           )}
 
           <Navbar.Toggle aria-controls={NAV_COLLAPSE_ID} />
@@ -386,16 +412,7 @@ function NavBar({ theme, setTheme }) {
                     )}
                   </Button>
                 </div>
-              ) : (
-                <>
-                  <Button variant="outline-light" as={NavLink} onClick={() => setExpanded(false)} to="/login" className="me-1">
-                    Log in
-                  </Button>
-                  <Button variant="outline-light" as={NavLink} onClick={() => setExpanded(false)} to="/register">
-                    Register
-                  </Button>
-                </>
-              )}
+              ) : (accountButton('d-none d-lg-flex', '46px'))}
             </Col>
           </Row>
         </Navbar.Collapse>
