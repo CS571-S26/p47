@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { useContext, useEffect, useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import L from 'leaflet'
-import { MapPin, Heart, Square, DivideSquare } from 'lucide-react'
+import { MapPin, Heart, Square, Home } from 'lucide-react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
@@ -11,14 +11,34 @@ import {
   applyMapFilter,
   getMapFilterOptions,
   isStaleMapFilter,
-  mapFiltersEqual,
 } from '../utils/mapFilters.js'
 import './MapsPage.css'
 import MapsMarkerPopup from '../components/MapsMarkerPopup'
 
+const HOMETOWN_STORAGE_PREFIX = 'p47:hometown:'
+
+function readHometownPin(uid) {
+  if (!uid) return null
+  try {
+    const raw = localStorage.getItem(`${HOMETOWN_STORAGE_PREFIX}${uid}`)
+    if (!raw) return null
+    const o = JSON.parse(raw)
+    const label = typeof o?.label === 'string' ? o.label.trim() : ''
+    if (!label) return null
+    if (!Array.isArray(o.coords) || o.coords.length !== 2) return null
+    const lat = Number(o.coords[0])
+    const lon = Number(o.coords[1])
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null
+    return { label, coords: [lat, lon] }
+  } catch {
+    return null
+  }
+}
+
 function MapsPage({ theme }) {
   const { concerts } = useContext(ConcertsContext)
-  const { loginStatus, loading: authLoading } = useAuth()
+  const { loginStatus, loading: authLoading, user } = useAuth()
+  const [hometownPin, setHometownPin] = useState(null)
   const [filter, setFilter] = useState({
     year: 'all',
     genre: 'all',
@@ -35,13 +55,29 @@ function MapsPage({ theme }) {
         return {
           year: 'all',
           genre: 'all',
-          favorite: false,
-          attended: false,
+          favoriteOnly: false,
+          attendedOnly: false,
         }
       }
       return prev
     })
   }, [concerts])
+
+  useEffect(() => {
+    const uid = user?.uid
+    if (!loginStatus.loggedIn || !uid) {
+      setHometownPin(null)
+      return undefined
+    }
+
+    function syncHometown() {
+      setHometownPin(readHometownPin(uid))
+    }
+
+    syncHometown()
+    window.addEventListener('hometownUpdated', syncHometown)
+    return () => window.removeEventListener('hometownUpdated', syncHometown)
+  }, [user?.uid, loginStatus.loggedIn])
 
   const filteredConcerts = applyMapFilter(concerts, filter)
 
@@ -56,6 +92,20 @@ function MapsPage({ theme }) {
         size={32}
         color='var(--setlog-primary-hover)'
         fill='var(--setlog-primary)'
+      />,
+    ),
+    className: '',
+    iconSize: [28, 28],
+    iconAnchor: [14, 28],
+  })
+
+  const homeIcon = new L.DivIcon({
+    html: renderToStaticMarkup(
+      <Home
+        size={30}
+        color="var(--setlog-card-text)"
+        fill="var(--setlog-card-bg-secondary)"
+        strokeWidth={2.25}
       />,
     ),
     className: '',
@@ -200,6 +250,24 @@ function MapsPage({ theme }) {
                 : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             }
           />
+
+          {hometownPin ? (
+            <Marker position={hometownPin.coords} icon={homeIcon}>
+              <Popup>
+                <div
+                  style={{
+                    margin: 0,
+                    padding: '0.35rem 0.25rem',
+                    minWidth: '10rem',
+                    fontWeight: 600,
+                    color: 'var(--setlog-card-text)',
+                  }}
+                >
+                  Hometown: {hometownPin.label}
+                </div>
+              </Popup>
+            </Marker>
+          ) : null}
 
           {Object.entries(grouped).map(([key, shows]) => {
             const sortedShows = [...shows].sort(
