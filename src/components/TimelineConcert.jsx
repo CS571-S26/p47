@@ -56,7 +56,8 @@ function TimelineConcert({ concert }) {
             width: '100%',
             boxShadow: '0 4px 14px var(--setlog-card-bg)',
             display: 'flex',
-            gap: '16px'
+            gap: '16px',
+            flexWrap: 'wrap',
         },
         dateCard: {
             border: '1px solid var(--setlog-card-border)',
@@ -124,7 +125,7 @@ function TimelineConcert({ concert }) {
                     <img
                         src={imageUrl}
                         alt=""
-                        style={{ width: "250px", height: "125px", objectFit: "cover", borderRadius: "10px", marginBottom: "6px" }}
+                        style={{ width: "clamp(120px, 50vw, 250px)", height: "125px", objectFit: "cover", borderRadius: "10px", marginBottom: "6px" }}
                     />
                 ) : (
                     <div
@@ -177,7 +178,16 @@ function TimelineConcert({ concert }) {
                         </span>
                     </Col>
 
-                    <Col xs="auto">
+                    <Col
+                        xs={12}
+                        md="auto"
+                        style={{
+                            display: 'flex',
+                            gap: '6px',
+                            flexWrap: 'wrap',
+                            justifyContent: 'flex-start',
+                        }}
+                    >
                         <span style={{ ...styles.concertTags, background: "var(--tag-genre-bg)", color: "var(--tag-genre-text)" }}>
                             {concert.genre}
                         </span>

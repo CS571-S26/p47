@@ -109,7 +109,7 @@ function TimelinePage() {
         <Col md={10} className="order-1 order-md-2">
           <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
             <Col xs="auto">
-              <h1 style={{ fontSize: '48px', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>
+              <h1 style={{ fontSize: 'clamp(32px, 8vw, 48px)', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>
                 {!loginStatus.loggedIn ? 'Demo Concert Timeline' : 'My Concert Timeline'}
               </h1>
             </Col>
