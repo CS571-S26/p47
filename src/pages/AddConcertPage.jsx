@@ -6,6 +6,7 @@ import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
 import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js'
 import SectionCard from '../components/SectionCard'
+import { MessageDialog } from '../components/ConfirmDialog.jsx'
 import { extractSongTitles, searchFirstSetlist } from '../utils/setlistfm.js'
 import {
   CITY_STATE_PATTERN,
@@ -41,6 +42,7 @@ function AddConcertPage() {
   const [formError, setFormError] = useState('')
   const [importingSetlist, setImportingSetlist] = useState(false)
   const [importError, setImportError] = useState('')
+  const [geocodeNoticeOpen, setGeocodeNoticeOpen] = useState(false)
 
   const stars = [1, 2, 3, 4, 5]
   const normalizedSetlist = normalizeSetlist(setlist)
@@ -85,7 +87,7 @@ function AddConcertPage() {
     }
 
     if (!coords) {
-      window.alert(GEOCODE_LOOKUP_FAILED_MESSAGE)
+      setGeocodeNoticeOpen(true)
     }
 
     const normalizedSetlist = normalizeSetlist(setlist)
@@ -239,6 +241,13 @@ function AddConcertPage() {
         alignItems: 'flex-start',
       }}
     >
+      <MessageDialog
+        show={geocodeNoticeOpen}
+        onHide={() => setGeocodeNoticeOpen(false)}
+        title="Could not look up location"
+      >
+        {GEOCODE_LOOKUP_FAILED_MESSAGE}
+      </MessageDialog>
       <Card
         style={{
           width: '100%',
