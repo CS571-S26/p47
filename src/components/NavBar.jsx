@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { Map, CirclePlus, List, Moon, Sun, UserPlus } from 'lucide-react'
+import { Map, CirclePlus, List, Moon, Sun, UserPlus, Search } from 'lucide-react'
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
@@ -281,21 +281,36 @@ function NavBar({ theme, setTheme }) {
                       <Form.Label htmlFor={TIMELINE_SEARCH_ID} className="visually-hidden">
                         Search concerts
                       </Form.Label>
-                      <FormControl
-                        id={TIMELINE_SEARCH_ID}
-                        type="search"
-                        placeholder="Search artists, venues, cities, genres, songs…"
-                        value={searchInput}
-                        onChange={handleSearchChange}
-                        onFocus={handleSearchFocus}
-                        onKeyDown={handleSearchKeyDown}
-                        className="setlog-nav-search-input"
-                        autoComplete="off"
-                        style={{
-                          borderRadius: '24px',
-                          padding: '0.3rem 0.75rem',
-                        }}
-                      />
+                      <div style={{ position: 'relative' }}>
+                        <Search
+                          size={16}
+                          aria-hidden
+                          style={{
+                            position: 'absolute',
+                            left: '12px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            color: 'var(--setlog-secondary-text)',
+                            pointerEvents: 'none',
+                          }}
+                        />
+
+                        <FormControl
+                          id={TIMELINE_SEARCH_ID}
+                          type="search"
+                          placeholder="Search artists, venues, cities, genres, songs…"
+                          value={searchInput}
+                          onChange={handleSearchChange}
+                          onFocus={handleSearchFocus}
+                          onKeyDown={handleSearchKeyDown}
+                          className="setlog-nav-search-input"
+                          autoComplete="off"
+                          style={{
+                            borderRadius: '24px',
+                            padding: '0.3rem 0.75rem 0.3rem 2.25rem',
+                          }}
+                        />
+                      </div>
                     </Col>
                   </Row>
                 </Form>
