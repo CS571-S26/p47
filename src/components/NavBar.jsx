@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { Map, CirclePlus, List, Search, Moon, Sun, LogOut } from 'lucide-react'
+import { Map, CirclePlus, List, Moon, Sun, UserPlus, Search } from 'lucide-react'
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
@@ -37,18 +37,21 @@ function formatConcertDate(dateStr) {
 }
 
 function NavBar({ theme, setTheme }) {
-  const { loginStatus, logout, user } = useAuth()
+  const { loginStatus, user } = useAuth()
   const { concerts } = useContext(ConcertsContext)
   const navigate = useNavigate()
   const location = useLocation()
   const [avatarUrl, setAvatarUrl] = useState('')
   const [searchInput, setSearchInput] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   const searchWrapperRef = useRef(null)
 
   const activeQuery = normalizeConcertSearchQuery(searchInput)
   const allMatches = activeQuery ? filterConcertsByQuery(concerts, searchInput) : []
   const dropdownResults = allMatches.slice(0, DROPDOWN_MAX_RESULTS)
+
+  const iconSize = window.innerWidth < 768 ? 22 : 28
 
   useEffect(() => {
     function handleMouseDown(e) {
@@ -122,6 +125,30 @@ function NavBar({ theme, setTheme }) {
     }
   }
 
+  function accountButton(className, size) {
+    return (
+      <Button
+        as={NavLink}
+        to="/login"
+        variant="outline-light"
+        className={className}
+        onClick={() => setExpanded(false)}
+        aria-label="Log in or register"
+        style={{
+          width: size,
+          height: size,
+          borderRadius: '999px',
+          padding: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <UserPlus size={22} aria-hidden />
+      </Button>
+    )
+  }
+
   useEffect(() => {
     loadAvatar()
   }, [user])
@@ -141,11 +168,6 @@ function NavBar({ theme, setTheme }) {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
   }
 
-  function handleLogout() {
-    logout()
-    navigate('/')
-  }
-
   function createInitials(label) {
     const clean = normalizeString(label)
     if (!clean) return '?'
@@ -161,30 +183,88 @@ function NavBar({ theme, setTheme }) {
   return (
     <Navbar
       variant="dark"
-      sticky="top" expand="sm"
+      sticky="top"
+      expand="lg"
+      expanded={expanded}
+      onToggle={() => setExpanded(!expanded)}
       style={{
         background: 'linear-gradient(180deg, #252830 0%, #1a1d23 100%)',
       }}>
       <Container fluid>
-        <Navbar.Brand as={NavLink} to="/">
+        <Navbar.Brand as={NavLink} onClick={() => setExpanded(false)} to="/">
           <img src={logo} alt="Setlog Logo" style={{ width: "40px", height: "40px", marginRight: "0.5rem" }} />
-          <span style={{ marginRight: "50px", fontWeight: "700" }}>SetLog</span>
+          <span style={{ fontWeight: "700" }}>SetLog</span>
         </Navbar.Brand>
 
-        <Navbar.Toggle aria-controls={NAV_COLLAPSE_ID} />
+        <div className="d-flex d-lg-none align-items-center gap-2">
+          <Button
+            variant="dark"
+            type="button"
+            onClick={handleToggleTheme}
+            aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
+          >
+            {theme === 'light' ? <Moon size={iconSize} aria-hidden /> : <Sun size={iconSize} aria-hidden />}
+          </Button>
+
+          {loginStatus.loggedIn ? (
+            <Button
+              as={NavLink}
+              to="/user-profile"
+              aria-label={`User profile for ${label}`}
+              style={{
+                width: '42px',
+                height: '42px',
+                borderRadius: '999px',
+                padding: 0,
+                overflow: 'hidden',
+              }}
+            >
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt=""
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <div
+                  aria-hidden
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '999px',
+                    background: 'var(--setlog-card-bg-secondary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '18px',
+                    fontWeight: 700,
+                    color: 'var(--setlog-primary)',
+                  }}
+                >
+                  {initials}
+                </div>
+              )}
+            </Button>
+          ) : (
+            accountButton('', '42px')
+          )}
+
+          <Navbar.Toggle aria-controls={NAV_COLLAPSE_ID} />
+        </div>
+
 
         <Navbar.Collapse id={NAV_COLLAPSE_ID}>
           {/* Left Side */}
           <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/">
+            <Nav.Link as={NavLink} onClick={() => setExpanded(false)} to="/">
               <List size={18} /> Timeline
             </Nav.Link>
 
-            <Nav.Link as={NavLink} to="/maps">
+            <Nav.Link as={NavLink} onClick={() => setExpanded(false)} to="/maps">
               <Map size={18} /> Map
             </Nav.Link>
 
-            <Nav.Link as={NavLink} to="/add-concert">
+            <Nav.Link as={NavLink} onClick={() => setExpanded(false)} to="/add-concert">
               <CirclePlus size={18} /> Log Concert
             </Nav.Link>
           </Nav>
@@ -193,34 +273,44 @@ function NavBar({ theme, setTheme }) {
           <Row className="align-items-center">
 
             {/* Search */}
-            <Col xs="auto">
+            <Col xs={12} md="auto">
               <div ref={searchWrapperRef} className="search-wrapper">
                 <Form onSubmit={handleSearchSubmit}>
                   <Row className="align-items-center">
-                    <Col xs="auto">
-                      <Button type="submit" variant="dark" aria-label="Search">
-                        <Search size={24} className="search-icon" aria-hidden />
-                      </Button>
-                    </Col>
                     <Col>
                       <Form.Label htmlFor={TIMELINE_SEARCH_ID} className="visually-hidden">
                         Search concerts
                       </Form.Label>
-                      <FormControl
-                        id={TIMELINE_SEARCH_ID}
-                        type="search"
-                        placeholder="Search artists, venues, cities, genres, songs…"
-                        value={searchInput}
-                        onChange={handleSearchChange}
-                        onFocus={handleSearchFocus}
-                        onKeyDown={handleSearchKeyDown}
-                        className="setlog-nav-search-input"
-                        autoComplete="off"
-                        style={{
-                          borderRadius: '24px',
-                          padding: '0.3rem 0.75rem',
-                        }}
-                      />
+                      <div style={{ position: 'relative' }}>
+                        <Search
+                          size={16}
+                          aria-hidden
+                          style={{
+                            position: 'absolute',
+                            left: '12px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            color: 'var(--setlog-secondary-text)',
+                            pointerEvents: 'none',
+                          }}
+                        />
+
+                        <FormControl
+                          id={TIMELINE_SEARCH_ID}
+                          type="search"
+                          placeholder="Search artists, venues, cities, genres, songs…"
+                          value={searchInput}
+                          onChange={handleSearchChange}
+                          onFocus={handleSearchFocus}
+                          onKeyDown={handleSearchKeyDown}
+                          className="setlog-nav-search-input"
+                          autoComplete="off"
+                          style={{
+                            borderRadius: '24px',
+                            padding: '0.3rem 0.75rem 0.3rem 2.25rem',
+                          }}
+                        />
+                      </div>
                     </Col>
                   </Row>
                 </Form>
@@ -268,14 +358,14 @@ function NavBar({ theme, setTheme }) {
             </Col>
 
             {/* Icon Buttons */}
-            <Col xs="auto">
+            <Col xs="auto" className="d-none d-lg-block">
               <Button
                 variant="dark"
                 type="button"
                 onClick={handleToggleTheme}
                 aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
               >
-                {theme === 'light' ? <Moon size={32} aria-hidden /> : <Sun size={32} aria-hidden />}
+                {theme === 'light' ? <Moon size={iconSize} aria-hidden /> : <Sun size={iconSize} aria-hidden />}
               </Button>
             </Col>
 
@@ -291,6 +381,8 @@ function NavBar({ theme, setTheme }) {
                   <Button
                     as={NavLink}
                     to="/user-profile"
+                    className="d-none d-lg-flex"
+                    onClick={() => setExpanded(false)}
                     aria-label={`User profile for ${label}`}
                     style={{
                       width: '46px',
@@ -334,26 +426,8 @@ function NavBar({ theme, setTheme }) {
                       </div>
                     )}
                   </Button>
-                  <Button
-                    variant="outline-light"
-                    type="button"
-                    onClick={handleLogout}
-                    aria-label="Log out"
-                    title="Log out"
-                  >
-                    <LogOut size={28} aria-hidden />
-                  </Button>
                 </div>
-              ) : (
-                <>
-                  <Button variant="outline-light" as={NavLink} to="/login" className="me-1">
-                    Log in
-                  </Button>
-                  <Button variant="outline-light" as={NavLink} to="/register">
-                    Register
-                  </Button>
-                </>
-              )}
+              ) : (accountButton('d-none d-lg-flex', '46px'))}
             </Col>
           </Row>
         </Navbar.Collapse>

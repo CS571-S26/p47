@@ -1,15 +1,20 @@
 import { useContext, useEffect, useState } from 'react'
+import { Calendar, Heart, MapPin, Music, Music2, Star, Users, LogOut } from 'lucide-react'
 import { Alert, Button, Col, Form, Row, Spinner } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import { Calendar, Heart, MapPin, Music, Music2, Star, Users } from 'lucide-react'
+import { useNavigate, Link } from 'react-router-dom'
 
 import SectionCard from '../components/SectionCard'
 import { useAuth } from '../contexts/authContext.js'
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useSpotify } from '../contexts/spotifyContext.js'
 import { parseConcertCalendarDate } from '../utils/concertForm.js'
+import {
+  geocodePlace,
+  HOMETOWN_GEOCODE_FAILED_MESSAGE,
+} from '../utils/geocode.js'
 
 const AVATAR_STORAGE_PREFIX = 'p47:profileAvatar:'
+const HOMETOWN_STORAGE_PREFIX = 'p47:hometown:'
 
 function normalizeString(v) {
   return typeof v === 'string' ? v.trim() : ''
@@ -29,7 +34,7 @@ function statCard(icon, label, value, helpText = '') {
 }
 
 function UserProfilePage() {
-  const { loginStatus, user } = useAuth()
+  const { loginStatus, logout, user } = useAuth()
   const { concerts } = useContext(ConcertsContext)
   const {
     session,
@@ -45,18 +50,44 @@ function UserProfilePage() {
   } = useSpotify()
   const [avatarDraft, setAvatarDraft] = useState('')
   const [avatarOverride, setAvatarOverride] = useState('')
+  const [hometownDraft, setHometownDraft] = useState('')
+  const [hometownSaving, setHometownSaving] = useState(false)
+  const [hometownError, setHometownError] = useState('')
+  const navigate = useNavigate()
+
+  const iconSize = window.innerWidth < 768 ? 22 : 28
+
+  function handleLogout() {
+    logout()
+    navigate('/')
+  }
 
   useEffect(() => {
     const uid = user?.uid
     if (!uid) {
       setAvatarOverride('')
       setAvatarDraft('')
+      setHometownDraft('')
+      setHometownError('')
       return
     }
 
     const saved = normalizeString(localStorage.getItem(`${AVATAR_STORAGE_PREFIX}${uid}`))
     setAvatarOverride(saved)
     setAvatarDraft(saved)
+
+    try {
+      const raw = localStorage.getItem(`${HOMETOWN_STORAGE_PREFIX}${uid}`)
+      if (!raw) {
+        setHometownDraft('')
+        return
+      }
+      const parsed = JSON.parse(raw)
+      const label = typeof parsed?.label === 'string' ? parsed.label.trim() : ''
+      setHometownDraft(label)
+    } catch {
+      setHometownDraft('')
+    }
   }, [user?.uid])
 
   const stats = (() => {
@@ -134,6 +165,7 @@ function UserProfilePage() {
   const label = loginStatus.username ?? 'User'
   const initials = createInitials(label)
   const avatarStorageKey = user?.uid ? `${AVATAR_STORAGE_PREFIX}${user.uid}` : ''
+  const hometownStorageKey = user?.uid ? `${HOMETOWN_STORAGE_PREFIX}${user.uid}` : ''
   const photoFromAuth = normalizeString(user?.photoURL)
   const avatarUrl = avatarOverride || photoFromAuth
 
@@ -172,6 +204,39 @@ function UserProfilePage() {
     setAvatarOverride('')
     setAvatarDraft('')
     window.dispatchEvent(new Event('avatarUpdated'))
+  }
+
+  async function handleSaveHometown(event) {
+    event.preventDefault()
+    if (!hometownStorageKey) return
+
+    const clean = normalizeString(hometownDraft)
+    if (!clean) return
+
+    setHometownSaving(true)
+    setHometownError('')
+    const coords = await geocodePlace(clean)
+    setHometownSaving(false)
+
+    if (!coords) {
+      setHometownError(HOMETOWN_GEOCODE_FAILED_MESSAGE)
+      return
+    }
+
+    localStorage.setItem(
+      hometownStorageKey,
+      JSON.stringify({ label: clean, coords }),
+    )
+    setHometownDraft(clean)
+    window.dispatchEvent(new Event('hometownUpdated'))
+  }
+
+  function handleClearHometown() {
+    if (!hometownStorageKey) return
+    localStorage.removeItem(hometownStorageKey)
+    setHometownDraft('')
+    setHometownError('')
+    window.dispatchEvent(new Event('hometownUpdated'))
   }
 
   async function handleSpotifyConnect() {
@@ -225,6 +290,24 @@ function UserProfilePage() {
               <p style={{ margin: '6px 0 0', color: 'var(--setlog-secondary-text)' }}>
                 Member since {joinedText}
               </p>
+
+              <Button
+                variant="outline-danger"
+                type="button"
+                onClick={handleLogout}
+                aria-label="Log out"
+                title="Log out"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontWeight: 700,
+                  marginTop: '1rem'
+                }}
+              >
+                <LogOut size={iconSize} aria-hidden />
+                <span>Log out</span>
+              </Button>
             </Col>
           </Row>
         </SectionCard>
@@ -262,6 +345,31 @@ function UserProfilePage() {
             ))}
           </Row>
         </SectionCard>
+
+        <Row style={{ rowGap: '16px' }}>
+          <Col md={12}>
+            <SectionCard
+              title="Timeline Highlights"
+              subtitle="Key moments from your concert timeline"
+            >
+              <p style={{ marginBottom: '8px', color: 'var(--setlog-card-text-secondary)' }}>
+                First logged show: <strong style={{ color: 'var(--setlog-card-text)' }}>{firstShowText}</strong>
+              </p>
+              <p style={{ marginBottom: '8px', color: 'var(--setlog-card-text-secondary)' }}>
+                Most recent show:{' '}
+                <strong style={{ color: 'var(--setlog-card-text)' }}>{latestShowText}</strong>
+              </p>
+              <p style={{ marginBottom: 0, color: 'var(--setlog-card-text-secondary)' }}>
+                Attendance ratio:{' '}
+                <strong style={{ color: 'var(--setlog-card-text)' }}>
+                  {stats.totalShows > 0
+                    ? `${Math.round((stats.attendedShows / stats.totalShows) * 100)}% attended`
+                    : 'No shows yet'}
+                </strong>
+              </p>
+            </SectionCard>
+          </Col>
+        </Row>
 
         <SectionCard
           title={
@@ -338,55 +446,83 @@ function UserProfilePage() {
           </div>
         </SectionCard>
 
-        <Row style={{ rowGap: '16px' }}>
-          <Col md={6}>
-            <SectionCard
-              title="Timeline Highlights"
-              subtitle="Key moments from your concert timeline"
-            >
-              <p style={{ marginBottom: '8px', color: 'var(--setlog-card-text-secondary)' }}>
-                First logged show: <strong style={{ color: 'var(--setlog-card-text)' }}>{firstShowText}</strong>
-              </p>
-              <p style={{ marginBottom: '8px', color: 'var(--setlog-card-text-secondary)' }}>
-                Most recent show:{' '}
-                <strong style={{ color: 'var(--setlog-card-text)' }}>{latestShowText}</strong>
-              </p>
-              <p style={{ marginBottom: 0, color: 'var(--setlog-card-text-secondary)' }}>
-                Attendance ratio:{' '}
-                <strong style={{ color: 'var(--setlog-card-text)' }}>
-                  {stats.totalShows > 0
-                    ? `${Math.round((stats.attendedShows / stats.totalShows) * 100)}% attended`
-                    : 'No shows yet'}
-                </strong>
-              </p>
-            </SectionCard>
+        <Row style={{ alignItems: 'stretch', rowGap: '16px' }}>
+          <Col md={6} style={{ display: 'flex' }}>
+            <div style={{ width: '100%', display: 'flex' }}>
+              <SectionCard
+                title="Hometown"
+                subtitle="Shows as a home pin on your concert map after the place is found"
+              >
+                {hometownError ? (
+                  <Alert variant="warning" style={{ marginBottom: '0.75rem' }}>
+                    {hometownError}
+                  </Alert>
+                ) : null}
+                <Form onSubmit={handleSaveHometown}>
+                  <Form.Group style={{ marginBottom: '8px' }}>
+                    <Form.Control
+                      type="text"
+                      placeholder="City, state, or country"
+                      value={hometownDraft}
+                      onChange={(event) => {
+                        setHometownDraft(event.target.value)
+                        if (hometownError) setHometownError('')
+                      }}
+                      disabled={hometownSaving}
+                    />
+                  </Form.Group>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <Button type="submit" variant="primary" disabled={hometownSaving}>
+                      {hometownSaving ? (
+                        <>
+                          <Spinner animation="border" size="sm" style={{ marginRight: '0.45rem' }} />
+                          Looking up…
+                        </>
+                      ) : (
+                        'Save hometown'
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline-secondary"
+                      onClick={handleClearHometown}
+                      disabled={hometownSaving}
+                    >
+                      Clear hometown
+                    </Button>
+                  </div>
+                </Form>
+              </SectionCard>
+            </div>
           </Col>
 
-          <Col md={6}>
-            <SectionCard
-              title="Profile Picture"
-              subtitle="Add a custom avatar URL for this device"
-            >
-              <Form onSubmit={handleSaveAvatar}>
-                <Form.Group style={{ marginBottom: '8px' }}>
-                  <Form.Control
-                    type="url"
-                    placeholder="https://example.com/avatar.jpg"
-                    value={avatarDraft}
-                    onChange={(event) => setAvatarDraft(event.target.value)}
-                  />
-                </Form.Group>
+          <Col md={6} style={{ display: 'flex' }}>
+            <div style={{ width: '100%', display: 'flex' }}>
+              <SectionCard
+                title="Profile Picture"
+                subtitle="Add a custom avatar URL for this device"
+              >
+                <Form onSubmit={handleSaveAvatar}>
+                  <Form.Group style={{ marginBottom: '8px' }}>
+                    <Form.Control
+                      type="url"
+                      placeholder="https://example.com/avatar.jpg"
+                      value={avatarDraft}
+                      onChange={(event) => setAvatarDraft(event.target.value)}
+                    />
+                  </Form.Group>
 
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  <Button type="submit" variant="primary">
-                    Save avatar
-                  </Button>
-                  <Button type="button" variant="outline-secondary" onClick={handleClearAvatar}>
-                    Reset avatar
-                  </Button>
-                </div>
-              </Form>
-            </SectionCard>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <Button type="submit" variant="primary">
+                      Save avatar
+                    </Button>
+                    <Button type="button" variant="outline-secondary" onClick={handleClearAvatar}>
+                      Reset avatar
+                    </Button>
+                  </div>
+                </Form>
+              </SectionCard>
+            </div>
           </Col>
         </Row>
       </div>

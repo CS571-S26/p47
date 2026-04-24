@@ -39,8 +39,8 @@ function ConcertDetailPage() {
   const concert = concerts.find((c) => c.id === id)
   const setlistSongs = Array.isArray(concert?.setlist)
     ? concert.setlist
-        .map((song) => (typeof song === 'string' ? song.trim() : ''))
-        .filter(Boolean)
+      .map((song) => (typeof song === 'string' ? song.trim() : ''))
+      .filter(Boolean)
     : []
 
   const backLabel = location.state?.backLabel || 'Back to Timeline'
@@ -325,6 +325,31 @@ function ConcertDetailPage() {
       color: 'var(--setlog-card-text)',
       marginBottom: '10px',
       lineHeight: 1.25,
+    },
+    detailStat: {
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      padding: '12px',
+      borderRadius: '12px',
+      background: 'var(--setlog-card-bg-secondary)',
+      border: '1px solid var(--setlog-card-border)',
+    },
+
+    detailStatValue: {
+      fontSize: '1rem',
+      fontWeight: 700,
+      color: 'var(--setlog-card-text)',
+      lineHeight: 1.2,
+    },
+
+    detailStatLabel: {
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      color: 'var(--setlog-card-text-secondary)',
+      textTransform: 'uppercase',
+      letterSpacing: '0.04em',
     }
   }
 
@@ -366,8 +391,8 @@ function ConcertDetailPage() {
                   fontSize: '0.9rem',
                 }}
               >
-                <ArrowLeft size={14} style={{ marginRight: '5px' }} />
-                {backLabel}
+                <ArrowLeft size={24} style={{ marginRight: '5px' }} />
+                <span className="d-none d-sm-inline" style={{ marginLeft: '5px' }}>{backLabel}</span>
               </Button>
             </Col>
             <Col xs="auto" style={{ display: 'flex', gap: '8px' }}>
@@ -407,6 +432,7 @@ function ConcertDetailPage() {
                     objectFit: 'cover',
                     borderRadius: '12px',
                     display: 'block',
+                    margin: '0 auto',
                     boxShadow: '0 6px 18px var(--setlog-card-bg)',
                   }}
                 />
@@ -432,7 +458,7 @@ function ConcertDetailPage() {
               )}
             </Col>
 
-            <Col lg={6}>
+            <Col xs={12} lg={6} style={{ marginTop: '1rem' }}>
               <Row>
                 <Col>
                   <h1 style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '2px', marginTop: 0, color: 'var(--setlog-card-text)' }}>{concert.artist}</h1>
@@ -478,7 +504,7 @@ function ConcertDetailPage() {
 
                       {concert.favorite && (
                         <span style={{ ...styles.concertTags, background: "var(--tag-favorite-bg)", color: "var(--tag-favorite-text)" }}>
-                          Favorite
+                          ★
                         </span>
                       )}
                     </Col>
@@ -517,7 +543,7 @@ function ConcertDetailPage() {
               </Row>
             </Col>
 
-            <Col lg={2}>
+            <Col lg={2} className="d-none d-lg-block" style={{ marginTop: '1rem' }}>
               <div style={styles.dateCard}>
                 <div style={styles.dateMonth}>{monthLabel}</div>
                 <div style={styles.dateDay}>{day}</div>
@@ -527,68 +553,35 @@ function ConcertDetailPage() {
           </Row>
           <div style={{ marginTop: '0.85rem' }}>
             <SectionCard>
-              <Row style={{ alignItems: 'stretch' }}>
-                <Col
-                  md={4}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    borderRight: '1px solid var(--setlog-card-border)',
-                    padding: '0 0.9rem',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Music size={22} color='var(--setlog-primary)' />
+              <Row style={{ rowGap: '12px' }}>
+                <Col xs={12} md={4}>
+                  <div style={styles.detailStat}>
+                    <Music size={22} color="var(--setlog-primary)" />
                     <div>
-                      <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--setlog-card-text)' }}>{concert.songCount}</div>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--setlog-card-text-secondary)' }}>
-                        SONGS
-                      </div>
+                      <div style={styles.detailStatValue}>{concert.songCount}</div>
+                      <div style={styles.detailStatLabel}>Songs</div>
                     </div>
                   </div>
                 </Col>
 
-                <Col
-                  md={4}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    borderRight: '1px solid var(--setlog-card-border)',
-                    padding: '0 0.9rem',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <CalendarDays size={22} color='var(--setlog-primary)' />
+                <Col xs={12} md={4}>
+                  <div style={styles.detailStat}>
+                    <CalendarDays size={22} color="var(--setlog-primary)" />
                     <div>
-                      <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--setlog-card-text)' }}>
-                        {dayOfWeek}
-                      </div>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--setlog-card-text-secondary)' }}>
-                        {fullDateLabel}
-                      </div>
+                      <div style={styles.detailStatValue}>{dayOfWeek}</div>
+                      <div style={styles.detailStatLabel}>{fullDateLabel}</div>
                     </div>
                   </div>
                 </Col>
 
-                <Col
-                  md={4}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    padding: '0 0.9rem',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <MapPin size={22} color='var(--setlog-primary)' />
+                <Col xs={12} md={4}>
+                  <div style={styles.detailStat}>
+                    <MapPin size={22} color="var(--setlog-primary)" />
                     <div>
-                      <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--setlog-card-text)' }}>
-                        {concert.coords
-                          ? `${concert.coords[0]}, ${concert.coords[1]}`
-                          : 'No coords'}
+                      <div style={styles.detailStatValue}>
+                        {concert.coords ? `${concert.coords[0]}, ${concert.coords[1]}` : "N/A"}
                       </div>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--setlog-card-text-secondary)' }}>
-                        COORDINATES
-                      </div>
+                      <div style={styles.detailStatLabel}>Location</div>
                     </div>
                   </div>
                 </Col>

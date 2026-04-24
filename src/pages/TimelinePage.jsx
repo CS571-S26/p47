@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import TimelineConcert from '../components/TimelineConcert'
 import TimelineStats from '../components/TimelineStats'
 import { Container, Row, Col, Button, Spinner, Form } from 'react-bootstrap'
@@ -14,6 +14,7 @@ import {
 
 function TimelinePage() {
   const { concerts, loading: concertsLoading } = useContext(ConcertsContext)
+  const [showMobileStats, setShowMobileStats] = useState(false)
   const { loginStatus, loading: authLoading } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const queryRaw = searchParams.get('q') ?? ''
@@ -109,21 +110,20 @@ function TimelinePage() {
         <Col md={10} className="order-1 order-md-2">
           <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
             <Col xs="auto">
-              <h1 style={{ fontSize: '48px', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>
+              <h1 style={{ fontSize: 'clamp(32px, 8vw, 48px)', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>
                 {!loginStatus.loggedIn ? 'Demo Concert Timeline' : 'My Concert Timeline'}
               </h1>
             </Col>
-            <Col xs="auto">
+            <Col xs={12} md="auto" style={{ marginTop: '0.75rem' }} className="d-none d-md-block">
               {loginStatus.loggedIn ? (
                 <Button
                   as={NavLink}
                   to="/add-concert"
                   style={{
-                    padding: '6px 12px',
+                    width: '100%',
+                    padding: '8px 12px',
                     fontSize: '16px',
                     fontWeight: '700',
-                    marginLeft: 'auto',
-                    height: 'fit-content',
                   }}
                 >
                   <Plus size={18} /> Log a New Show
@@ -133,11 +133,10 @@ function TimelinePage() {
                   as={NavLink}
                   to="/login"
                   style={{
-                    padding: '6px 12px',
+                    width: '100%',
+                    padding: '8px 12px',
                     fontSize: '16px',
                     fontWeight: '700',
-                    marginLeft: 'auto',
-                    height: 'fit-content',
                   }}
                 >
                   Log in to add shows
@@ -146,9 +145,76 @@ function TimelinePage() {
             </Col>
           </Row>
 
-          <h2 className="timeline-page-subtitle">
-            {loginStatus.loggedIn ? 'Your logged shows, newest first' : 'Sample concerts, newest first'}
-          </h2>
+          <div className="d-md-none" style={{ marginBottom: '1rem', width: '100%' }}>
+            <Button
+              type="button"
+              variant="outline-primary"
+              onClick={() => setShowMobileStats((prev) => !prev)}
+              style={{
+                width: '100%',
+                fontWeight: '700',
+                marginBottom: showMobileStats ? '0.75rem' : '0.75rem',
+                marginTop: showMobileStats ? '0.75rem' : '0.75rem', 
+              }}
+            >
+              {showMobileStats ? 'Hide Stats' : 'Show Stats'}
+            </Button>
+
+            {showMobileStats ? (
+              <div style={{ marginBottom: !loginStatus.loggedIn ? '0.75rem' : 0 }}>
+                <TimelineStats compact />
+              </div>
+            ) : null}
+
+            {!loginStatus.loggedIn ? (
+              <div
+                style={{
+                  padding: '1rem',
+                  borderRadius: '16px',
+                  border: '1px solid var(--setlog-card-border)',
+                  background: 'var(--setlog-card-bg)',
+                }}
+              >
+                <h2
+                  style={{
+                    fontSize: '18px',
+                    fontWeight: '700',
+                    marginBottom: '8px',
+                    color: 'var(--setlog-card-text)',
+                    marginTop: 0,
+                  }}
+                >
+                  Want your own timeline?
+                </h2>
+
+                <p
+                  style={{
+                    fontSize: '14px',
+                    marginBottom: '1rem',
+                    color: 'var(--setlog-card-text-secondary)',
+                  }}
+                >
+                  Log in or register to save your own concerts.
+                </p>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <Button as={NavLink} to="/login" variant="primary">
+                    Log in
+                  </Button>
+
+                  <Button as={NavLink} to="/register" variant="outline-primary">
+                    Register
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
 
           <div
             style={{
@@ -303,34 +369,54 @@ function TimelinePage() {
             </div>
           )}
         </Col>
-        <Col md={2} className="order-2 order-md-1">
-          <TimelineStats />
-          {!loginStatus.loggedIn ? (
-            <div
-              style={{
-                maxWidth: '520px',
-                padding: '2rem',
-                borderRadius: '16px',
-                border: '1px solid var(--setlog-card-border)',
-                background: 'var(--setlog-card-bg)',
-                marginTop: '3rem',
-              }}
-            >
-              <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)', marginTop: 0 }}>
-                Log in to see your shows
-              </h2>
-              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
-                Your logged concerts are tied to your account on this device. Create an account or
-                log in to view and add shows.
-              </p>
-              <Button as={NavLink} to="/login" variant="primary" className="me-2">
-                Log in
-              </Button>
-              <Button as={NavLink} to="/register" variant="outline-primary">
-                Register
-              </Button>
-            </div>
-          ) : null}
+        <Col md={2} className="order-2 order-md-1" style={{ marginTop: '1rem' }}>
+          <div className="d-none d-md-block" style={{ position: 'sticky', top: '1rem' }}>
+            <TimelineStats />
+
+            {!loginStatus.loggedIn ? (
+              <div
+                style={{
+                  padding: '1rem',
+                  borderRadius: '16px',
+                  border: '1px solid var(--setlog-card-border)',
+                  background: 'var(--setlog-card-bg)',
+                  marginTop: '1rem',
+                }}
+              >
+                <h2
+                  style={{
+                    fontSize: '18px',
+                    fontWeight: '700',
+                    marginBottom: '8px',
+                    color: 'var(--setlog-card-text)',
+                    marginTop: 0,
+                  }}
+                >
+                  Want your own timeline?
+                </h2>
+
+                <p
+                  style={{
+                    marginBottom: '1rem',
+                    color: 'var(--setlog-card-text-secondary)',
+                    fontSize: '14px',
+                  }}
+                >
+                  Log in or create an account to save your own concerts.
+                </p>
+
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <Button as={NavLink} to="/login" variant="primary" size="sm">
+                    Log in
+                  </Button>
+
+                  <Button as={NavLink} to="/register" variant="outline-primary" size="sm">
+                    Register
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
         </Col>
       </Row>
     </Container>
