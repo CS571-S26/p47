@@ -115,7 +115,7 @@ function MapsPage({ theme }) {
 
   const styles = {
     filterSelect: {
-      maxWidth: '260px',
+      width: 'clamp(180px, 22vw, 260px)',
       borderRadius: '999px',
       border: '1px solid var(--setlog-card-border)',
       backgroundColor: 'var(--setlog-card-bg-secondary)',
@@ -124,12 +124,15 @@ function MapsPage({ theme }) {
       fontWeight: 600,
       boxShadow: 'none',
     },
+
     filterButton: {
+      width: 'clamp(120px, 14vw, 150px)',
       display: 'inline-flex',
       alignItems: 'center',
+      justifyContent: 'center',
       gap: '0.45rem',
       borderRadius: '999px',
-      padding: '0.5rem 0.9rem',
+      padding: '0.55rem 0.9rem',
       border: '1px solid var(--setlog-card-border)',
       backgroundColor: 'var(--setlog-card-bg-secondary)',
       color: 'var(--setlog-card-text)',
@@ -147,18 +150,11 @@ function MapsPage({ theme }) {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
-      <h1 style={{ fontSize: '48px', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>Concert Map</h1>
+      <h1 style={{ fontSize: 'clamp(32px, 8vw, 48px)', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>Concert Map</h1>
 
       {!authLoading && !loginStatus.loggedIn ? (
         <p className="mb-2" style={{ fontSize: '15px', color: 'var(--setlog-secondary-text)' }}>
           Log in to see your shows on the map. Only concerts logged under your account appear here.
-        </p>
-      ) : null}
-
-      {skippedCount > 0 ? (
-        <p className="mb-2" style={{ fontSize: '14px', color: 'var(--setlog-secondary-text)' }}>
-          {skippedCount} show{skippedCount === 1 ? '' : 's'} in this view have no map pin (geocoding
-          failed or venue/city could not be located when saved).
         </p>
       ) : null}
 
@@ -172,37 +168,42 @@ function MapsPage({ theme }) {
           alignItems: 'center',
         }}
       >
-        <Form.Select
-          aria-label="Filter map by year"
-          value={filter.year}
-          onChange={(e) =>
-            setFilter((prev) => ({ ...prev, year: e.target.value }))
-          }
-          style={styles.filterSelect}
-        >
-          <option value="all">All Years</option>
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </Form.Select>
+        <div>
+          <Form.Select
+            aria-label="Filter map by year"
+            value={filter.year}
+            onChange={(e) =>
+              setFilter((prev) => ({ ...prev, year: e.target.value }))
+            }
+            style={styles.filterSelect}
+          >
+            <option value="all">All Years</option>
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </Form.Select>
+        </div>
 
-        <Form.Select
-          aria-label="Filter map by genre"
-          value={filter.genre}
-          onChange={(e) =>
-            setFilter((prev) => ({ ...prev, genre: e.target.value }))
-          }
-          style={styles.filterSelect}
-        >
-          <option value="all">All Genres</option>
-          {genres.map((genre) => (
-            <option key={genre} value={genre}>
-              {genre}
-            </option>
-          ))}
-        </Form.Select>
+        <div>
+          <Form.Select
+            aria-label="Filter map by genre"
+            value={filter.genre}
+            onChange={(e) =>
+              setFilter((prev) => ({ ...prev, genre: e.target.value }))
+            }
+            style={styles.filterSelect}
+          >
+            <option value="all">All Genres</option>
+            {genres.map((genre) => (
+              <option key={genre} value={genre}>
+                {genre}
+              </option>
+            ))}
+          </Form.Select>
+        </div>
+
 
         <Button
           type="button"
@@ -282,6 +283,13 @@ function MapsPage({ theme }) {
           })}
         </MapContainer>
       </div>
+
+      {skippedCount > 0 ? (
+        <p className="mb-2" style={{ fontSize: '14px', color: 'var(--setlog-secondary-text)' }}>
+          {skippedCount} show{skippedCount === 1 ? '' : 's'} in this view has no map pin (geocoding
+          failed or venue/city could not be located when saved).
+        </p>
+      ) : null}
     </div>
   )
 }

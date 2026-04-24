@@ -1,6 +1,6 @@
 import { Row, Col } from 'react-bootstrap'
 
-function StatRow({ icon, value, label }) {
+function StatRow({ icon, value, label, compact = false }) {
   return (
     <Row className="align-items-center mb-3">
       <Col xs="auto">
@@ -21,7 +21,7 @@ function StatRow({ icon, value, label }) {
       <Col>
         <div
           style={{
-            fontSize: "20px",
+            fontSize: compact ? '15px' : '20px',
             fontWeight: "600",
             color: 'var(--setlog-card-text)'
           }}
@@ -31,7 +31,7 @@ function StatRow({ icon, value, label }) {
 
         <div
           style={{
-            fontSize: "14px",
+            fontSize: '14px',
             color: 'var(--setlog-card-text-secondary)'
           }}
         >
