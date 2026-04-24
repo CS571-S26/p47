@@ -131,7 +131,7 @@ function TimelineConcert({ concert }) {
                     <div
                         aria-hidden
                         style={{
-                            width: "250px",
+                            width: "clamp(120px, 50vw, 250px)",
                             height: "125px",
                             borderRadius: "10px",
                             marginBottom: "6px",
