@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import { useContext, useEffect, useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import L from 'leaflet'
@@ -33,6 +33,34 @@ function readHometownPin(uid) {
   } catch {
     return null
   }
+}
+
+function ZoomMarker({ position, icon, children }) {
+  const map = useMap()
+
+  return (
+    <Marker
+      position={position}
+      icon={icon}
+      eventHandlers={{
+        click: () => {
+          map.setView(position, 10, {
+            animate: true,
+            duration: 0.75,
+          })
+
+          setTimeout(() => {
+            map.panBy([0, -120], {
+              animate: true,
+              duration: 0.4,
+            })
+          }, 300)
+        },
+      }}
+    >
+      {children}
+    </Marker>
+  )
 }
 
 function MapsPage({ theme }) {
@@ -90,9 +118,10 @@ function MapsPage({ theme }) {
     html: renderToStaticMarkup(
       <MapPin
         size={32}
-        color='var(--setlog-primary-hover)'
+        color="var(--white)"
         fill='var(--setlog-primary)'
-      />,
+        strokeWidth={1}
+      />
     ),
     className: '',
     iconSize: [28, 28],
@@ -101,16 +130,29 @@ function MapsPage({ theme }) {
 
   const homeIcon = new L.DivIcon({
     html: renderToStaticMarkup(
-      <Home
-        size={30}
-        color="var(--setlog-card-text)"
-        fill="var(--setlog-card-bg-secondary)"
-        strokeWidth={2.25}
-      />,
+      <div
+        style={{
+          width: '34px',
+          height: '34px',
+          borderRadius: '50%',
+          backgroundColor: 'var(--setlog-primary)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+        }}
+      >
+        <Home
+          size={20}
+          color="var(--white)"
+          fill="none"
+          strokeWidth={2.25}
+        />
+      </div>
     ),
     className: '',
-    iconSize: [28, 28],
-    iconAnchor: [14, 28],
+    iconSize: [34, 34],
+    iconAnchor: [17, 34],
   })
 
   const styles = {
@@ -149,7 +191,7 @@ function MapsPage({ theme }) {
   })
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }} >
       <h1 style={{ fontSize: 'clamp(32px, 8vw, 48px)', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>Concert Map</h1>
 
       {!authLoading && !loginStatus.loggedIn ? (
@@ -252,7 +294,7 @@ function MapsPage({ theme }) {
           />
 
           {hometownPin ? (
-            <Marker position={hometownPin.coords} icon={homeIcon}>
+            <ZoomMarker position={hometownPin.coords} icon={homeIcon}>
               <Popup>
                 <div
                   style={{
@@ -266,7 +308,7 @@ function MapsPage({ theme }) {
                   Hometown: {hometownPin.label}
                 </div>
               </Popup>
-            </Marker>
+            </ZoomMarker>
           ) : null}
 
           {Object.entries(grouped).map(([key, shows]) => {
@@ -274,23 +316,25 @@ function MapsPage({ theme }) {
               (a, b) => new Date(a.date) - new Date(b.date)
             )
             return (
-              <Marker key={key} position={sortedShows[0].coords} icon={concertIcon}>
+              <ZoomMarker key={key} position={sortedShows[0].coords} icon={concertIcon}>
                 <Popup>
                   <MapsMarkerPopup concerts={sortedShows} />
                 </Popup>
-              </Marker>
+              </ZoomMarker>
             )
           })}
         </MapContainer>
       </div>
 
-      {skippedCount > 0 ? (
-        <p className="mb-2" style={{ fontSize: '14px', color: 'var(--setlog-secondary-text)' }}>
-          {skippedCount} show{skippedCount === 1 ? '' : 's'} in this view has no map pin (geocoding
-          failed or venue/city could not be located when saved).
-        </p>
-      ) : null}
-    </div>
+      {
+        skippedCount > 0 ? (
+          <p className="mb-2" style={{ fontSize: '14px', color: 'var(--setlog-secondary-text)' }}>
+            {skippedCount} show{skippedCount === 1 ? '' : 's'} in this view has no map pin (geocoding
+            failed or venue/city could not be located when saved).
+          </p>
+        ) : null
+      }
+    </div >
   )
 }
 
