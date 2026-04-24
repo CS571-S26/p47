@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import TimelineConcert from '../components/TimelineConcert'
 import TimelineStats from '../components/TimelineStats'
 import { Container, Row, Col, Button, Spinner, Form } from 'react-bootstrap'
@@ -14,6 +14,7 @@ import {
 
 function TimelinePage() {
   const { concerts, loading: concertsLoading } = useContext(ConcertsContext)
+  const [showMobileStats, setShowMobileStats] = useState(false)
   const { loginStatus, loading: authLoading } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const queryRaw = searchParams.get('q') ?? ''
@@ -144,6 +145,77 @@ function TimelinePage() {
             </Col>
           </Row>
 
+          <div className="d-md-none" style={{ marginBottom: '1rem', width: '100%' }}>
+            <Button
+              type="button"
+              variant="outline-primary"
+              onClick={() => setShowMobileStats((prev) => !prev)}
+              style={{
+                width: '100%',
+                fontWeight: '700',
+                marginBottom: showMobileStats ? '0.75rem' : '0.75rem',
+                marginTop: showMobileStats ? '0.75rem' : '0.75rem', 
+              }}
+            >
+              {showMobileStats ? 'Hide Stats' : 'Show Stats'}
+            </Button>
+
+            {showMobileStats ? (
+              <div style={{ marginBottom: !loginStatus.loggedIn ? '0.75rem' : 0 }}>
+                <TimelineStats compact />
+              </div>
+            ) : null}
+
+            {!loginStatus.loggedIn ? (
+              <div
+                style={{
+                  padding: '1rem',
+                  borderRadius: '16px',
+                  border: '1px solid var(--setlog-card-border)',
+                  background: 'var(--setlog-card-bg)',
+                }}
+              >
+                <h2
+                  style={{
+                    fontSize: '18px',
+                    fontWeight: '700',
+                    marginBottom: '8px',
+                    color: 'var(--setlog-card-text)',
+                    marginTop: 0,
+                  }}
+                >
+                  Want your own timeline?
+                </h2>
+
+                <p
+                  style={{
+                    fontSize: '14px',
+                    marginBottom: '1rem',
+                    color: 'var(--setlog-card-text-secondary)',
+                  }}
+                >
+                  Log in or register to save your own concerts.
+                </p>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <Button as={NavLink} to="/login" variant="primary">
+                    Log in
+                  </Button>
+
+                  <Button as={NavLink} to="/register" variant="outline-primary">
+                    Register
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
           <div
             style={{
               display: 'flex',
@@ -170,61 +242,6 @@ function TimelinePage() {
               <option value="attended_first">Attended first</option>
               <option value="rating_desc">Rating: High → Low</option>
             </Form.Select>
-          </div>
-
-          <div className="d-md-none" style={{ marginBottom: '1rem', width: '100%' }}>
-            <Row style={{ rowGap: '12px' }}>
-              <Col xs={loginStatus.loggedIn ? 12 : 6} sm={loginStatus.loggedIn ? 12 : 6}>
-                <TimelineStats compact />
-              </Col>
-
-              {!loginStatus.loggedIn ? (
-                <Col xs={6} sm={6}>
-                  <div
-                    style={{
-                      height: '100%',
-                      padding: '1rem',
-                      borderRadius: '16px',
-                      border: '1px solid var(--setlog-card-border)',
-                      background: 'var(--setlog-card-bg)',
-                    }}
-                  >
-                    <h2
-                      style={{
-                        fontSize: '18px',
-                        fontWeight: '700',
-                        marginBottom: '8px',
-                        color: 'var(--setlog-card-text)',
-                        marginTop: 0,
-                      }}
-                    >
-                      Want your own timeline?
-                    </h2>
-
-                    <p
-                      style={{
-                        fontSize: '14px',
-                        marginBottom: '1rem',
-                        color: 'var(--setlog-card-text-secondary)',
-                      }}
-                    >
-                      Log in or register to save your own concerts.
-                    </p>
-
-                    <div
-                      style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', }}>
-                      <Button as={NavLink} to="/login" variant="primary">
-                        Log in
-                      </Button>
-
-                      <Button as={NavLink} to="/register" variant="outline-primary">
-                        Register
-                      </Button>
-                    </div>
-                  </div>
-                </Col>
-              ) : null}
-            </Row>
           </div>
 
           {hasActiveQuery ? (
