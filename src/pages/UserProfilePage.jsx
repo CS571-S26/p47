@@ -7,6 +7,7 @@ import SectionCard from '../components/SectionCard'
 import { useAuth } from '../contexts/authContext.js'
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useSpotify } from '../contexts/spotifyContext.js'
+import { parseConcertCalendarDate } from '../utils/concertForm.js'
 
 const AVATAR_STORAGE_PREFIX = 'p47:profileAvatar:'
 
@@ -21,11 +22,6 @@ function createInitials(label) {
   if (parts.length === 0) return '?'
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
   return `${parts[0][0] ?? ''}${parts[1][0] ?? ''}`.toUpperCase()
-}
-
-function safeDate(value) {
-  const d = new Date(value)
-  return Number.isNaN(d.getTime()) ? null : d
 }
 
 function statCard(icon, label, value, helpText = '') {
@@ -96,7 +92,7 @@ function UserProfilePage() {
     }, 0)
 
     const validDates = (concerts ?? [])
-      .map((c) => safeDate(c?.date))
+      .map((c) => parseConcertCalendarDate(c?.date))
       .filter(Boolean)
       .sort((a, b) => a.getTime() - b.getTime())
 

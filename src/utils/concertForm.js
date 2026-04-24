@@ -1,5 +1,24 @@
 export const CITY_STATE_PATTERN = /^[A-Za-z .'-]+,\s[A-Za-z]{2}$/
 
+/**
+ * Parse a concert date string (YYYY-MM-DD) as a local calendar date.
+ * Avoids `new Date("YYYY-MM-DD")`, which is UTC midnight and can display/sort as the prior day in western timezones.
+ */
+export function parseConcertCalendarDate(value) {
+  const s = typeof value === 'string' ? value.trim() : ''
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s)
+  if (!m) {
+    const d = new Date(value)
+    return Number.isNaN(d.getTime()) ? null : d
+  }
+  const y = Number(m[1])
+  const month = Number(m[2])
+  const day = Number(m[3])
+  if (![y, month, day].every((n) => Number.isFinite(n))) return null
+  const d = new Date(y, month - 1, day)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
 export function normalizeSetlist(list) {
   return (Array.isArray(list) ? list : [])
     .map((s) => (typeof s === 'string' ? s.trim() : ''))
