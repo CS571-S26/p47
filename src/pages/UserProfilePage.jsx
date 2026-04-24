@@ -346,6 +346,31 @@ function UserProfilePage() {
           </Row>
         </SectionCard>
 
+        <Row style={{ rowGap: '16px' }}>
+          <Col md={12}>
+            <SectionCard
+              title="Timeline Highlights"
+              subtitle="Key moments from your concert timeline"
+            >
+              <p style={{ marginBottom: '8px', color: 'var(--setlog-card-text-secondary)' }}>
+                First logged show: <strong style={{ color: 'var(--setlog-card-text)' }}>{firstShowText}</strong>
+              </p>
+              <p style={{ marginBottom: '8px', color: 'var(--setlog-card-text-secondary)' }}>
+                Most recent show:{' '}
+                <strong style={{ color: 'var(--setlog-card-text)' }}>{latestShowText}</strong>
+              </p>
+              <p style={{ marginBottom: 0, color: 'var(--setlog-card-text-secondary)' }}>
+                Attendance ratio:{' '}
+                <strong style={{ color: 'var(--setlog-card-text)' }}>
+                  {stats.totalShows > 0
+                    ? `${Math.round((stats.attendedShows / stats.totalShows) * 100)}% attended`
+                    : 'No shows yet'}
+                </strong>
+              </p>
+            </SectionCard>
+          </Col>
+        </Row>
+
         <SectionCard
           title={
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -421,104 +446,83 @@ function UserProfilePage() {
           </div>
         </SectionCard>
 
-        <Row style={{ rowGap: '16px' }}>
-          <Col md={12}>
-            <SectionCard
-              title="Hometown"
-              subtitle="Shows as a home pin on your concert map after the place is found"
-            >
-              {hometownError ? (
-                <Alert variant="warning" style={{ marginBottom: '0.75rem' }}>
-                  {hometownError}
-                </Alert>
-              ) : null}
-              <Form onSubmit={handleSaveHometown}>
-                <Form.Group style={{ marginBottom: '8px' }}>
-                  <Form.Control
-                    type="text"
-                    placeholder="City, state, or country"
-                    value={hometownDraft}
-                    onChange={(event) => {
-                      setHometownDraft(event.target.value)
-                      if (hometownError) setHometownError('')
-                    }}
-                    disabled={hometownSaving}
-                  />
-                </Form.Group>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  <Button type="submit" variant="primary" disabled={hometownSaving}>
-                    {hometownSaving ? (
-                      <>
-                        <Spinner animation="border" size="sm" style={{ marginRight: '0.45rem' }} />
-                        Looking up…
-                      </>
-                    ) : (
-                      'Save hometown'
-                    )}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline-secondary"
-                    onClick={handleClearHometown}
-                    disabled={hometownSaving}
-                  >
-                    Clear hometown
-                  </Button>
-                </div>
-              </Form>
-            </SectionCard>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col md={6}>
-            <SectionCard
-              title="Timeline Highlights"
-              subtitle="Key moments from your concert timeline"
-            >
-              <p style={{ marginBottom: '8px', color: 'var(--setlog-card-text-secondary)' }}>
-                First logged show: <strong style={{ color: 'var(--setlog-card-text)' }}>{firstShowText}</strong>
-              </p>
-              <p style={{ marginBottom: '8px', color: 'var(--setlog-card-text-secondary)' }}>
-                Most recent show:{' '}
-                <strong style={{ color: 'var(--setlog-card-text)' }}>{latestShowText}</strong>
-              </p>
-              <p style={{ marginBottom: 0, color: 'var(--setlog-card-text-secondary)' }}>
-                Attendance ratio:{' '}
-                <strong style={{ color: 'var(--setlog-card-text)' }}>
-                  {stats.totalShows > 0
-                    ? `${Math.round((stats.attendedShows / stats.totalShows) * 100)}% attended`
-                    : 'No shows yet'}
-                </strong>
-              </p>
-            </SectionCard>
+        <Row style={{ alignItems: 'stretch', rowGap: '16px' }}>
+          <Col md={6} style={{ display: 'flex' }}>
+            <div style={{ width: '100%', display: 'flex' }}>
+              <SectionCard
+                title="Hometown"
+                subtitle="Shows as a home pin on your concert map after the place is found"
+              >
+                {hometownError ? (
+                  <Alert variant="warning" style={{ marginBottom: '0.75rem' }}>
+                    {hometownError}
+                  </Alert>
+                ) : null}
+                <Form onSubmit={handleSaveHometown}>
+                  <Form.Group style={{ marginBottom: '8px' }}>
+                    <Form.Control
+                      type="text"
+                      placeholder="City, state, or country"
+                      value={hometownDraft}
+                      onChange={(event) => {
+                        setHometownDraft(event.target.value)
+                        if (hometownError) setHometownError('')
+                      }}
+                      disabled={hometownSaving}
+                    />
+                  </Form.Group>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <Button type="submit" variant="primary" disabled={hometownSaving}>
+                      {hometownSaving ? (
+                        <>
+                          <Spinner animation="border" size="sm" style={{ marginRight: '0.45rem' }} />
+                          Looking up…
+                        </>
+                      ) : (
+                        'Save hometown'
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline-secondary"
+                      onClick={handleClearHometown}
+                      disabled={hometownSaving}
+                    >
+                      Clear hometown
+                    </Button>
+                  </div>
+                </Form>
+              </SectionCard>
+            </div>
           </Col>
 
-          <Col md={6}>
-            <SectionCard
-              title="Profile Picture"
-              subtitle="Add a custom avatar URL for this device"
-            >
-              <Form onSubmit={handleSaveAvatar}>
-                <Form.Group style={{ marginBottom: '8px' }}>
-                  <Form.Control
-                    type="url"
-                    placeholder="https://example.com/avatar.jpg"
-                    value={avatarDraft}
-                    onChange={(event) => setAvatarDraft(event.target.value)}
-                  />
-                </Form.Group>
+          <Col md={6} style={{ display: 'flex' }}>
+            <div style={{ width: '100%', display: 'flex' }}>
+              <SectionCard
+                title="Profile Picture"
+                subtitle="Add a custom avatar URL for this device"
+              >
+                <Form onSubmit={handleSaveAvatar}>
+                  <Form.Group style={{ marginBottom: '8px' }}>
+                    <Form.Control
+                      type="url"
+                      placeholder="https://example.com/avatar.jpg"
+                      value={avatarDraft}
+                      onChange={(event) => setAvatarDraft(event.target.value)}
+                    />
+                  </Form.Group>
 
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  <Button type="submit" variant="primary">
-                    Save avatar
-                  </Button>
-                  <Button type="button" variant="outline-secondary" onClick={handleClearAvatar}>
-                    Reset avatar
-                  </Button>
-                </div>
-              </Form>
-            </SectionCard>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <Button type="submit" variant="primary">
+                      Save avatar
+                    </Button>
+                    <Button type="button" variant="outline-secondary" onClick={handleClearAvatar}>
+                      Reset avatar
+                    </Button>
+                  </div>
+                </Form>
+              </SectionCard>
+            </div>
           </Col>
         </Row>
       </div>
