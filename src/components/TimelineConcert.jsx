@@ -199,8 +199,8 @@ function TimelineConcert({ concert }) {
                         )}
 
                         {concert.favorite && (
-                            <span style={{ ...styles.concertTags, background: "var(--tag-favorite-bg)", color: "var(--tag-favorite-text)" }}>
-                                Favorite
+                            <span style={{ ...styles.concertTags, background: "var(--tag-favorite-bg)", color: "var(--tag-favorite-text)", padding: "4px 8px", }}>
+                                ★
                             </span>
                         )}
                     </Col>
