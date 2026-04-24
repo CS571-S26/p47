@@ -113,17 +113,16 @@ function TimelinePage() {
                 {!loginStatus.loggedIn ? 'Demo Concert Timeline' : 'My Concert Timeline'}
               </h1>
             </Col>
-            <Col xs="auto" className="d-none d-md-block">
+            <Col xs={12} md="auto" style={{ marginTop: '0.75rem' }}>
               {loginStatus.loggedIn ? (
                 <Button
                   as={NavLink}
                   to="/add-concert"
                   style={{
-                    padding: '6px 12px',
+                    width: '100%',
+                    padding: '8px 12px',
                     fontSize: '16px',
                     fontWeight: '700',
-                    marginLeft: 'auto',
-                    height: 'fit-content',
                   }}
                 >
                   <Plus size={18} /> Log a New Show
@@ -133,11 +132,10 @@ function TimelinePage() {
                   as={NavLink}
                   to="/login"
                   style={{
-                    padding: '6px 12px',
+                    width: '100%',
+                    padding: '8px 12px',
                     fontSize: '16px',
                     fontWeight: '700',
-                    marginLeft: 'auto',
-                    height: 'fit-content',
                   }}
                 >
                   Log in to add shows
@@ -145,10 +143,6 @@ function TimelinePage() {
               )}
             </Col>
           </Row>
-
-          <h2 className="timeline-page-subtitle">
-            {loginStatus.loggedIn ? 'Your logged shows, newest first' : 'Sample concerts, newest first'}
-          </h2>
 
           <div
             style={{
@@ -303,34 +297,39 @@ function TimelinePage() {
             </div>
           )}
         </Col>
-        <Col md={2} className="order-2 order-md-1">
-          <TimelineStats />
-          {!loginStatus.loggedIn ? (
-            <div
-              style={{
-                maxWidth: '520px',
-                padding: '2rem',
-                borderRadius: '16px',
-                border: '1px solid var(--setlog-card-border)',
-                background: 'var(--setlog-card-bg)',
-                marginTop: '3rem',
-              }}
-            >
-              <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)', marginTop: 0 }}>
-                Log in to see your shows
-              </h2>
-              <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
-                Your logged concerts are tied to your account on this device. Create an account or
-                log in to view and add shows.
-              </p>
-              <Button as={NavLink} to="/login" variant="primary" className="me-2">
-                Log in
-              </Button>
-              <Button as={NavLink} to="/register" variant="outline-primary">
-                Register
-              </Button>
-            </div>
-          ) : null}
+        <Col md={2} className="order-2 order-md-1" style={{ marginTop: '1rem' }}>
+          <div style={{ position: 'sticky', top: '1rem', }}>
+            <TimelineStats />
+
+            {!loginStatus.loggedIn ? (
+              <div
+                style={{
+                  padding: 'clamp(1rem, 4vw, 2rem)',
+                  borderRadius: '16px',
+                  border: '1px solid var(--setlog-card-border)',
+                  background: 'var(--setlog-card-bg)',
+                  marginTop: '3rem',
+                }}
+              >
+                <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)', marginTop: 0 }}>
+                  Log in to see your shows
+                </h2>
+
+                <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
+                  Your logged concerts are tied to your account on this device. Create an account or
+                  log in to view and add shows.
+                </p>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', }}>
+                  <Button as={NavLink} to="/login" variant="primary" className="me-2">
+                    Log in
+                  </Button>
+                  <Button as={NavLink} to="/register" variant="outline-primary">
+                    Register
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
         </Col>
       </Row>
     </Container>
