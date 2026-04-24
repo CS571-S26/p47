@@ -2,7 +2,6 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import NavBar from './components/NavBar.jsx'
 import MapsPage from './pages/MapsPage.jsx'
-import SettingsPage from './pages/SettingsPage.jsx'
 import TimelinePage from './pages/TimelinePage.jsx'
 import AddConcertPage from './pages/AddConcertPage.jsx'
 import UserProfilePage from './pages/UserProfilePage.jsx'
@@ -22,7 +21,6 @@ function documentTitleForPath(pathname) {
   if (pathname === '/') return `${base} — Timeline`
   if (pathname === '/maps') return `${base} — Map`
   if (pathname === '/add-concert') return `${base} — Log concert`
-  if (pathname === '/settings') return `${base} — Settings`
   if (pathname === '/user-profile') return `${base} — Profile`
   if (pathname === '/login') return `${base} — Log in`
   if (pathname === '/register') return `${base} — Register`
@@ -55,7 +53,6 @@ function AppShell({ theme, setTheme }) {
           <Route path="/add-concert" element={<AddConcertPage />} />
           <Route path="/concerts/:id/edit" element={<EditConcertPage />} />
           <Route path="/concerts/:id" element={<ConcertDetailPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/user-profile" element={<UserProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />

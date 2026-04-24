@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { Map, CirclePlus, Settings, List, Search, Moon, Sun, LogOut } from 'lucide-react'
+import { Map, CirclePlus, List, Search, Moon, Sun, LogOut } from 'lucide-react'
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
@@ -276,12 +276,6 @@ function NavBar({ theme, setTheme }) {
                 aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
               >
                 {theme === 'light' ? <Moon size={32} aria-hidden /> : <Sun size={32} aria-hidden />}
-              </Button>
-            </Col>
-
-            <Col xs="auto">
-              <Button as={NavLink} to="/settings" variant="dark" aria-label="Open settings">
-                <Settings size={32} aria-hidden />
               </Button>
             </Col>
 
