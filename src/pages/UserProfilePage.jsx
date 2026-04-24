@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from 'react'
-import { Button, Col, Form, Row } from 'react-bootstrap'
+import { Alert, Button, Col, Form, Row, Spinner } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { Calendar, Heart, MapPin, Music, Star, Users } from 'lucide-react'
+import { Calendar, Heart, MapPin, Music, Music2, Star, Users } from 'lucide-react'
 
 import SectionCard from '../components/SectionCard'
 import { useAuth } from '../contexts/authContext.js'
 import { ConcertsContext } from '../contexts/concertsContext.js'
+import { useSpotify } from '../contexts/spotifyContext.js'
 
 const AVATAR_STORAGE_PREFIX = 'p47:profileAvatar:'
 
@@ -34,6 +35,18 @@ function statCard(icon, label, value, helpText = '') {
 function UserProfilePage() {
   const { loginStatus, user } = useAuth()
   const { concerts } = useContext(ConcertsContext)
+  const {
+    session,
+    loading,
+    authenticating,
+    error,
+    configError,
+    isConfigured,
+    isConnected,
+    connect,
+    disconnect,
+    clearError,
+  } = useSpotify()
   const [avatarDraft, setAvatarDraft] = useState('')
   const [avatarOverride, setAvatarOverride] = useState('')
 
@@ -165,6 +178,11 @@ function UserProfilePage() {
     window.dispatchEvent(new Event('avatarUpdated'))
   }
 
+  async function handleSpotifyConnect() {
+    clearError()
+    await connect({ returnTo: '/user-profile' })
+  }
+
   return (
     <section style={{ padding: '1rem' }}>
       <div style={{ maxWidth: '980px', margin: '0 auto' }}>
@@ -247,6 +265,81 @@ function UserProfilePage() {
               </Col>
             ))}
           </Row>
+        </SectionCard>
+
+        <SectionCard
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Music2 size={18} color="var(--setlog-primary)" />
+              <span>Spotify Integration</span>
+            </div>
+          }
+          subtitle="Connect Spotify so you can turn saved setlists into playlists."
+        >
+          {error ? (
+            <Alert variant={configError ? 'warning' : 'danger'} style={{ marginBottom: '1rem' }}>
+              {error}
+            </Alert>
+          ) : null}
+
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: '1rem',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  color: 'var(--setlog-card-text)',
+                  marginBottom: '0.35rem',
+                }}
+              >
+                {isConnected ? 'Spotify connected' : 'Spotify not connected'}
+              </div>
+              <div style={{ color: 'var(--setlog-card-text-secondary)', fontSize: '0.95rem' }}>
+                {isConnected
+                  ? `Playlist scope ready: ${session?.scope || 'playlist-modify-private'}`
+                  : isConfigured
+                    ? 'Authorize your Spotify account to create private playlists from your setlists.'
+                    : 'Add the Spotify environment variables before connecting this app.'}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <Button
+                variant="success"
+                onClick={handleSpotifyConnect}
+                disabled={loading || authenticating || !isConfigured}
+                style={{ fontWeight: 700 }}
+              >
+                {authenticating ? (
+                  <>
+                    <Spinner animation="border" size="sm" style={{ marginRight: '0.45rem' }} />
+                    Connecting...
+                  </>
+                ) : isConnected ? (
+                  'Reconnect Spotify'
+                ) : (
+                  'Connect Spotify'
+                )}
+              </Button>
+
+              <Button
+                variant="outline-secondary"
+                onClick={disconnect}
+                disabled={!isConnected || loading || authenticating}
+                style={{ fontWeight: 700 }}
+              >
+                Disconnect
+              </Button>
+            </div>
+          </div>
         </SectionCard>
 
         <Row style={{ rowGap: '16px' }}>
