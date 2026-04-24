@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Calendar, Heart, MapPin, Music, Music2, Star, Users } from 'lucide-react'
+import { Calendar, Heart, MapPin, Music, Music2, Star, Users, LogOut } from 'lucide-react'
 import { Alert, Button, Col, Form, Row, Spinner } from 'react-bootstrap'
 import { useNavigate, Link } from 'react-router-dom'
 
@@ -470,7 +470,7 @@ function UserProfilePage() {
           </Col>
         </Row>
 
-        <Row style={{ rowGap: '16px' }}>
+        <Row>
           <Col md={6}>
             <SectionCard
               title="Timeline Highlights"
