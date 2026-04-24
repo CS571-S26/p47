@@ -48,13 +48,6 @@ function ZoomMarker({ position, icon, children }) {
             animate: true,
             duration: 0.75,
           })
-
-          setTimeout(() => {
-            map.panBy([0, -120], {
-              animate: true,
-              duration: 0.4,
-            })
-          }, 300)
         },
       }}
     >
