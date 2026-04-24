@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import TimelineConcert from '../components/TimelineConcert'
 import TimelineStats from '../components/TimelineStats'
-import { Container, Row, Col, Button, Spinner } from 'react-bootstrap'
+import { Container, Row, Col, Button, Spinner, Form } from 'react-bootstrap'
 import { Plus } from 'lucide-react'
 import { NavLink, useSearchParams } from 'react-router-dom'
 
@@ -15,14 +15,74 @@ import {
 function TimelinePage() {
   const { concerts, loading: concertsLoading } = useContext(ConcertsContext)
   const { loginStatus, loading: authLoading } = useAuth()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const queryRaw = searchParams.get('q') ?? ''
   const hasActiveQuery = normalizeConcertSearchQuery(queryRaw) !== ''
 
+  const sortRaw = searchParams.get('sort') ?? ''
+  const sortKey = sortRaw.trim() === '' ? 'date_desc' : sortRaw.trim()
+
+  const styles = {
+    sortSelect: {
+      width: 'min(270px, 100%)',
+      borderRadius: '999px',
+      border: '1px solid var(--setlog-card-border)',
+      backgroundColor: 'var(--setlog-card-bg-secondary)',
+      color: 'var(--setlog-card-text)',
+      fontSize: '14px',
+      fontWeight: 600,
+      boxShadow: 'none',
+    },
+  }
+
+  const strField = (v) => (typeof v === 'string' ? v.trim() : '')
+  const dateMs = (c) => {
+    const t = new Date(strField(c?.date)).getTime()
+    return Number.isFinite(t) ? t : Number.NEGATIVE_INFINITY
+  }
+
+  const cmpStringAsc = (field) => (a, b) =>
+    strField(a?.[field]).localeCompare(strField(b?.[field]), undefined, {
+      sensitivity: 'base',
+    })
+
+  const sortComparators = {
+    date_desc: (a, b) => dateMs(b) - dateMs(a),
+    date_asc: (a, b) => dateMs(a) - dateMs(b),
+    artist_asc: cmpStringAsc('artist'),
+    venue_asc: cmpStringAsc('venue'),
+    city_asc: cmpStringAsc('city'),
+    genre_asc: cmpStringAsc('genre'),
+    rating_desc: (a, b) => (Number(b?.rating) || 0) - (Number(a?.rating) || 0),
+    favorites_first: (a, b) =>
+      Number(Boolean(b?.favorite)) - Number(Boolean(a?.favorite)),
+    attended_first: (a, b) =>
+      Number(Boolean(b?.attended)) - Number(Boolean(a?.attended)),
+  }
+
   const filtered = filterConcertsByQuery(concerts, queryRaw)
-  const sorted = [...filtered].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  )
+  const comparator =
+    sortComparators[sortKey] ?? sortComparators.date_desc
+  const sorted = [...filtered].sort((a, b) => {
+    const primary = comparator(a, b)
+    if (primary !== 0) return primary
+
+    const fallbackDate = sortComparators.date_desc(a, b)
+    if (fallbackDate !== 0) return fallbackDate
+
+    return strField(a?.id).localeCompare(strField(b?.id))
+  })
+
+  const onChangeSort = (e) => {
+    const next = String(e.target.value ?? '').trim()
+    const nextParams = new URLSearchParams(searchParams)
+    if (next === '' || next === 'date_desc') {
+      nextParams.delete('sort')
+    } else {
+      nextParams.set('sort', next)
+    }
+    setSearchParams(nextParams)
+  }
 
   if (authLoading) {
     return (
@@ -89,6 +149,34 @@ function TimelinePage() {
           <h2 className="timeline-page-subtitle">
             {loginStatus.loggedIn ? 'Your logged shows, newest first' : 'Sample concerts, newest first'}
           </h2>
+
+          <div
+            style={{
+              display: 'flex',
+              gap: '0.75rem',
+              marginTop: '0.5rem',
+              marginBottom: '0.75rem',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+            }}
+          >
+            <Form.Select
+              aria-label="Sort timeline"
+              value={sortKey}
+              onChange={onChangeSort}
+              style={styles.sortSelect}
+            >
+              <option value="date_desc">Concert date: Newest → Oldest</option>
+              <option value="date_asc">Concert date: Oldest → Newest</option>
+              <option value="artist_asc">Artist: A → Z</option>
+              <option value="venue_asc">Venue: A → Z</option>
+              <option value="city_asc">City: A → Z</option>
+              <option value="genre_asc">Genre: A → Z</option>
+              <option value="favorites_first">Favorites first</option>
+              <option value="attended_first">Attended first</option>
+              <option value="rating_desc">Rating: High → Low</option>
+            </Form.Select>
+          </div>
 
           {hasActiveQuery ? (
             <div
