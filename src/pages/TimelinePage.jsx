@@ -113,7 +113,7 @@ function TimelinePage() {
                 {!loginStatus.loggedIn ? 'Demo Concert Timeline' : 'My Concert Timeline'}
               </h1>
             </Col>
-            <Col xs={12} md="auto" style={{ marginTop: '0.75rem' }}>
+            <Col xs={12} md="auto" style={{ marginTop: '0.75rem' }} className="d-none d-md-block">
               {loginStatus.loggedIn ? (
                 <Button
                   as={NavLink}
@@ -170,6 +170,61 @@ function TimelinePage() {
               <option value="attended_first">Attended first</option>
               <option value="rating_desc">Rating: High → Low</option>
             </Form.Select>
+          </div>
+
+          <div className="d-md-none" style={{ marginBottom: '1rem', width: '100%' }}>
+            <Row style={{ rowGap: '12px' }}>
+              <Col xs={loginStatus.loggedIn ? 12 : 6} sm={loginStatus.loggedIn ? 12 : 6}>
+                <TimelineStats compact />
+              </Col>
+
+              {!loginStatus.loggedIn ? (
+                <Col xs={6} sm={6}>
+                  <div
+                    style={{
+                      height: '100%',
+                      padding: '1rem',
+                      borderRadius: '16px',
+                      border: '1px solid var(--setlog-card-border)',
+                      background: 'var(--setlog-card-bg)',
+                    }}
+                  >
+                    <h2
+                      style={{
+                        fontSize: '18px',
+                        fontWeight: '700',
+                        marginBottom: '8px',
+                        color: 'var(--setlog-card-text)',
+                        marginTop: 0,
+                      }}
+                    >
+                      Want your own timeline?
+                    </h2>
+
+                    <p
+                      style={{
+                        fontSize: '14px',
+                        marginBottom: '1rem',
+                        color: 'var(--setlog-card-text-secondary)',
+                      }}
+                    >
+                      Log in or register to save your own concerts.
+                    </p>
+
+                    <div
+                      style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', }}>
+                      <Button as={NavLink} to="/login" variant="primary">
+                        Log in
+                      </Button>
+
+                      <Button as={NavLink} to="/register" variant="outline-primary">
+                        Register
+                      </Button>
+                    </div>
+                  </div>
+                </Col>
+              ) : null}
+            </Row>
           </div>
 
           {hasActiveQuery ? (
@@ -298,32 +353,47 @@ function TimelinePage() {
           )}
         </Col>
         <Col md={2} className="order-2 order-md-1" style={{ marginTop: '1rem' }}>
-          <div style={{ position: 'sticky', top: '1rem', }}>
+          <div className="d-none d-md-block" style={{ position: 'sticky', top: '1rem' }}>
             <TimelineStats />
 
             {!loginStatus.loggedIn ? (
               <div
                 style={{
-                  padding: 'clamp(1rem, 4vw, 2rem)',
+                  padding: '1rem',
                   borderRadius: '16px',
                   border: '1px solid var(--setlog-card-border)',
                   background: 'var(--setlog-card-bg)',
-                  marginTop: '3rem',
+                  marginTop: '1rem',
                 }}
               >
-                <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: 'var(--setlog-card-text)', marginTop: 0 }}>
-                  Log in to see your shows
+                <h2
+                  style={{
+                    fontSize: '18px',
+                    fontWeight: '700',
+                    marginBottom: '8px',
+                    color: 'var(--setlog-card-text)',
+                    marginTop: 0,
+                  }}
+                >
+                  Want your own timeline?
                 </h2>
 
-                <p style={{ marginBottom: '1rem', color: 'var(--setlog-card-text-secondary)' }}>
-                  Your logged concerts are tied to your account on this device. Create an account or
-                  log in to view and add shows.
+                <p
+                  style={{
+                    marginBottom: '1rem',
+                    color: 'var(--setlog-card-text-secondary)',
+                    fontSize: '14px',
+                  }}
+                >
+                  Log in or create an account to save your own concerts.
                 </p>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', }}>
-                  <Button as={NavLink} to="/login" variant="primary" className="me-2">
+
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <Button as={NavLink} to="/login" variant="primary" size="sm">
                     Log in
                   </Button>
-                  <Button as={NavLink} to="/register" variant="outline-primary">
+
+                  <Button as={NavLink} to="/register" variant="outline-primary" size="sm">
                     Register
                   </Button>
                 </div>
