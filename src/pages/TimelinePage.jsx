@@ -113,7 +113,7 @@ function TimelinePage() {
                 {!loginStatus.loggedIn ? 'Demo Concert Timeline' : 'My Concert Timeline'}
               </h1>
             </Col>
-            <Col xs="auto">
+            <Col xs="auto" className="d-none d-md-block">
               {loginStatus.loggedIn ? (
                 <Button
                   as={NavLink}
