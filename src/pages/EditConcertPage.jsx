@@ -7,6 +7,7 @@ import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
 import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js'
 import SectionCard from '../components/SectionCard'
+import { ConfirmDialog, MessageDialog } from '../components/ConfirmDialog.jsx'
 import { extractSongTitles, searchFirstSetlist } from '../utils/setlistfm.js'
 import {
   CITY_STATE_PATTERN,
@@ -42,6 +43,8 @@ function EditConcertPage() {
   const [formError, setFormError] = useState('')
   const [importingSetlist, setImportingSetlist] = useState(false)
   const [importError, setImportError] = useState('')
+  const [pendingImportTitles, setPendingImportTitles] = useState(null)
+  const [geocodeNoticeOpen, setGeocodeNoticeOpen] = useState(false)
 
   const stars = [1, 2, 3, 4, 5]
   const normalizedSetlist = normalizeSetlist(setlist)
@@ -126,7 +129,7 @@ function EditConcertPage() {
     }
 
     if (!coords) {
-      window.alert(GEOCODE_LOOKUP_FAILED_MESSAGE)
+      setGeocodeNoticeOpen(true)
     }
 
     const nextSetlist = normalizeSetlist(setlist)
@@ -188,8 +191,8 @@ function EditConcertPage() {
 
       const current = normalizeSetlist(setlist)
       if (current.length > 0) {
-        const ok = window.confirm('Replace the current setlist with the imported one?')
-        if (!ok) return
+        setPendingImportTitles(titles)
+        return
       }
 
       setSetlist(titles)
@@ -377,6 +380,27 @@ function EditConcertPage() {
         alignItems: 'flex-start',
       }}
     >
+      <ConfirmDialog
+        show={pendingImportTitles != null}
+        onHide={() => setPendingImportTitles(null)}
+        title="Replace setlist?"
+        confirmLabel="Replace"
+        cancelLabel="Cancel"
+        confirmVariant="primary"
+        onConfirm={() => {
+          setSetlist(pendingImportTitles)
+          setPendingImportTitles(null)
+        }}
+      >
+        Replace the current setlist with the imported one?
+      </ConfirmDialog>
+      <MessageDialog
+        show={geocodeNoticeOpen}
+        onHide={() => setGeocodeNoticeOpen(false)}
+        title="Could not look up location"
+      >
+        {GEOCODE_LOOKUP_FAILED_MESSAGE}
+      </MessageDialog>
       <Card
         style={{
           width: '100%',

@@ -1,35 +1,28 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Clock, Trash } from 'lucide-react'
 import { Row, Col, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
+import { ConfirmDialog } from './ConfirmDialog.jsx'
 
 function TimelineConcert({ concert }) {
     const { deleteConcert } = useContext(ConcertsContext)
     const navigate = useNavigate()
 
     const { loginStatus } = useAuth()
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
 
-    function handleDelete() {
-        const ok = window.confirm(
-            `Remove "${concert.artist}" (${concert.date}) from your timeline?`,
-        )
-        if (ok) deleteConcert(concert.id)
+    function confirmDelete() {
+        deleteConcert(concert.id)
+        setDeleteConfirmOpen(false)
     }
 
     function handleViewDetails() {
         navigate(`/concerts/${concert.id}`, {
             state: { from: '/', backLabel: 'Back to Timeline' },
         })
-    }
-
-    function handleCardKeyDown(ev) {
-        if (ev.key === 'Enter' || ev.key === ' ') {
-            ev.preventDefault()
-            handleViewDetails()
-        }
     }
 
     const setlistCount = Array.isArray(concert.setlist) ? concert.setlist.length : null
@@ -71,10 +64,9 @@ function TimelineConcert({ concert }) {
         dateMonth: {
             background: 'var(--setlog-primary)',
             color: 'white',
-            fontSize: '0.75rem',
             fontWeight: 800,
             padding: '4px',
-            fontSize: '18px'
+            fontSize: '18px',
         },
         dateDay: {
             fontSize: '2rem',
@@ -98,18 +90,28 @@ function TimelineConcert({ concert }) {
     }
 
     return (
-        <div
-            className="timeline-concert-card"
-            role="button"
-            tabIndex={0}
-            aria-label={cardAriaLabel}
-            style={{
-                ...styles.concertCard,
-                cursor: 'pointer',
-            }}
-            onClick={handleViewDetails}
-            onKeyDown={handleCardKeyDown}
-        >
+        <>
+            <ConfirmDialog
+                show={deleteConfirmOpen}
+                onHide={() => setDeleteConfirmOpen(false)}
+                title="Remove concert?"
+                confirmLabel="Remove"
+                cancelLabel="Cancel"
+                confirmVariant="danger"
+                onConfirm={confirmDelete}
+            >
+                Remove &quot;{concert.artist}&quot; ({concert.date}) from your timeline?
+            </ConfirmDialog>
+            <div
+                className="timeline-concert-card"
+                role="article"
+                aria-label={cardAriaLabel}
+                style={{
+                    ...styles.concertCard,
+                    cursor: 'pointer',
+                }}
+                onClick={handleViewDetails}
+            >
             { /* Date Card */}
             <Col xs="auto">
                 <div style={styles.dateCard}>
@@ -242,7 +244,7 @@ function TimelineConcert({ concert }) {
                                 style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', gap: '6px', alignItems: 'center' }}
                                 onClick={(e) => {
                                     e.stopPropagation()
-                                    handleDelete()
+                                    setDeleteConfirmOpen(true)
                                 }}
                             >
                                 <Trash size={16} aria-hidden />
@@ -252,7 +254,8 @@ function TimelineConcert({ concert }) {
 
                 </Row>
             </Col>
-        </div>
+            </div>
+        </>
     )
 }
 

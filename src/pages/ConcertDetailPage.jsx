@@ -7,6 +7,7 @@ import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
 import { useSpotify } from '../contexts/spotifyContext.js'
 import SectionCard from '../components/SectionCard'
+import { ConfirmDialog } from '../components/ConfirmDialog.jsx'
 import {
   addItemsToSpotifyPlaylist,
   buildSpotifyPlaylistDescription,
@@ -35,6 +36,7 @@ function ConcertDetailPage() {
     error: '',
     result: null,
   })
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
 
   const concert = concerts.find((c) => c.id === id)
   const setlistSongs = Array.isArray(concert?.setlist)
@@ -57,14 +59,10 @@ function ConcertDetailPage() {
     navigate(backTo)
   }
 
-  function handleDelete() {
-    const ok = window.confirm(
-      `Remove "${concert.artist}" (${concert.date}) from your timeline?`,
-    )
-    if (ok) {
-      deleteConcert(concert.id)
-      navigate(backTo)
-    }
+  function confirmDelete() {
+    deleteConcert(concert.id)
+    setDeleteConfirmOpen(false)
+    navigate(backTo)
   }
 
   function getRatingLabel(value) {
@@ -365,6 +363,17 @@ function ConcertDetailPage() {
         alignItems: 'flex-start',
       }}
     >
+      <ConfirmDialog
+        show={deleteConfirmOpen}
+        onHide={() => setDeleteConfirmOpen(false)}
+        title="Remove concert?"
+        confirmLabel="Remove"
+        cancelLabel="Cancel"
+        confirmVariant="danger"
+        onConfirm={confirmDelete}
+      >
+        Remove &quot;{concert.artist}&quot; ({concert.date}) from your timeline?
+      </ConfirmDialog>
       <Card
         style={{
           width: '100%',
@@ -410,7 +419,7 @@ function ConcertDetailPage() {
                 <Button
                   variant="outline-danger"
                   style={styles.topButton}
-                  onClick={handleDelete}
+                  onClick={() => setDeleteConfirmOpen(true)}
                 >
                   <Trash size={13} />
                   Delete
