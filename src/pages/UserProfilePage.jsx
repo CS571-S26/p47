@@ -222,7 +222,7 @@ function UserProfilePage() {
               </p>
 
               <Button
-                variant="outline-light"
+                variant="outline-danger"
                 type="button"
                 onClick={handleLogout}
                 aria-label="Log out"
