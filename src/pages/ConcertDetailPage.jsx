@@ -71,6 +71,20 @@ function ConcertDetailPage() {
     return 'Rough'
   }
 
+  function formatSetName(name) {
+    const clean = typeof name === 'string' ? name.trim() : ''
+
+    if (!clean) return clean
+
+    const needsColon = /^(set\s*\d+|encore|encore\s*\d+)$/i.test(clean)
+
+    if (needsColon && !clean.endsWith(':')) {
+      return `${clean}:`
+    }
+
+    return clean
+  }
+
   useEffect(() => {
     setPlaylistStatus({ busy: false, error: '', result: null })
   }, [concert?.id])
@@ -714,7 +728,7 @@ function ConcertDetailPage() {
                                 letterSpacing: '0.04em',
                               }}
                             >
-                              {sec.name}
+                              {formatSetName(sec.name)}
                             </div>
                           ) : null}
                           <ListGroup variant="flush">
