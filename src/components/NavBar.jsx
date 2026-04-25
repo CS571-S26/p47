@@ -268,8 +268,8 @@ function NavBar({ theme, setTheme }) {
               <CirclePlus size={18} /> Log Concert
             </Nav.Link>
 
-            <Nav.Link as={NavLink} onClick={() => setExpanded(false)} to="/live-concert">
-              <RefreshCw size={18} /> Live Concert
+            <Nav.Link as={NavLink} onClick={() => setExpanded(false)} to="/live-setlist">
+              <RefreshCw size={18} /> Live Setlist
             </Nav.Link>
           </Nav>
 

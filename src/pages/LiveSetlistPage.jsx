@@ -3,10 +3,10 @@ import { Button, Form, Spinner, Alert, Col, Row } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { RefreshCw, MapPin } from 'lucide-react'
 
-import SectionCard from '../components/SectionCard'
+import SectionCard from '../components/SectionCard.jsx'
 import { searchFirstSetlist, extractSongTitles, extractSetlistSections } from '../utils/setlistfm.js'
 
-import './LiveConcertPage.css'
+import './LiveSetlistPage.css'
 
 const LIVE_CONCERT_STORAGE_KEY = 'p47:liveConcert'
 
@@ -28,7 +28,7 @@ function readLiveConcert() {
     }
 }
 
-function LiveConcertPage() {
+function LiveSetlistPage() {
     const savedLiveConcert = readLiveConcert()
 
     const [artist, setArtist] = useState(savedLiveConcert.artist)
@@ -141,7 +141,7 @@ function LiveConcertPage() {
                     marginBottom: '0.25rem',
                 }}
             >
-                Live Concert
+                Live Setlist
             </h1>
 
             <p style={{ color: 'var(--setlog-secondary-text)', marginBottom: '1rem' }}>
@@ -409,4 +409,4 @@ function LiveConcertPage() {
     )
 }
 
-export default LiveConcertPage
+export default LiveSetlistPage
