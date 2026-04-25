@@ -20,7 +20,7 @@ import {
 
 function EditConcertPage() {
   const { id } = useParams()
-  const { updateConcert, getConcert, loading } = useContext(ConcertsContext)
+  const { concerts, updateConcert, getConcert, loading } = useContext(ConcertsContext)
   const { loginStatus } = useAuth()
   const navigate = useNavigate()
 
@@ -164,17 +164,29 @@ function EditConcertPage() {
   }
 
   const canImportFromSetlistFm = !!(artist.trim() || venue.trim() || city.trim() || date.trim())
-  const canSearchImages = !!(artist.trim() || date.trim() || venue.trim())
+  const canSearchImages = !!(artist.trim() || venue.trim())
 
   function handleSearchImages() {
     const queryParts = []
     if (artist.trim()) queryParts.push(artist.trim())
-    if (date.trim()) queryParts.push(date.trim())
     if (venue.trim()) queryParts.push(venue.trim())
 
     const query = encodeURIComponent(queryParts.join(' '))
     const searchWindow = window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank')
     if (searchWindow) searchWindow.opener = null
+  }
+
+  function findGenreForArtist(artistName) {
+    const target = typeof artistName === 'string' ? artistName.trim().toLowerCase() : ''
+    if (!target) return ''
+
+    for (const concert of concerts) {
+      const concertArtist = typeof concert?.artist === 'string' ? concert.artist.trim().toLowerCase() : ''
+      const concertGenre = typeof concert?.genre === 'string' ? concert.genre.trim() : ''
+      if (concert?.id !== id && concertArtist === target && concertGenre) return concertGenre
+    }
+
+    return ''
   }
 
   async function handleImportFromSetlistFm() {
@@ -200,6 +212,11 @@ function EditConcertPage() {
         return
       }
 
+      if (results.length === 1) {
+        handleSelectSetlist(results[0])
+        return
+      }
+
       setSetlistSearchResults(results)
     } catch (err) {
       setImportError(err instanceof Error ? err.message : 'Failed to import setlist from setlist.fm.')
@@ -213,6 +230,11 @@ function EditConcertPage() {
     if (details?.venue) setVenue(details.venue)
     if (details?.date) setDate(details.date)
     if (details?.city) setCity(details.city)
+    if (!genre.trim()) {
+      const importedArtist = details?.artist || artist
+      const savedGenre = findGenreForArtist(importedArtist)
+      if (savedGenre) setGenre(savedGenre)
+    }
     if (Array.isArray(titles)) setSetlist(titles)
   }
 
