@@ -9,6 +9,59 @@ function uniqPreserveOrder(items) {
   return out
 }
 
+const US_STATE_CODES = {
+  alabama: 'AL',
+  alaska: 'AK',
+  arizona: 'AZ',
+  arkansas: 'AR',
+  california: 'CA',
+  colorado: 'CO',
+  connecticut: 'CT',
+  delaware: 'DE',
+  florida: 'FL',
+  georgia: 'GA',
+  hawaii: 'HI',
+  idaho: 'ID',
+  illinois: 'IL',
+  indiana: 'IN',
+  iowa: 'IA',
+  kansas: 'KS',
+  kentucky: 'KY',
+  louisiana: 'LA',
+  maine: 'ME',
+  maryland: 'MD',
+  massachusetts: 'MA',
+  michigan: 'MI',
+  minnesota: 'MN',
+  mississippi: 'MS',
+  missouri: 'MO',
+  montana: 'MT',
+  nebraska: 'NE',
+  nevada: 'NV',
+  'new hampshire': 'NH',
+  'new jersey': 'NJ',
+  'new mexico': 'NM',
+  'new york': 'NY',
+  'north carolina': 'NC',
+  'north dakota': 'ND',
+  ohio: 'OH',
+  oklahoma: 'OK',
+  oregon: 'OR',
+  pennsylvania: 'PA',
+  'rhode island': 'RI',
+  'south carolina': 'SC',
+  'south dakota': 'SD',
+  tennessee: 'TN',
+  texas: 'TX',
+  utah: 'UT',
+  vermont: 'VT',
+  virginia: 'VA',
+  washington: 'WA',
+  'west virginia': 'WV',
+  wisconsin: 'WI',
+  wyoming: 'WY',
+}
+
 export function formatSetlistFmDate(yyyyMmDd) {
   // input from <input type="date" /> is "YYYY-MM-DD"
   if (typeof yyyyMmDd !== 'string') return null
@@ -100,17 +153,74 @@ export function extractSetlistSections(setlist) {
   return sections
 }
 
-export async function searchFirstSetlist({ artistName, venueName, date }) {
+export function extractSetlistConcertDetails(setlist) {
+  const eventDate = typeof setlist?.eventDate === 'string' ? setlist.eventDate.trim() : ''
+  const dateMatch = /^(\d{2})-(\d{2})-(\d{4})$/.exec(eventDate)
+  const city = setlist?.venue?.city
+  const cityName = typeof city?.name === 'string' ? city.name.trim() : ''
+  const stateCode = typeof city?.stateCode === 'string' ? city.stateCode.trim() : ''
+
+  return {
+    artist: typeof setlist?.artist?.name === 'string' ? setlist.artist.name.trim() : '',
+    venue: typeof setlist?.venue?.name === 'string' ? setlist.venue.name.trim() : '',
+    date: dateMatch ? `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}` : '',
+    city: cityName && stateCode ? `${cityName}, ${stateCode}` : '',
+  }
+}
+
+function parseCityState(cityState) {
+  if (typeof cityState !== 'string') return { cityName: '', stateCode: '' }
+
+  const t = cityState.trim()
+  const match = /^(.+?),\s*([A-Za-z ]+)$/.exec(t)
+  if (!match) return { cityName: t, stateCode: '' }
+
+  const statePart = match[2].trim()
+  const stateCode =
+    statePart.length === 2 ? statePart.toUpperCase() : US_STATE_CODES[statePart.toLowerCase()] || ''
+
+  return {
+    cityName: match[1].trim(),
+    stateCode,
+  }
+}
+
+function getSortableEventDate(setlist) {
+  const eventDate = typeof setlist?.eventDate === 'string' ? setlist.eventDate.trim() : ''
+  const match = /^(\d{2})-(\d{2})-(\d{4})$/.exec(eventDate)
+  if (!match) return 0
+
+  return Date.parse(`${match[3]}-${match[2]}-${match[1]}`)
+}
+
+function buildSearchParams({ artistName, venueName, cityState, date }) {
+  const a = typeof artistName === 'string' ? artistName.trim() : ''
+  const v = typeof venueName === 'string' ? venueName.trim() : ''
+  const { cityName, stateCode } = parseCityState(cityState)
+  const d = formatSetlistFmDate(date)
+
+  if (!a && !v && !cityName && !d) {
+    throw new Error('Enter an artist, venue, city, or date before searching setlist.fm.')
+  }
+
+  const params = new URLSearchParams({ p: '1' })
+  if (a) params.set('artistName', a)
+  if (v) params.set('venueName', v)
+  if (cityName) params.set('cityName', cityName)
+  if (stateCode) {
+    params.set('stateCode', stateCode)
+    params.set('countryCode', 'US')
+  }
+  if (d) params.set('date', d)
+
+  return params
+}
+
+export async function searchSetlists({ artistName, venueName, cityState, date, limit = 5 }) {
   const proxyBase = import.meta.env.VITE_SETLISTFM_PROXY_URL
   const apiKey = import.meta.env.VITE_SETLISTFM_API_KEY
 
-  const a = typeof artistName === 'string' ? artistName.trim() : ''
-  const v = typeof venueName === 'string' ? venueName.trim() : ''
-  const d = formatSetlistFmDate(date)
-
-  if (!a || !v || !d) {
-    throw new Error('Artist, venue, and date are required to import from setlist.fm.')
-  }
+  const params = buildSearchParams({ artistName, venueName, cityState, date })
 
   let url
   let headers
@@ -120,12 +230,6 @@ export async function searchFirstSetlist({ artistName, venueName, date }) {
     if (!base) {
       throw new Error('VITE_SETLISTFM_PROXY_URL is set but empty.')
     }
-    const params = new URLSearchParams({
-      artistName: a,
-      venueName: v,
-      date: d,
-      p: '1',
-    })
     url = `${base}/search/setlists?${params.toString()}`
     headers = { Accept: 'application/json' }
   } else {
@@ -134,12 +238,6 @@ export async function searchFirstSetlist({ artistName, venueName, date }) {
         'Missing VITE_SETLISTFM_PROXY_URL (recommended) or VITE_SETLISTFM_API_KEY. Add one to your .env.local and restart the dev server.',
       )
     }
-    const params = new URLSearchParams({
-      artistName: a,
-      venueName: v,
-      date: d,
-      p: '1',
-    })
     url = `https://api.setlist.fm/rest/1.0/search/setlists?${params.toString()}`
     headers = {
       Accept: 'application/json',
@@ -150,5 +248,13 @@ export async function searchFirstSetlist({ artistName, venueName, date }) {
   const data = await fetchJson(url, { headers })
 
   const list = Array.isArray(data?.setlist) ? data.setlist : []
-  return list.length ? list[0] : null
+  const maxResults = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 5
+  return [...list]
+    .sort((a, b) => getSortableEventDate(b) - getSortableEventDate(a))
+    .slice(0, maxResults)
+}
+
+export async function searchFirstSetlist({ artistName, venueName, cityState, date }) {
+  const results = await searchSetlists({ artistName, venueName, cityState, date, limit: 1 })
+  return results.length ? results[0] : null
 }
