@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { Row, Col, Button, Card, Form, Alert, Spinner, InputGroup, ListGroup } from 'react-bootstrap'
+import { Row, Col, Button, Card, Form, Alert, Spinner, InputGroup, ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Plus, ArrowDown, ArrowUp, Trash } from 'lucide-react'
+import { Plus, ArrowDown, ArrowUp, Trash, Info } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
@@ -48,6 +48,7 @@ function EditConcertPage() {
   const [pendingImportDetails, setPendingImportDetails] = useState(null)
   const [setlistSearchResults, setSetlistSearchResults] = useState([])
   const [geocodeNoticeOpen, setGeocodeNoticeOpen] = useState(false)
+  const [showImportTip, setShowImportTip] = useState(false)
 
   const stars = [1, 2, 3, 4, 5]
   const normalizedSetlist = normalizeSetlist(setlist)
@@ -170,6 +171,8 @@ function EditConcertPage() {
     const queryParts = []
     if (artist.trim()) queryParts.push(artist.trim())
     if (venue.trim()) queryParts.push(venue.trim())
+    const cleanedCity = formatCityState(city)
+    if (CITY_STATE_PATTERN.test(cleanedCity)) queryParts.push(cleanedCity)
 
     const query = encodeURIComponent(queryParts.join(' '))
     const searchWindow = window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank')
@@ -193,7 +196,7 @@ function EditConcertPage() {
     setImportError('')
 
     if (!canImportFromSetlistFm) {
-      setImportError('Enter an artist, venue, city, or date before importing from setlist.fm.')
+      setImportError('Enter an artist name, or another concert detail, to search setlist.fm.')
       return
     }
 
@@ -226,6 +229,7 @@ function EditConcertPage() {
   }
 
   function applySetlistImport(titles, details) {
+    let filledGenreFromHistory = false
     if (details?.artist) setArtist(details.artist)
     if (details?.venue) setVenue(details.venue)
     if (details?.date) setDate(details.date)
@@ -233,9 +237,13 @@ function EditConcertPage() {
     if (!genre.trim()) {
       const importedArtist = details?.artist || artist
       const savedGenre = findGenreForArtist(importedArtist)
-      if (savedGenre) setGenre(savedGenre)
+      if (savedGenre) {
+        setGenre(savedGenre)
+        filledGenreFromHistory = true
+      }
     }
     if (Array.isArray(titles)) setSetlist(titles)
+    return !genre.trim() && !filledGenreFromHistory
   }
 
   function handleSelectSetlist(setlistResult) {
@@ -258,7 +266,10 @@ function EditConcertPage() {
       return
     }
 
-    applySetlistImport(titles, details)
+    const needsGenre = applySetlistImport(titles, details)
+    if (needsGenre) {
+      setImportError('Imported details from setlist.fm. Add a music genre to save this concert.')
+    }
   }
 
   function handleAddSong() {
@@ -449,9 +460,12 @@ function EditConcertPage() {
         cancelLabel="Cancel"
         confirmVariant="primary"
         onConfirm={() => {
-          applySetlistImport(pendingImportTitles, pendingImportDetails)
+          const needsGenre = applySetlistImport(pendingImportTitles, pendingImportDetails)
           setPendingImportTitles(null)
           setPendingImportDetails(null)
+          if (needsGenre) {
+            setImportError('Imported details from setlist.fm. Add a music genre to save this concert.')
+          }
         }}
       >
         Replace the current setlist with the imported one?
@@ -501,7 +515,7 @@ function EditConcertPage() {
           ) : null}
 
           <div style={{ fontSize: '0.85rem', color: 'var(--setlog-card-text-secondary)', marginBottom: '0.7rem' }}>
-            <span style={{ color: 'var(--setlog-required-indicator)', fontWeight: 700 }}>*</span> Required fields
+            <span style={{ color: 'var(--setlog-required-indicator)', fontWeight: 700 }}>*</span> Required to save concert
           </div>
 
           <Form onSubmit={handleSubmit}>
@@ -614,7 +628,7 @@ function EditConcertPage() {
                             disabled={!canSearchImages}
                             style={{ borderRadius: '10px', fontSize: '0.9rem' }}
                           >
-                            Search images
+                            Search
                           </Button>
                         </InputGroup>
                       </Form.Group>
@@ -672,14 +686,14 @@ function EditConcertPage() {
                                 </Button>
                               </InputGroup>
 
-                              <div style={{ marginTop: '0.45rem', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                              <div style={{ marginTop: '0.45rem', display: 'flex', gap: '8px', alignItems: 'center' }}>
                                 <Button
                                   type="button"
                                   variant="success"
                                   onClick={handleImportFromSetlistFm}
                                   disabled={!canImportFromSetlistFm || importingSetlist}
                                   style={{
-                                    width: '100%',
+                                    flex: 1,
                                     backgroundColor: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-bg)' : undefined,
                                     borderColor: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-border)' : undefined,
                                     color: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-text)' : undefined,
@@ -688,14 +702,41 @@ function EditConcertPage() {
                                 >
                                   {importingSetlist ? (
                                     <>
-                                      Reimport from setlist.fm
                                       <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
-                                      Importing...
+                                      Reimporting...
                                     </>
                                   ) : (
-                                    'Reimport from setlist.fm'
+                                    'Reimport Setlist'
                                   )}
                                 </Button>
+                                <OverlayTrigger
+                                  placement="top"
+                                  show={showImportTip}
+                                  overlay={
+                                    <Tooltip id="setlist-reimport-tip">
+                                      Enter an artist name to search setlist.fm. Adding a date helps find the right show.
+                                      Importing can fill the date, venue, city, and setlist for you.
+                                    </Tooltip>
+                                  }
+                                >
+                                  <Button
+                                    type="button"
+                                    variant="outline-secondary"
+                                    aria-label="setlist.fm import tip"
+                                    onClick={() => setShowImportTip((prev) => !prev)}
+                                    onBlur={() => setShowImportTip(false)}
+                                    style={{
+                                      borderRadius: '10px',
+                                      paddingLeft: '10px',
+                                      paddingRight: '10px',
+                                      borderColor: 'var(--setlog-card-border)',
+                                      color: 'var(--setlog-card-text)',
+                                      backgroundColor: 'var(--setlog-card-bg)',
+                                    }}
+                                  >
+                                    <Info size={16} />
+                                  </Button>
+                                </OverlayTrigger>
                               </div>
 
                               {importError ? (
