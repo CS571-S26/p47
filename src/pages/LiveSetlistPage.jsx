@@ -191,16 +191,6 @@ function LiveSetlistPage() {
                                         Track Live Setlist
                                     </Button>
 
-                                    <Button
-                                        type="button"
-                                        variant="outline-secondary"
-                                        onClick={loadSetlist}
-                                        disabled={loading}
-                                    >
-                                        <RefreshCw size={16} style={{ marginRight: '0.35rem' }} />
-                                        Check Now
-                                    </Button>
-
                                     {tracking ? (
                                         <Button
                                             type="button"
@@ -296,16 +286,6 @@ function LiveSetlistPage() {
 
                                 <Button
                                     type="button"
-                                    variant="outline-secondary"
-                                    onClick={loadSetlist}
-                                    disabled={loading}
-                                >
-                                    <RefreshCw size={16} style={{ marginRight: '0.35rem' }} />
-                                    Check Now
-                                </Button>
-
-                                <Button
-                                    type="button"
                                     variant="outline-danger"
                                     onClick={() => setTracking(false)}
                                 >
@@ -339,17 +319,41 @@ function LiveSetlistPage() {
                             </Alert>
                         ) : null}
 
-                        {lastChecked ? (
-                            <p
-                                style={{
-                                    marginTop: '0.75rem',
-                                    color: 'var(--setlog-secondary-text)',
-                                    fontSize: '14px',
-                                }}
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                gap: '0.75rem',
+                                borderBottom: '1px solid var(--setlog-card-border)',
+                                paddingBottom: '0.35rem',
+                                marginBottom: '0.65rem',
+                            }}
+                        >
+                            {lastChecked ? (
+                                <p
+                                    style={{
+                                        marginTop: '0.75rem',
+                                        color: 'var(--setlog-secondary-text)',
+                                        fontSize: '14px',
+                                    }}
+                                >
+                                    Last checked: {lastChecked.toLocaleTimeString()}
+                                </p>
+                            ) : null}
+
+                            <Button
+                                type="button"
+                                variant="outline-secondary"
+                                onClick={loadSetlist}
+                                disabled={loading}
                             >
-                                Last checked: {lastChecked.toLocaleTimeString()}
-                            </p>
-                        ) : null}
+                                <RefreshCw size={16} style={{ marginRight: '0.35rem' }} />
+                                Check Now
+                            </Button>
+                        </div>
+
+
 
                         {sections.length > 0 ? (
                             <div style={{ marginTop: '1rem' }}>
