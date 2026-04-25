@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { RefreshCw, MapPin } from 'lucide-react'
 
 import SectionCard from '../components/SectionCard.jsx'
-import { searchFirstSetlist, extractSongTitles, extractSetlistSections } from '../utils/setlistfm.js'
+import { searchFirstSetlist, extractSetlistSections } from '../utils/setlistfm.js'
+import { flattenNormalizedSetlistSections, normalizeSetlistSections } from '../utils/setlistHelpers.js'
 
 import './LiveSetlistPage.css'
 
@@ -74,8 +75,10 @@ function LiveSetlistPage() {
                 setSongs([])
                 setMessage('No setlist found yet. It may appear once someone updates it.')
             } else {
-                const foundSongs = extractSongTitles(setlist)
                 const foundSections = extractSetlistSections(setlist)
+                const normalized = normalizeSetlistSections(foundSections)
+                const foundSongs =
+                  normalized.length > 0 ? flattenNormalizedSetlistSections(normalized) : []
 
                 setSongs(foundSongs)
                 setSections(foundSections)
@@ -98,6 +101,7 @@ function LiveSetlistPage() {
                     venue,
                     date,
                     setlist: songs,
+                    setlistSections: sections,
                 },
             },
         })

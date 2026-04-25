@@ -4,6 +4,7 @@ import { Row, Col, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
+import { getFlattenedSongs } from '../utils/setlistHelpers.js'
 import { useAuth } from '../contexts/authContext.js'
 import { ConfirmDialog } from './ConfirmDialog.jsx'
 
@@ -25,8 +26,8 @@ function TimelineConcert({ concert }) {
         })
     }
 
-    const setlistCount = Array.isArray(concert.setlist) ? concert.setlist.length : null
-    const songCount = typeof setlistCount === 'number' ? setlistCount : (concert.songCount ?? 0)
+    const flat = getFlattenedSongs(concert)
+    const songCount = flat.length > 0 ? flat.length : (Number.isFinite(Number(concert.songCount)) ? Number(concert.songCount) : 0)
     const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
     const [year, month, day] = concert.date.split('-').map(Number)

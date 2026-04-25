@@ -1,4 +1,11 @@
-export const CITY_STATE_PATTERN = /^[A-Za-z .'-]+,\s[A-Za-z]{2}$/
+/**
+ * City plus region: US state (2 letters), spelled-out state, or country/region
+ * (e.g. "San Francisco, CA", "London, England", "Toronto, ON" for Canada if entered as 2 letters).
+ */
+export const CITY_LOCATION_PATTERN = /^[A-Za-z0-9 .'-]+,\s[A-Za-z0-9 .'-]{2,}$/
+
+/** @deprecated Use CITY_LOCATION_PATTERN — name kept for older imports. */
+export const CITY_STATE_PATTERN = CITY_LOCATION_PATTERN
 
 /**
  * Parse a concert date string (YYYY-MM-DD) as a local calendar date.
@@ -35,9 +42,13 @@ export function formatCityState(value) {
   if (parts.length !== 2) return value.trim()
 
   const cityPart = toTitleCase(parts[0].trim())
-  const statePart = parts[1].trim().toUpperCase()
+  const regionRaw = parts[1].trim()
+  const region =
+    regionRaw.length === 2 && /^[A-Za-z]{2}$/.test(regionRaw)
+      ? regionRaw.toUpperCase()
+      : toTitleCase(regionRaw)
 
-  return `${cityPart}, ${statePart}`
+  return `${cityPart}, ${region}`
 }
 
 export function getRatingLabel(value) {

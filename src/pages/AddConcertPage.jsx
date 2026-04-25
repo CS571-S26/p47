@@ -8,7 +8,7 @@ import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js
 import SectionCard from '../components/SectionCard'
 import { ConfirmDialog } from '../components/ConfirmDialog.jsx'
 import SetlistSearchDialog from '../components/SetlistSearchDialog.jsx'
-import { extractSetlistConcertDetails, extractSongTitles, searchSetlists } from '../utils/setlistfm.js'
+import { extractSetlistConcertDetails, extractSetlistSections, searchSetlists } from '../utils/setlistfm.js'
 import {
   CITY_STATE_PATTERN,
   formatCityState,
@@ -16,6 +16,24 @@ import {
   normalizeSetlist,
   toTitleCase,
 } from '../utils/concertForm.js'
+import {
+  buildSetlistPersistenceFields,
+  isValidStoredSetlistSections,
+  normalizeSetlistSections,
+  normalizeSetlistSectionsForForm,
+} from '../utils/setlistHelpers.js'
+
+function initialSectionsFromLive(liveConcert) {
+  if (
+    liveConcert?.setlistSections &&
+    isValidStoredSetlistSections(liveConcert.setlistSections) &&
+    normalizeSetlistSections(liveConcert.setlistSections).length > 0
+  ) {
+    return normalizeSetlistSectionsForForm(liveConcert.setlistSections)
+  }
+  const raw = Array.isArray(liveConcert?.setlist) ? liveConcert.setlist : ['']
+  return normalizeSetlistSectionsForForm([{ name: 'Setlist', songs: raw.length ? raw : [''] }])
+}
 
 function newConcertId() {
   return `c-${Date.now()}-${Math.random().toString(16).slice(2)}`
@@ -39,7 +57,7 @@ function AddConcertPage() {
   const [favorite, setFavorite] = useState(false)
   const [image, setImage] = useState('')
   const [notes, setNotes] = useState('')
-  const [setlist, setSetlist] = useState(liveConcert?.setlist ?? [''])
+  const [sections, setSections] = useState(() => initialSectionsFromLive(liveConcert))
   const [newSongTitle, setNewSongTitle] = useState('')
 
   const [saving, setSaving] = useState(false)
@@ -52,7 +70,7 @@ function AddConcertPage() {
   const [pendingConcert, setPendingConcert] = useState(null)
 
   const stars = [1, 2, 3, 4, 5]
-  const normalizedSetlist = normalizeSetlist(setlist)
+  const songCountDisplay = sections.reduce((n, s) => n + normalizeSetlist(s.songs).length, 0)
 
   const styles = {
     formControl: {
@@ -81,7 +99,7 @@ function AddConcertPage() {
     }
 
     if (!CITY_STATE_PATTERN.test(cleanedCity)) {
-      setFormError('City must be in the format City, ST (for example: San Francisco, CA).')
+      setFormError('City must include a region: City, ST or City, Country (e.g. San Francisco, CA or London, England).')
       return
     }
 
@@ -93,7 +111,7 @@ function AddConcertPage() {
       coords = null
     }
 
-    const normalizedSetlist = normalizeSetlist(setlist)
+    const setlistParts = buildSetlistPersistenceFields(sections)
     const concert = {
       id: newConcertId(),
       date: date.trim(),
@@ -102,8 +120,11 @@ function AddConcertPage() {
       city: cleanedCity,
       genre: toTitleCase(genre.trim()),
       rating,
-      setlist: normalizedSetlist,
-      songCount: normalizedSetlist.length,
+      setlist: setlistParts.setlist,
+      songCount: setlistParts.songCount,
+      ...(Object.prototype.hasOwnProperty.call(setlistParts, 'setlistSections')
+        ? { setlistSections: setlistParts.setlistSections }
+        : {}),
       duration: '',
       image: image.trim(),
       notes: notes.trim(),
@@ -213,14 +234,14 @@ function AddConcertPage() {
       }
     }
 
-    const titles = extractSongTitles(setlistResult)
-    if (!titles.length) {
+    const importedSections = extractSetlistSections(setlistResult)
+    if (!importedSections.length) {
       setImportError('Concert details imported. No songs are listed on setlist.fm yet.')
       setSetlistSearchResults([])
       return
     }
 
-    setSetlist(titles)
+    setSections(normalizeSetlistSectionsForForm(importedSections))
     setSetlistSearchResults([])
     if (!genre.trim() && !filledGenreFromHistory) {
       setImportError('Imported details from setlist.fm. Add a music genre to save this concert.')
@@ -230,36 +251,71 @@ function AddConcertPage() {
   function handleAddSong() {
     const t = newSongTitle.trim()
     if (!t) return
-    setSetlist((prev) => {
-      const base = Array.isArray(prev) ? prev : []
-      const next = [...base]
-      next.push(t)
-      return next
+    setSections((prev) => {
+      const next = prev.map((s) => ({ ...s, songs: [...s.songs] }))
+      const last = next[next.length - 1]
+      if (!last) return prev
+      last.songs = [...last.songs, t]
+      return normalizeSetlistSectionsForForm(next)
     })
     setNewSongTitle('')
   }
 
-  function handleRemoveSong(index) {
-    setSetlist((prev) => {
-      const base = Array.isArray(prev) ? prev : []
-      const next = []
-      for (let i = 0; i < base.length; i++) {
-        if (i !== index) next.push(base[i])
-      }
-      return next
+  function handleRemoveSong(sectionIndex, songIndex) {
+    setSections((prev) => {
+      const next = prev.map((s) => ({ ...s, songs: [...s.songs] }))
+      const songs = next[sectionIndex]?.songs
+      if (!songs) return prev
+      songs.splice(songIndex, 1)
+      if (songs.length === 0) songs.push('')
+      return normalizeSetlistSectionsForForm(next)
     })
   }
 
-  function handleMoveSong(index, dir) {
-    setSetlist((prev) => {
-      const arr = Array.isArray(prev) ? [...prev] : []
-      const nextIndex = index + dir
-      if (index < 0 || index >= arr.length) return arr
-      if (nextIndex < 0 || nextIndex >= arr.length) return arr
-      const tmp = arr[index]
-      arr[index] = arr[nextIndex]
-      arr[nextIndex] = tmp
-      return arr
+  function handleMoveSong(sectionIndex, songIndex, dir) {
+    setSections((prev) => {
+      const next = prev.map((s, i) => (i === sectionIndex ? { ...s, songs: [...s.songs] } : s))
+      const songs = next[sectionIndex]?.songs
+      if (!songs) return prev
+      const j = songIndex + dir
+      if (songIndex < 0 || songIndex >= songs.length) return prev
+      if (j < 0 || j >= songs.length) return prev
+      const tmp = songs[songIndex]
+      songs[songIndex] = songs[j]
+      songs[j] = tmp
+      return normalizeSetlistSectionsForForm(next)
+    })
+  }
+
+  function handleSectionNameChange(sectionIndex, name) {
+    setSections((prev) => {
+      const next = prev.map((s, i) => (i === sectionIndex ? { ...s, name } : s))
+      return normalizeSetlistSectionsForForm(next)
+    })
+  }
+
+  function handleAddSet() {
+    setSections((prev) => {
+      const n = prev.length + 1
+      return normalizeSetlistSectionsForForm([...prev.map((s) => ({ ...s, songs: [...s.songs] })), { name: `Set ${n}`, songs: [''] }])
+    })
+  }
+
+  function handleRemoveSet(sectionIndex) {
+    setSections((prev) => {
+      if (prev.length <= 1) return prev
+      const next = prev.map((s) => ({ ...s, songs: [...s.songs] }))
+      const removed = next[sectionIndex]
+      const removedSongs = removed?.songs || []
+      if (sectionIndex > 0) {
+        const into = next[sectionIndex - 1].songs
+        next[sectionIndex - 1].songs = [...into, ...removedSongs].length ? [...into, ...removedSongs] : ['']
+      } else {
+        const into = next[1].songs
+        next[1].songs = [...removedSongs, ...into].length ? [...removedSongs, ...into] : ['']
+      }
+      next.splice(sectionIndex, 1)
+      return normalizeSetlistSectionsForForm(next)
     })
   }
 
@@ -456,14 +512,14 @@ function AddConcertPage() {
                         <Form.Control
                           id="concert-city"
                           type="text"
-                          placeholder="e.g., San Francisco, CA"
+                          placeholder="e.g., San Francisco, CA or London, England"
                           style={styles.formControl}
                           value={city}
                           onChange={(ev) => setCity(ev.target.value)}
                           isInvalid={!!city.trim() && !CITY_STATE_PATTERN.test(city.trim())}
                         />
                         <Form.Control.Feedback type="invalid">
-                          Use Format: City, ST
+                          City, then region (state, province, or country)
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Col>
@@ -616,68 +672,109 @@ function AddConcertPage() {
                               }}
                             >
                               <div style={{ fontWeight: 600, color: 'var(--setlog-card-text)', marginBottom: '8px', fontSize: '0.95rem' }}>
-                                Current setlist ({normalizedSetlist.length})
+                                Current setlist ({songCountDisplay})
                               </div>
-                              {normalizedSetlist.length ? (
-                                <div style={{ maxHeight: '190px', overflowY: 'auto', scrollbarWidth: 'thin' }}>
-                                  <ListGroup>
-                                    {normalizedSetlist.map((title, idx) => (
-                                      <ListGroup.Item
-                                        key={`${title}-${idx}`}
+                              {songCountDisplay > 0 || sections.length > 1 ? (
+                                <div style={{ maxHeight: '240px', overflowY: 'auto', scrollbarWidth: 'thin' }}>
+                                  {sections.map((sec, si) => (
+                                    <div key={`sec-${si}`} style={{ marginBottom: si < sections.length - 1 ? '0.85rem' : 0 }}>
+                                      <div
                                         style={{
                                           display: 'flex',
                                           alignItems: 'center',
-                                          justifyContent: 'space-between',
-                                          gap: '10px',
-                                          background: 'var(--setlog-card-bg)',
-                                          border: '1px solid var(--setlog-card-border)',
-                                          paddingTop: '0.55rem',
-                                          paddingBottom: '0.55rem',
+                                          gap: '8px',
+                                          marginBottom: '6px',
+                                          flexWrap: 'wrap',
                                         }}
                                       >
-                                        <div
-                                          style={{
-                                            fontWeight: 500,
-                                            fontSize: '0.95rem',
-                                            color: 'var(--setlog-card-text)'
-                                          }}
-                                        >
-                                          {idx + 1}. {title}
-                                        </div>
-                                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
-                                          <Button
-                                            type="button"
-                                            size="sm"
-                                            variant="secondary"
-                                            onClick={() => handleMoveSong(idx, -1)}
-                                            disabled={idx === 0}
-                                            aria-label={`Move "${title}" up`}
-                                          >
-                                            <ArrowUp size={14} />
-                                          </Button>
-                                          <Button
-                                            type="button"
-                                            size="sm"
-                                            variant="secondary"
-                                            onClick={() => handleMoveSong(idx, 1)}
-                                            disabled={idx === normalizedSetlist.length - 1}
-                                            aria-label={`Move "${title}" down`}
-                                          >
-                                            <ArrowDown size={14} />
-                                          </Button>
+                                        <Form.Control
+                                          type="text"
+                                          aria-label={`Set ${si + 1} name`}
+                                          value={sec.name}
+                                          onChange={(ev) => handleSectionNameChange(si, ev.target.value)}
+                                          style={{ ...styles.formControl, maxWidth: '220px', flex: '1 1 140px' }}
+                                        />
+                                        {sections.length > 1 ? (
                                           <Button
                                             type="button"
                                             size="sm"
                                             variant="outline-danger"
-                                            onClick={() => handleRemoveSong(idx)}
-                                            aria-label={`Remove "${title}"`}
+                                            onClick={() => handleRemoveSet(si)}
+                                            aria-label={`Remove set ${si + 1}`}
                                           >
-                                            <Trash size={16} />
+                                            Remove set
                                           </Button>
-                                        </div>
-                                      </ListGroup.Item>
-                                    ))}
-                                  </ListGroup>
+                                        ) : null}
+                                      </div>
+                                      <ListGroup>
+                                        {sec.songs.map((title, idx) => (
+                                          <ListGroup.Item
+                                            key={`${si}-${idx}-${title}`}
+                                            style={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              justifyContent: 'space-between',
+                                              gap: '10px',
+                                              background: 'var(--setlog-card-bg)',
+                                              border: '1px solid var(--setlog-card-border)',
+                                              paddingTop: '0.55rem',
+                                              paddingBottom: '0.55rem',
+                                            }}
+                                          >
+                                            <div
+                                              style={{
+                                                fontWeight: 500,
+                                                fontSize: '0.95rem',
+                                                color: 'var(--setlog-card-text)',
+                                              }}
+                                            >
+                                              {idx + 1}. {typeof title === 'string' ? title : ''}
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
+                                              <Button
+                                                type="button"
+                                                size="sm"
+                                                variant="secondary"
+                                                onClick={() => handleMoveSong(si, idx, -1)}
+                                                disabled={idx === 0}
+                                                aria-label="Move song up"
+                                              >
+                                                <ArrowUp size={14} />
+                                              </Button>
+                                              <Button
+                                                type="button"
+                                                size="sm"
+                                                variant="secondary"
+                                                onClick={() => handleMoveSong(si, idx, 1)}
+                                                disabled={idx === sec.songs.length - 1}
+                                                aria-label="Move song down"
+                                              >
+                                                <ArrowDown size={14} />
+                                              </Button>
+                                              <Button
+                                                type="button"
+                                                size="sm"
+                                                variant="outline-danger"
+                                                onClick={() => handleRemoveSong(si, idx)}
+                                                aria-label="Remove song"
+                                              >
+                                                <Trash size={16} />
+                                              </Button>
+                                            </div>
+                                          </ListGroup.Item>
+                                        ))}
+                                      </ListGroup>
+                                    </div>
+                                  ))}
+                                  <Button
+                                    type="button"
+                                    variant="outline-secondary"
+                                    size="sm"
+                                    className="mt-2"
+                                    onClick={handleAddSet}
+                                  >
+                                    Add set
+                                  </Button>
                                 </div>
                               ) : (
                                 <div style={{ marginTop: '0.45rem', color: 'var(--setlog-card-text-secondary)', fontSize: '0.85rem' }}>

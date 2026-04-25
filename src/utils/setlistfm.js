@@ -62,6 +62,8 @@ const US_STATE_CODES = {
   wyoming: 'WY',
 }
 
+const US_STATE_ABBREV_SET = new Set(Object.values(US_STATE_CODES))
+
 export function formatSetlistFmDate(yyyyMmDd) {
   // input from <input type="date" /> is "YYYY-MM-DD"
   if (typeof yyyyMmDd !== 'string') return null
@@ -163,29 +165,66 @@ export function extractSetlistConcertDetails(setlist) {
   const city = setlist?.venue?.city
   const cityName = typeof city?.name === 'string' ? city.name.trim() : ''
   const stateCode = typeof city?.stateCode === 'string' ? city.stateCode.trim() : ''
+  const stateName = typeof city?.state === 'string' ? city.state.trim() : ''
+  const countryName = typeof city?.country?.name === 'string' ? city.country.name.trim() : ''
+
+  let cityField = ''
+  if (cityName) {
+    if (stateCode) cityField = `${cityName}, ${stateCode}`
+    else if (stateName) cityField = `${cityName}, ${stateName}`
+    else if (countryName) cityField = `${cityName}, ${countryName}`
+    else cityField = cityName
+  }
 
   return {
     artist: typeof setlist?.artist?.name === 'string' ? setlist.artist.name.trim() : '',
     venue: typeof setlist?.venue?.name === 'string' ? setlist.venue.name.trim() : '',
     date: dateMatch ? `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}` : '',
-    city: cityName && stateCode ? `${cityName}, ${stateCode}` : '',
+    city: cityField,
   }
 }
 
+/** Region text after comma → ISO 3166-1 alpha-2 for setlist.fm (non-US). */
+const REGION_NAME_TO_COUNTRY_CODE = {
+  england: 'GB',
+  scotland: 'GB',
+  wales: 'GB',
+  'northern ireland': 'GB',
+  'united kingdom': 'GB',
+  uk: 'GB',
+  britain: 'GB',
+  'great britain': 'GB',
+  ireland: 'IE',
+  france: 'FR',
+  germany: 'DE',
+  spain: 'ES',
+  italy: 'IT',
+  netherlands: 'NL',
+  belgium: 'BE',
+  japan: 'JP',
+  australia: 'AU',
+  mexico: 'MX',
+  canada: 'CA',
+  gb: 'GB',
+}
+
 function parseCityState(cityState) {
-  if (typeof cityState !== 'string') return { cityName: '', stateCode: '' }
+  if (typeof cityState !== 'string') return { cityName: '', stateCode: '', region: '' }
 
   const t = cityState.trim()
-  const match = /^(.+?),\s*([A-Za-z ]+)$/.exec(t)
-  if (!match) return { cityName: t, stateCode: '' }
+  const match = /^(.+?),\s*(.+)$/.exec(t)
+  if (!match) return { cityName: t, stateCode: '', region: '' }
 
   const statePart = match[2].trim()
+  const fromFullName = US_STATE_CODES[statePart.toLowerCase()] || ''
+  const twoLetter = /^[A-Za-z]{2}$/.test(statePart) ? statePart.toUpperCase() : ''
   const stateCode =
-    statePart.length === 2 ? statePart.toUpperCase() : US_STATE_CODES[statePart.toLowerCase()] || ''
+    fromFullName || (twoLetter && US_STATE_ABBREV_SET.has(twoLetter) ? twoLetter : '')
 
   return {
     cityName: match[1].trim(),
     stateCode,
+    region: statePart,
   }
 }
 
@@ -200,7 +239,7 @@ function getSortableEventDate(setlist) {
 function buildSearchParams({ artistName, venueName, cityState, date }) {
   const a = typeof artistName === 'string' ? artistName.trim() : ''
   const v = typeof venueName === 'string' ? venueName.trim() : ''
-  const { cityName, stateCode } = parseCityState(cityState)
+  const { cityName, stateCode, region } = parseCityState(cityState)
   const d = formatSetlistFmDate(date)
 
   if (!a && !v && !cityName && !d) {
@@ -214,6 +253,9 @@ function buildSearchParams({ artistName, venueName, cityState, date }) {
   if (stateCode) {
     params.set('stateCode', stateCode)
     params.set('countryCode', 'US')
+  } else if (region) {
+    const cc = REGION_NAME_TO_COUNTRY_CODE[region.toLowerCase()]
+    if (cc) params.set('countryCode', cc)
   }
   if (d) params.set('date', d)
 
