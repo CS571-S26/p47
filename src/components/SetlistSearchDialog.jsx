@@ -49,72 +49,107 @@ function SetlistSearchDialog({ show, results, onHide, onSelect }) {
   const safeResults = Array.isArray(results) ? results : []
 
   return (
-    <Modal show={show} onHide={onHide} centered size="lg" backdrop="static" keyboard>
-      <Modal.Header closeButton>
+    <Modal
+      show={show}
+      onHide={onHide}
+      centered
+      size="lg"
+      backdrop="static"
+      keyboard
+      contentClassName="border-0"
+    >
+      <Modal.Header
+        style={{
+          backgroundColor: 'var(--setlog-card-bg)',
+          color: 'var(--setlog-card-text)',
+          borderBottom: '1px solid var(--setlog-card-border)',
+        }}
+      >
         <Modal.Title as="h2" style={{ fontSize: '1.15rem' }}>
           Choose a setlist
         </Modal.Title>
       </Modal.Header>
 
-      <Modal.Body>
+      <Modal.Body
+        style={{
+          backgroundColor: 'var(--setlog-card-bg)',
+          color: 'var(--setlog-card-text)',
+        }}
+      >
         <p style={{ color: 'var(--setlog-card-text-secondary)', marginBottom: '0.85rem' }}>
           Select the concert that best matches what you remember. Showing up to 5 results from
           setlist.fm.
         </p>
 
-        <ListGroup>
-          {safeResults.map((setlist, index) => {
-            const locationLabel = getLocationLabel(setlist)
-            const songSummary = getSongSummary(setlist)
-            const key = setlist?.id || `${getArtistName(setlist)}-${getVenueName(setlist)}-${index}`
 
-            return (
-              <ListGroup.Item
-                key={key}
-                as="button"
-                type="button"
-                action
-                onClick={() => onSelect(setlist)}
-                style={{
-                  textAlign: 'left',
-                  background: 'var(--setlog-card-bg)',
-                  borderColor: 'var(--setlog-card-border)',
-                  color: 'var(--setlog-card-text)',
-                }}
-              >
-                <div
+        <div
+          style={{
+            maxHeight: 'min(360px, 42vh)',
+            overflowY: 'auto',
+            border: '1px solid var(--setlog-card-border)',
+            borderRadius: '12px',
+          }}
+        >
+          <ListGroup>
+            {safeResults.map((setlist, index) => {
+              const locationLabel = getLocationLabel(setlist)
+              const songSummary = getSongSummary(setlist)
+              const key = setlist?.id || `${getArtistName(setlist)}-${getVenueName(setlist)}-${index}`
+
+              return (
+                <ListGroup.Item
+                  key={key}
+                  as="button"
+                  type="button"
+                  action
+                  onClick={() => onSelect(setlist)}
                   style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    gap: '0.75rem',
-                    flexWrap: 'wrap',
+                    textAlign: 'left',
+                    background: 'var(--setlog-card-bg)',
+                    borderColor: 'var(--setlog-card-border)',
+                    color: 'var(--setlog-card-text)',
+                    padding: '0.9rem',
                   }}
                 >
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontWeight: 700 }}>{getArtistName(setlist)}</div>
-                    <div style={{ fontWeight: 600 }}>{getVenueName(setlist)}</div>
-                    {locationLabel ? (
-                      <div style={{ color: 'var(--setlog-card-text-secondary)', fontSize: '0.9rem' }}>
-                        {locationLabel}
-                      </div>
-                    ) : null}
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      gap: '0.75rem',
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontWeight: 700 }}>{getArtistName(setlist)}</div>
+                      <div style={{ fontWeight: 600 }}>{getVenueName(setlist)}</div>
+                      {locationLabel ? (
+                        <div style={{ color: 'var(--setlog-card-text-secondary)', fontSize: '0.9rem' }}>
+                          {locationLabel}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <Badge bg="secondary" style={{ alignSelf: 'flex-start' }}>
+                      {getEventDate(setlist)}
+                    </Badge>
                   </div>
 
-                  <Badge bg="secondary" style={{ alignSelf: 'flex-start' }}>
-                    {getEventDate(setlist)}
-                  </Badge>
-                </div>
-
-                <div style={{ color: 'var(--setlog-card-text-secondary)', fontSize: '0.9rem', marginTop: '0.35rem' }}>
-                  {songSummary}
-                </div>
-              </ListGroup.Item>
-            )
-          })}
-        </ListGroup>
+                  <div style={{ color: 'var(--setlog-card-text-secondary)', fontSize: '0.9rem', marginTop: '0.35rem' }}>
+                    {songSummary}
+                  </div>
+                </ListGroup.Item>
+              )
+            })}
+          </ListGroup>
+        </div>
       </Modal.Body>
 
-      <Modal.Footer>
+      <Modal.Footer
+        style={{
+          backgroundColor: 'var(--setlog-card-bg)',
+          borderTop: '1px solid var(--setlog-card-border)',
+        }}
+      >
         <Button variant="outline-secondary" onClick={onHide}>
           Cancel
         </Button>
