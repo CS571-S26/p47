@@ -40,55 +40,6 @@ function TimelineConcert({ concert }) {
         month: 'short',
     }).toUpperCase()
 
-    const styles = {
-        concertCard: {
-            background: 'var(--setlog-card-bg)',
-            border: '1px solid var(--setlog-card-border)',
-            borderRadius: '16px',
-            padding: '14px 16px',
-            width: '100%',
-            boxShadow: '0 4px 14px var(--setlog-card-bg)',
-            display: 'flex',
-            gap: '16px',
-            flexWrap: 'wrap',
-        },
-        dateCard: {
-            border: '1px solid var(--setlog-card-border)',
-            background: 'var(--setlog-card-bg-secondary)',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            textAlign: 'center',
-            width: '115px',
-            boxShadow: '0 4px 14px var(--setlog-card-bg)',
-        },
-        dateMonth: {
-            background: 'var(--setlog-primary)',
-            color: 'white',
-            fontWeight: 800,
-            padding: '4px',
-            fontSize: '18px',
-        },
-        dateDay: {
-            fontSize: '2rem',
-            fontWeight: 800,
-            color: "var(--setlog-card-text)",
-            lineHeight: 1,
-            paddingTop: '10px',
-        },
-
-        dateYear: {
-            fontSize: '0.8rem',
-            color: "var(--setlog-card-text-secondary)",
-            padding: '6px 0 10px',
-        },
-        concertTags: {
-            fontSize: "15px",
-            fontWeight: "700",
-            padding: "4px 10px",
-            borderRadius: "32px"
-        }
-    }
-
     return (
         <>
             <ConfirmDialog
@@ -106,46 +57,30 @@ function TimelineConcert({ concert }) {
                 className="timeline-concert-card"
                 role="article"
                 aria-label={cardAriaLabel}
-                style={{
-                    ...styles.concertCard,
-                    cursor: 'pointer',
-                }}
+                style={{ cursor: 'pointer' }}
                 onClick={handleViewDetails}
             >
             { /* Date Card */}
-            <Col xs="auto">
-                <div style={styles.dateCard}>
-                    <div style={styles.dateMonth}>{monthLabel}</div>
-                    <div style={styles.dateDay}>{day}</div>
-                    <div style={styles.dateYear}>{year}</div>
+            <Col xs="auto" className="timeline-date-column">
+                <div className="timeline-date-card">
+                    <div className="timeline-date-month">{monthLabel}</div>
+                    <div className="timeline-date-day">{day}</div>
+                    <div className="timeline-date-year">{year}</div>
                 </div>
             </Col>
 
             { /* Concert Image */}
-            <Col xs="auto">
+            <Col xs="auto" className="timeline-image-column">
                 {imageUrl ? (
                     <img
                         src={imageUrl}
                         alt=""
-                        style={{ width: "clamp(120px, 50vw, 250px)", height: "125px", objectFit: "cover", borderRadius: "10px", marginBottom: "6px" }}
+                        className="timeline-concert-image"
                     />
                 ) : (
                     <div
                         aria-hidden
-                        style={{
-                            width: "clamp(120px, 50vw, 250px)",
-                            height: "125px",
-                            borderRadius: "10px",
-                            marginBottom: "6px",
-                            background: "var(--setlog-card-bg-secondary)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "var(--setlog-card-text-secondary)",
-                            border: '1px solid var(--setlog-card-border)',
-                            fontSize: "13px",
-                            fontWeight: 600,
-                        }}
+                        className="timeline-concert-image timeline-concert-image-placeholder"
                     >
                         No image
                     </div>
@@ -153,21 +88,17 @@ function TimelineConcert({ concert }) {
             </Col>
 
             { /* Concert Information */}
-            <Col>
-                <div style={{ fontSize: "24px", fontWeight: "700", marginBottom: "2px", color: "var(--setlog-card-text)" }}>{concert.artist}</div>
-                <div style={{ fontSize: "14px", fontStyle: "italic", color: "var(--setlog-card-text-secondary)", marginBottom: "6px", lineHeight: "1.05" }}>
+            <Col className="timeline-details-column">
+                <div className="timeline-concert-title">{concert.artist}</div>
+                <div className="timeline-concert-venue">
                     {concert.venue} • {concert.city}
                 </div>
 
                 { /* Rating Row */}
-                <Row style={{ alignItems: "center", marginBottom: "10px" }}>
+                <Row className="timeline-rating-row">
                     <Col xs="auto">
                         <span
-                            style={{
-                                fontSize: '24px',
-                                lineHeight: '1',
-                                color: 'var(--setlog-rating-empty)',
-                            }}
+                            className="timeline-rating-stars"
                             aria-hidden
                         >
                             <span style={{ color: 'var(--setlog-rating-filled)' }}>{'★'.repeat(concert.rating)}</span>
@@ -175,7 +106,7 @@ function TimelineConcert({ concert }) {
                         </span>
                     </Col>
                     <Col>
-                        <span style={{ fontSize: "16px", fontWeight: "700", color: "var(--setlog-card-text)" }}>
+                        <span className="timeline-rating-value">
                             {concert.rating}.0
                         </span>
                     </Col>
@@ -183,25 +114,20 @@ function TimelineConcert({ concert }) {
                     <Col
                         xs={12}
                         md="auto"
-                        style={{
-                            display: 'flex',
-                            gap: '6px',
-                            flexWrap: 'wrap',
-                            justifyContent: 'flex-start',
-                        }}
+                        className="timeline-tags-column"
                     >
-                        <span style={{ ...styles.concertTags, background: "var(--tag-genre-bg)", color: "var(--tag-genre-text)" }}>
+                        <span className="timeline-concert-tag timeline-concert-tag-genre">
                             {concert.genre}
                         </span>
 
                         {concert.attended && (
-                            <span style={{ ...styles.concertTags, background: "var(--tag-attended-bg)", color: "var(--tag-attended-text)" }}>
+                            <span className="timeline-concert-tag timeline-concert-tag-attended">
                                 Attended
                             </span>
                         )}
 
                         {concert.favorite && (
-                            <span style={{ ...styles.concertTags, background: "var(--tag-favorite-bg)", color: "var(--tag-favorite-text)", padding: "4px 8px", }}>
+                            <span className="timeline-concert-tag timeline-concert-tag-favorite">
                                 ★
                             </span>
                         )}
@@ -211,25 +137,20 @@ function TimelineConcert({ concert }) {
                 </Row>
 
                 { /* Song Count Row */}
-                <Row style={{ alignItems: "center" }}>
+                <Row className="timeline-song-row">
                     <Col xs="auto">
                         <Clock size={16} style={{ color: 'var(--setlog-card-text)' }} aria-hidden />
                     </Col>
                     <Col xs="auto">
-                        <span style={{ fontSize: "14px", fontWeight: "200", color: "var(--setlog-card-text)" }}>{songCount} songs</span>
+                        <span className="timeline-song-count">{songCount} songs</span>
                     </Col>
 
                     <Col
-                        style={{
-                            display: 'flex',
-                            gap: '8px',
-                            justifyContent: 'flex-end',
-                            flexWrap: 'wrap',
-                        }}
+                        className="timeline-actions-column"
                     >
                         <Button
                             type="button"
-                            style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700' }}
+                            className="timeline-action-button"
                             onClick={(e) => {
                                 e.stopPropagation()
                                 handleViewDetails()
@@ -241,7 +162,7 @@ function TimelineConcert({ concert }) {
                             <Button
                                 type="button"
                                 variant="outline-danger"
-                                style={{ padding: '6px 12px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', gap: '6px', alignItems: 'center' }}
+                                className="timeline-action-button timeline-delete-button"
                                 onClick={(e) => {
                                     e.stopPropagation()
                                     setDeleteConfirmOpen(true)

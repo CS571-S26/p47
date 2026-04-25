@@ -144,6 +144,266 @@ body {
   outline-offset: 2px;
 }
 
+.timeline-concert-card {
+  background: var(--setlog-card-bg);
+  border: 1px solid var(--setlog-card-border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  width: 100%;
+  box-shadow: 0 4px 14px var(--setlog-card-bg);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.timeline-date-card {
+  border: 1px solid var(--setlog-card-border);
+  background: var(--setlog-card-bg-secondary);
+  border-radius: 16px;
+  overflow: hidden;
+  text-align: center;
+  width: 115px;
+  box-shadow: 0 4px 14px var(--setlog-card-bg);
+}
+
+.timeline-date-month {
+  background: var(--setlog-primary);
+  color: white;
+  font-weight: 800;
+  padding: 4px;
+  font-size: 18px;
+}
+
+.timeline-date-day {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--setlog-card-text);
+  line-height: 1;
+  padding-top: 10px;
+}
+
+.timeline-date-year {
+  font-size: 0.8rem;
+  color: var(--setlog-card-text-secondary);
+  padding: 6px 0 10px;
+}
+
+.timeline-concert-image {
+  width: clamp(120px, 50vw, 250px);
+  height: 125px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+
+.timeline-concert-image-placeholder {
+  background: var(--setlog-card-bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--setlog-card-text-secondary);
+  border: 1px solid var(--setlog-card-border);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.timeline-concert-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  color: var(--setlog-card-text);
+}
+
+.timeline-concert-venue {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--setlog-card-text-secondary);
+  margin-bottom: 6px;
+  line-height: 1.05;
+}
+
+.timeline-rating-row,
+.timeline-song-row {
+  align-items: center;
+}
+
+.timeline-rating-row {
+  margin-bottom: 10px;
+}
+
+.timeline-rating-stars {
+  font-size: 24px;
+  line-height: 1;
+  color: var(--setlog-rating-empty);
+}
+
+.timeline-rating-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--setlog-card-text);
+}
+
+.timeline-tags-column {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.timeline-concert-tag {
+  font-size: 15px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 32px;
+}
+
+.timeline-concert-tag-genre {
+  background: var(--tag-genre-bg);
+  color: var(--tag-genre-text);
+}
+
+.timeline-concert-tag-attended {
+  background: var(--tag-attended-bg);
+  color: var(--tag-attended-text);
+}
+
+.timeline-concert-tag-favorite {
+  background: var(--tag-favorite-bg);
+  color: var(--tag-favorite-text);
+  padding: 4px 8px;
+}
+
+.timeline-song-count {
+  font-size: 14px;
+  font-weight: 200;
+  color: var(--setlog-card-text);
+}
+
+.timeline-actions-column {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.timeline-action-button {
+  padding: 6px 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.timeline-delete-button {
+  display: inline-flex !important;
+  gap: 6px;
+  align-items: center;
+}
+
+@media (max-width: 430px) {
+  .timeline-concert-card {
+    gap: 10px;
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .timeline-date-column {
+    width: 92px;
+    flex: 0 0 92px;
+  }
+
+  .timeline-image-column {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .timeline-date-card {
+    width: 100%;
+    border-radius: 13px;
+  }
+
+  .timeline-date-month {
+    font-size: 15px;
+    padding: 3px;
+  }
+
+  .timeline-date-day {
+    font-size: 2.15rem;
+    padding-top: 9px;
+  }
+
+  .timeline-date-year {
+    font-size: 0.78rem;
+    padding: 5px 0 9px;
+  }
+
+  .timeline-concert-image {
+    width: 100%;
+    height: 103px;
+    margin-bottom: 0;
+  }
+
+  .timeline-details-column {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .timeline-concert-title {
+    font-size: 21px;
+    line-height: 1.12;
+    margin-top: 3px;
+  }
+
+  .timeline-concert-venue {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .timeline-rating-row {
+    margin-bottom: 8px;
+    row-gap: 4px;
+  }
+
+  .timeline-rating-stars {
+    font-size: 22px;
+  }
+
+  .timeline-rating-value {
+    font-size: 14px;
+  }
+
+  .timeline-tags-column {
+    flex: 0 0 100%;
+    max-width: 100%;
+    gap: 5px;
+  }
+
+  .timeline-concert-tag {
+    font-size: 13px;
+    padding: 3px 8px;
+  }
+
+  .timeline-concert-tag-favorite {
+    padding: 3px 7px;
+  }
+
+  .timeline-song-row {
+    row-gap: 8px;
+  }
+
+  .timeline-song-count {
+    font-size: 13px;
+  }
+
+  .timeline-actions-column {
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .timeline-action-button {
+    padding: 5px 9px !important;
+    font-size: 12px !important;
+  }
+}
+
 .btn-primary {
   background-color: var(--setlog-primary) !important;
   border-color: var(--setlog-primary) !important;

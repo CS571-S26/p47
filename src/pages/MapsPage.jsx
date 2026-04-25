@@ -150,7 +150,6 @@ function MapsPage({ theme }) {
 
   const styles = {
     filterSelect: {
-      width: 'clamp(180px, 22vw, 260px)',
       borderRadius: '999px',
       border: '1px solid var(--setlog-card-border)',
       backgroundColor: 'var(--setlog-card-bg-secondary)',
@@ -161,7 +160,6 @@ function MapsPage({ theme }) {
     },
 
     filterButton: {
-      width: 'clamp(120px, 14vw, 150px)',
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -184,7 +182,7 @@ function MapsPage({ theme }) {
   })
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }} >
+    <div className="maps-page-shell">
       <h1 style={{ fontSize: 'clamp(32px, 8vw, 48px)', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>Concert Map</h1>
 
       {!authLoading && !loginStatus.loggedIn ? (
@@ -194,6 +192,7 @@ function MapsPage({ theme }) {
       ) : null}
 
       <div
+        className="maps-filter-controls"
         style={{
           display: 'flex',
           gap: '0.75rem',
@@ -203,13 +202,14 @@ function MapsPage({ theme }) {
           alignItems: 'center',
         }}
       >
-        <div>
+        <div className="maps-filter-control maps-filter-select-control">
           <Form.Select
             aria-label="Filter map by year"
             value={filter.year}
             onChange={(e) =>
               setFilter((prev) => ({ ...prev, year: e.target.value }))
             }
+            className="maps-filter-select"
             style={styles.filterSelect}
           >
             <option value="all">All Years</option>
@@ -221,13 +221,14 @@ function MapsPage({ theme }) {
           </Form.Select>
         </div>
 
-        <div>
+        <div className="maps-filter-control maps-filter-select-control">
           <Form.Select
             aria-label="Filter map by genre"
             value={filter.genre}
             onChange={(e) =>
               setFilter((prev) => ({ ...prev, genre: e.target.value }))
             }
+            className="maps-filter-select"
             style={styles.filterSelect}
           >
             <option value="all">All Genres</option>
@@ -242,6 +243,7 @@ function MapsPage({ theme }) {
 
         <Button
           type="button"
+          className="maps-filter-button"
           onClick={() =>
             setFilter((prev) => ({
               ...prev,
@@ -259,6 +261,7 @@ function MapsPage({ theme }) {
 
         <Button
           type="button"
+          className="maps-filter-button"
           onClick={() =>
             setFilter((prev) => ({
               ...prev,
