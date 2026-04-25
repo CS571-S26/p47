@@ -106,6 +106,10 @@ async function fetchJson(url, { headers } = {}) {
   }
 
   if (!resp.ok) {
+    if (resp.status === 404) {
+      return { setlist: [] }
+    }
+
     const details =
       (bodyJson && (bodyJson.message || bodyJson.error)) ||
       (typeof bodyText === 'string' ? bodyText.trim() : '')
@@ -200,7 +204,7 @@ function buildSearchParams({ artistName, venueName, cityState, date }) {
   const d = formatSetlistFmDate(date)
 
   if (!a && !v && !cityName && !d) {
-    throw new Error('Enter an artist, venue, city, or date before searching setlist.fm.')
+    throw new Error('Enter at least one concert detail before searching setlist.fm.')
   }
 
   const params = new URLSearchParams({ p: '1' })
