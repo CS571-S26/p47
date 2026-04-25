@@ -497,6 +497,16 @@ body {
   color: var(--setlog-secondary-text);
 }
 
+[data-theme='light'] input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.75;
+}
+
+[data-theme='dark'] input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0);
+  opacity: 0.85;
+}
+
 [data-theme='light'] .form-switch .form-check-input {
   border-color: var(--setlog-primary) !important;
   background-color: var(--setlog-card-bg-secondary) !important;
