@@ -188,7 +188,7 @@ function ConcertDetailPage() {
         style={{
           flex: 1,
           width: '100%',
-          padding: '0.85rem 0.75rem',
+          padding: '2rem 1rem',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'flex-start',
@@ -197,55 +197,32 @@ function ConcertDetailPage() {
         <Card
           style={{
             width: '100%',
-            maxWidth: '1280px',
-            borderRadius: '16px',
-            border: '1px solid #dbe3ea',
+            maxWidth: '1400px',
+            borderRadius: '18px',
+            border: '1px solid var(--setlog-card-border)',
+            background: 'var(--setlog-card-bg)',
             boxShadow: '0 8px 24px var(--setlog-card-bg)',
-            padding: '0.35rem',
+            padding: '0.5rem',
           }}
         >
-          <Card.Body
-            style={{
-              minHeight: '420px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              textAlign: 'center',
-            }}
-          >
+          <Card.Body>
             <h1
               style={{
-                fontSize: '1.8rem',
-                fontWeight: 800,
-                color: 'var(--setlog-card-text)',
-                marginBottom: '0.5rem',
+                fontSize: '2.15rem',
+                lineHeight: 1.1,
+                fontWeight: '700',
+                marginBottom: '0.6rem',
                 marginTop: 0,
+                color: 'var(--setlog-card-text)',
               }}
             >
               Concert not found
             </h1>
-
-            <div
-              style={{
-                fontSize: '1rem',
-                color: '#6b7280',
-                marginBottom: '1.25rem',
-              }}
-            >
+            <p className="mt-3 mb-4" style={{ color: 'var(--setlog-card-text-secondary)' }}>
               This concert doesn’t exist or may have been deleted.
-            </div>
-
-            <Button
-              variant="primary"
-              onClick={handleBack}
-              style={{
-                fontWeight: 700,
-                borderRadius: '10px',
-                padding: '8px 14px',
-              }}
-            >
-              {backLabel}
+            </p>
+            <Button variant="primary" onClick={() => navigate('/')}>
+              Back to Timeline
             </Button>
           </Card.Body>
         </Card>
