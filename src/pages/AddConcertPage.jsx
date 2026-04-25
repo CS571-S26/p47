@@ -6,7 +6,7 @@ import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
 import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js'
 import SectionCard from '../components/SectionCard'
-import { MessageDialog } from '../components/ConfirmDialog.jsx'
+import { ConfirmDialog } from '../components/ConfirmDialog.jsx'
 import SetlistSearchDialog from '../components/SetlistSearchDialog.jsx'
 import { extractSetlistConcertDetails, extractSongTitles, searchSetlists } from '../utils/setlistfm.js'
 import {
@@ -49,6 +49,7 @@ function AddConcertPage() {
   const [setlistSearchResults, setSetlistSearchResults] = useState([])
   const [geocodeNoticeOpen, setGeocodeNoticeOpen] = useState(false)
   const [showImportTip, setShowImportTip] = useState(false)
+  const [pendingConcert, setPendingConcert] = useState(null)
 
   const stars = [1, 2, 3, 4, 5]
   const normalizedSetlist = normalizeSetlist(setlist)
@@ -92,10 +93,6 @@ function AddConcertPage() {
       coords = null
     }
 
-    if (!coords) {
-      setGeocodeNoticeOpen(true)
-    }
-
     const normalizedSetlist = normalizeSetlist(setlist)
     const concert = {
       id: newConcertId(),
@@ -115,7 +112,21 @@ function AddConcertPage() {
       ...(coords ? { coords } : {}),
     }
 
-    addConcert(concert)
+    if (!coords) {
+      setPendingConcert(concert)
+      setGeocodeNoticeOpen(true)
+      setSaving(false)
+      return
+    }
+
+    saveConcert(concert)
+    setSaving(false)
+    navigate('/')
+  }
+
+  function saveConcert(concertToSave) {
+    addConcert(concertToSave)
+    setPendingConcert(null)
     setSaving(false)
     navigate('/')
   }
@@ -306,13 +317,25 @@ function AddConcertPage() {
         alignItems: 'flex-start',
       }}
     >
-      <MessageDialog
+      <ConfirmDialog
         show={geocodeNoticeOpen}
-        onHide={() => setGeocodeNoticeOpen(false)}
+        onHide={() => {
+          setGeocodeNoticeOpen(false)
+          setPendingConcert(null)
+        }}
         title="Could not look up location"
+        confirmLabel="Save Anyway"
+        cancelLabel="Cancel"
+        confirmVariant="primary"
+        onConfirm={() => {
+          if (pendingConcert) {
+            saveConcert(pendingConcert)
+          }
+          setGeocodeNoticeOpen(false)
+        }}
       >
         {GEOCODE_LOOKUP_FAILED_MESSAGE}
-      </MessageDialog>
+      </ConfirmDialog>
       <SetlistSearchDialog
         show={setlistSearchResults.length > 0}
         results={setlistSearchResults}
