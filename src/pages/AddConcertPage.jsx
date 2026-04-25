@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
-import { Row, Col, Button, Card, Form, Alert, Spinner, InputGroup, ListGroup } from 'react-bootstrap'
+import { Row, Col, Button, Card, Form, Alert, Spinner, InputGroup, ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Plus, ArrowDown, ArrowUp, Trash } from 'lucide-react'
+import { Plus, ArrowDown, ArrowUp, Trash, Info } from 'lucide-react'
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
 import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js'
@@ -149,7 +149,7 @@ function AddConcertPage() {
     setImportError('')
 
     if (!canImportFromSetlistFm) {
-      setImportError('Enter an artist, venue, city, or date before importing from setlist.fm.')
+      setImportError('Enter an artist name, or another concert detail, to search setlist.fm.')
       return
     }
 
@@ -189,10 +189,14 @@ function AddConcertPage() {
     if (details.venue) setVenue(details.venue)
     if (details.date) setDate(details.date)
     if (details.city) setCity(details.city)
+    let filledGenreFromHistory = false
     if (!genre.trim()) {
       const importedArtist = details.artist || artist
       const savedGenre = findGenreForArtist(importedArtist)
-      if (savedGenre) setGenre(savedGenre)
+      if (savedGenre) {
+        setGenre(savedGenre)
+        filledGenreFromHistory = true
+      }
     }
 
     const titles = extractSongTitles(setlistResult)
@@ -204,6 +208,9 @@ function AddConcertPage() {
 
     setSetlist(titles)
     setSetlistSearchResults([])
+    if (!genre.trim() && !filledGenreFromHistory) {
+      setImportError('Imported details from setlist.fm. Add a music genre to save this concert.')
+    }
   }
 
   function handleAddSong() {
@@ -341,7 +348,7 @@ function AddConcertPage() {
           ) : null}
 
           <div style={{ fontSize: '0.85rem', color: 'var(--setlog-card-text-secondary)', marginBottom: '0.7rem' }}>
-            <span style={{ color: 'var(--setlog-required-indicator)', fontWeight: 700 }}>*</span> Required fields
+            <span style={{ color: 'var(--setlog-required-indicator)', fontWeight: 700 }}>*</span> Required to save concert
           </div>
 
           <Form onSubmit={handleSubmit}>
@@ -519,7 +526,7 @@ function AddConcertPage() {
                                   onClick={handleImportFromSetlistFm}
                                   disabled={!canImportFromSetlistFm || importingSetlist}
                                   style={{
-                                    width: '100%',
+                                    flex: 1,
                                     backgroundColor: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-bg)' : undefined,
                                     borderColor: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-border)' : undefined,
                                     color: !canImportFromSetlistFm || importingSetlist ? 'var(--setlog-disabled-btn-text)' : undefined,
@@ -535,6 +542,24 @@ function AddConcertPage() {
                                     'Import from setlist.fm'
                                   )}
                                 </Button>
+                                <OverlayTrigger
+                                  placement="top"
+                                  overlay={(
+                                    <Tooltip id="setlist-import-tip">
+                                      Enter an artist name to search setlist.fm. Adding a date helps find the right show.
+                                      Importing can fill the date, venue, city, and setlist for you.
+                                    </Tooltip>
+                                  )}
+                                >
+                                  <Button
+                                    type="button"
+                                    variant="outline-secondary"
+                                    aria-label="setlist.fm import tip"
+                                    style={{ borderRadius: '10px', paddingLeft: '10px', paddingRight: '10px' }}
+                                  >
+                                    <Info size={16} />
+                                  </Button>
+                                </OverlayTrigger>
                               </div>
 
                               {importError ? (
