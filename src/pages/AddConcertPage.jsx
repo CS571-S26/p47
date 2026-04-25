@@ -22,7 +22,7 @@ function newConcertId() {
 }
 
 function AddConcertPage() {
-  const { addConcert } = useContext(ConcertsContext)
+  const { concerts, addConcert } = useContext(ConcertsContext)
   const { loginStatus } = useAuth()
   const navigate = useNavigate()
 
@@ -120,6 +120,30 @@ function AddConcertPage() {
   }
 
   const canImportFromSetlistFm = !!(artist.trim() || venue.trim() || city.trim() || date.trim())
+  const canSearchImages = !!(artist.trim() || venue.trim())
+
+  function handleSearchImages() {
+    const queryParts = []
+    if (artist.trim()) queryParts.push(artist.trim())
+    if (venue.trim()) queryParts.push(venue.trim())
+
+    const query = encodeURIComponent(queryParts.join(' '))
+    const searchWindow = window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank')
+    if (searchWindow) searchWindow.opener = null
+  }
+
+  function findGenreForArtist(artistName) {
+    const target = typeof artistName === 'string' ? artistName.trim().toLowerCase() : ''
+    if (!target) return ''
+
+    for (const concert of concerts) {
+      const concertArtist = typeof concert?.artist === 'string' ? concert.artist.trim().toLowerCase() : ''
+      const concertGenre = typeof concert?.genre === 'string' ? concert.genre.trim() : ''
+      if (concertArtist === target && concertGenre) return concertGenre
+    }
+
+    return ''
+  }
 
   async function handleImportFromSetlistFm() {
     setImportError('')
@@ -144,6 +168,11 @@ function AddConcertPage() {
         return
       }
 
+      if (results.length === 1) {
+        handleSelectSetlist(results[0])
+        return
+      }
+
       setSetlistSearchResults(results)
     } catch (err) {
       setImportError(err instanceof Error ? err.message : 'Failed to import setlist from setlist.fm.')
@@ -155,18 +184,23 @@ function AddConcertPage() {
   function handleSelectSetlist(setlistResult) {
     setImportError('')
 
-    const titles = extractSongTitles(setlistResult)
-    if (!titles.length) {
-      setImportError('That setlist was found, but it contained no songs.')
-      setSetlistSearchResults([])
-      return
-    }
-
     const details = extractSetlistConcertDetails(setlistResult)
     if (details.artist) setArtist(details.artist)
     if (details.venue) setVenue(details.venue)
     if (details.date) setDate(details.date)
     if (details.city) setCity(details.city)
+    if (!genre.trim()) {
+      const importedArtist = details.artist || artist
+      const savedGenre = findGenreForArtist(importedArtist)
+      if (savedGenre) setGenre(savedGenre)
+    }
+
+    const titles = extractSongTitles(setlistResult)
+    if (!titles.length) {
+      setImportError('Concert details imported. No songs are listed on setlist.fm yet.')
+      setSetlistSearchResults([])
+      return
+    }
 
     setSetlist(titles)
     setSetlistSearchResults([])
@@ -404,14 +438,25 @@ function AddConcertPage() {
                     <Col md={6}>
                       <Form.Group controlId="concert-image" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>Cover image URL</Form.Label>
-                        <Form.Control
-                          id="concert-image"
-                          type="url"
-                          placeholder="https://…"
-                          style={styles.formControl}
-                          value={image}
-                          onChange={(ev) => setImage(ev.target.value)}
-                        />
+                        <InputGroup>
+                          <Form.Control
+                            id="concert-image"
+                            type="url"
+                            placeholder="https://…"
+                            style={styles.formControl}
+                            value={image}
+                            onChange={(ev) => setImage(ev.target.value)}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline-secondary"
+                            onClick={handleSearchImages}
+                            disabled={!canSearchImages}
+                            style={{ borderRadius: '10px', fontSize: '0.9rem' }}
+                          >
+                            Search images
+                          </Button>
+                        </InputGroup>
                       </Form.Group>
                     </Col>
                   </Row>
