@@ -14,6 +14,7 @@ import EditConcertPage from './pages/EditConcertPage.jsx'
 import LiveSetlistPage from './pages/LiveSetlistPage.jsx'
 import { ConcertsProvider } from './contexts/ConcertsProvider.jsx'
 import { useAuth } from './contexts/authContext.js'
+import { UserProfileProvider } from './contexts/UserProfileProvider.jsx'
 
 import './App.css'
 
@@ -77,9 +78,11 @@ function App() {
 
   return (
     <AuthProvider>
-      <SpotifyProvider>
-        <AppShell theme={theme} setTheme={setTheme} />
-      </SpotifyProvider>
+      <UserProfileProvider>
+        <SpotifyProvider>
+          <AppShell theme={theme} setTheme={setTheme} />
+        </SpotifyProvider>
+      </UserProfileProvider>
     </AuthProvider>
   )
 }

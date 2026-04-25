@@ -7,6 +7,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
+import { useUserProfile } from '../contexts/userProfileContext.js'
 import {
   applyMapFilter,
   getMapFilterOptions,
@@ -14,26 +15,6 @@ import {
 } from '../utils/mapFilters.js'
 import './MapsPage.css'
 import MapsMarkerPopup from '../components/MapsMarkerPopup'
-
-const HOMETOWN_STORAGE_PREFIX = 'p47:hometown:'
-
-function readHometownPin(uid) {
-  if (!uid) return null
-  try {
-    const raw = localStorage.getItem(`${HOMETOWN_STORAGE_PREFIX}${uid}`)
-    if (!raw) return null
-    const o = JSON.parse(raw)
-    const label = typeof o?.label === 'string' ? o.label.trim() : ''
-    if (!label) return null
-    if (!Array.isArray(o.coords) || o.coords.length !== 2) return null
-    const lat = Number(o.coords[0])
-    const lon = Number(o.coords[1])
-    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null
-    return { label, coords: [lat, lon] }
-  } catch {
-    return null
-  }
-}
 
 function ZoomMarker({ position, icon, children }) {
   const map = useMap()
@@ -59,6 +40,7 @@ function ZoomMarker({ position, icon, children }) {
 function MapsPage({ theme }) {
   const { concerts } = useContext(ConcertsContext)
   const { loginStatus, loading: authLoading, user } = useAuth()
+  const { profile } = useUserProfile()
   const [hometownPin, setHometownPin] = useState(null)
   const [filter, setFilter] = useState({
     year: 'all',
@@ -85,20 +67,12 @@ function MapsPage({ theme }) {
   }, [concerts])
 
   useEffect(() => {
-    const uid = user?.uid
-    if (!loginStatus.loggedIn || !uid) {
+    if (!loginStatus.loggedIn || !user?.uid) {
       setHometownPin(null)
-      return undefined
+      return
     }
-
-    function syncHometown() {
-      setHometownPin(readHometownPin(uid))
-    }
-
-    syncHometown()
-    window.addEventListener('hometownUpdated', syncHometown)
-    return () => window.removeEventListener('hometownUpdated', syncHometown)
-  }, [user?.uid, loginStatus.loggedIn])
+    setHometownPin(profile?.hometown ?? null)
+  }, [user?.uid, loginStatus.loggedIn, profile?.hometown])
 
   const filteredConcerts = applyMapFilter(concerts, filter)
 
