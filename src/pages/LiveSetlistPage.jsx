@@ -347,9 +347,22 @@ function LiveSetlistPage() {
                                 variant="outline-secondary"
                                 onClick={loadSetlist}
                                 disabled={loading}
+                                aria-label="Refresh setlist"
+                                title="Refresh setlist"
+                                style={{
+                                    width: '38px',
+                                    height: '38px',
+                                    borderRadius: '50%',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: 0,
+                                    borderColor: 'var(--setlog-card-border)',
+                                    color: 'var(--setlog-card-text)',
+                                    backgroundColor: 'var(--setlog-card-bg-secondary)',
+                                }}
                             >
-                                <RefreshCw size={16} style={{ marginRight: '0.35rem' }} />
-                                Check Now
+                                <RefreshCw size={17} />
                             </Button>
                         </div>
 
