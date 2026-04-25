@@ -7,7 +7,7 @@ import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
 import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js'
 import SectionCard from '../components/SectionCard'
-import { ConfirmDialog, MessageDialog } from '../components/ConfirmDialog.jsx'
+import { ConfirmDialog } from '../components/ConfirmDialog.jsx'
 import SetlistSearchDialog from '../components/SetlistSearchDialog.jsx'
 import { extractSetlistConcertDetails, extractSongTitles, searchSetlists } from '../utils/setlistfm.js'
 import {
@@ -49,6 +49,7 @@ function EditConcertPage() {
   const [setlistSearchResults, setSetlistSearchResults] = useState([])
   const [geocodeNoticeOpen, setGeocodeNoticeOpen] = useState(false)
   const [showImportTip, setShowImportTip] = useState(false)
+  const [pendingPatch, setPendingPatch] = useState(null)
 
   const stars = [1, 2, 3, 4, 5]
   const normalizedSetlist = normalizeSetlist(setlist)
@@ -132,10 +133,6 @@ function EditConcertPage() {
       coords = null
     }
 
-    if (!coords) {
-      setGeocodeNoticeOpen(true)
-    }
-
     const nextSetlist = normalizeSetlist(setlist)
     const patch = {
       date: date.trim(),
@@ -154,8 +151,20 @@ function EditConcertPage() {
       ...(coords ? { coords } : {}),
     }
 
+    if (!coords) {
+      setPendingPatch(patch)
+      setGeocodeNoticeOpen(true)
+      setSaving(false)
+      return
+    }
+
+    await savePatch(patch)
+  }
+
+  async function savePatch(patch) {
     try {
       await updateConcert(id, patch)
+      setPendingPatch(null)
       navigate(`/concerts/${id}`)
     } catch (err) {
       setFormError(err instanceof Error ? err.message : 'Failed to save changes.')
@@ -470,13 +479,25 @@ function EditConcertPage() {
       >
         Replace the current setlist with the imported one?
       </ConfirmDialog>
-      <MessageDialog
+      <ConfirmDialog
         show={geocodeNoticeOpen}
-        onHide={() => setGeocodeNoticeOpen(false)}
+        onHide={() => {
+          setGeocodeNoticeOpen(false)
+          setPendingPatch(null)
+        }}
         title="Could not look up location"
+        confirmLabel="Save Anyway"
+        cancelLabel="Cancel"
+        confirmVariant="primary"
+        onConfirm={() => {
+          setGeocodeNoticeOpen(false)
+          if (pendingPatch) {
+            void savePatch(pendingPatch)
+          }
+        }}
       >
         {GEOCODE_LOOKUP_FAILED_MESSAGE}
-      </MessageDialog>
+      </ConfirmDialog>
       <SetlistSearchDialog
         show={setlistSearchResults.length > 0}
         results={setlistSearchResults}
