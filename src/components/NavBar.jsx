@@ -14,11 +14,11 @@ import { Map, CirclePlus, List, Moon, Sun, UserPlus, Search, Radio } from 'lucid
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
+import { useUserProfile } from '../contexts/userProfileContext.js'
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { filterConcertsByQuery, normalizeConcertSearchQuery } from '../utils/concertSearch.js'
 import './NavBar.css'
 
-const AVATAR_STORAGE_PREFIX = 'p47:profileAvatar:'
 const NAV_COLLAPSE_ID = 'setlog-navbar-collapse'
 const TIMELINE_SEARCH_ID = 'timeline-search-query'
 const DROPDOWN_MAX_RESULTS = 5
@@ -38,6 +38,7 @@ function formatConcertDate(dateStr) {
 
 function NavBar({ theme, setTheme }) {
   const { loginStatus, user } = useAuth()
+  const { profile } = useUserProfile()
   const { concerts } = useContext(ConcertsContext)
   const navigate = useNavigate()
   const location = useLocation()
@@ -106,15 +107,13 @@ function NavBar({ theme, setTheme }) {
   }
 
   function loadAvatar() {
-    const uid = user?.uid
-
-    if (!uid) {
+    if (!user?.uid) {
       setAvatarUrl('')
       return
     }
 
-    const savedAvatar = normalizeString(localStorage.getItem(`${AVATAR_STORAGE_PREFIX}${uid}`))
     const authAvatar = normalizeString(user?.photoURL)
+    const savedAvatar = normalizeString(profile?.avatarUrlOverride)
 
     if (savedAvatar) {
       setAvatarUrl(savedAvatar)
@@ -151,18 +150,7 @@ function NavBar({ theme, setTheme }) {
 
   useEffect(() => {
     loadAvatar()
-  }, [user])
-
-  useEffect(() => {
-    function handleAvatarUpdated() {
-      loadAvatar()
-    }
-    window.addEventListener('avatarUpdated', handleAvatarUpdated)
-
-    return () => {
-      window.removeEventListener('avatarUpdated', handleAvatarUpdated)
-    }
-  }, [user])
+  }, [user, profile?.avatarUrlOverride])
 
   function handleToggleTheme() {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))

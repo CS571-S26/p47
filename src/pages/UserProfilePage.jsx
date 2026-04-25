@@ -7,15 +7,13 @@ import SectionCard from '../components/SectionCard'
 import { useAuth } from '../contexts/authContext.js'
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useSpotify } from '../contexts/spotifyContext.js'
+import { useUserProfile } from '../contexts/userProfileContext.js'
 import { parseConcertCalendarDate } from '../utils/concertForm.js'
 import { getFlattenedSongs } from '../utils/setlistHelpers.js'
 import {
   geocodePlace,
   HOMETOWN_GEOCODE_FAILED_MESSAGE,
 } from '../utils/geocode.js'
-
-const AVATAR_STORAGE_PREFIX = 'p47:profileAvatar:'
-const HOMETOWN_STORAGE_PREFIX = 'p47:hometown:'
 
 function normalizeString(v) {
   return typeof v === 'string' ? v.trim() : ''
@@ -36,6 +34,8 @@ function statCard(icon, label, value, helpText = '') {
 
 function UserProfilePage() {
   const { loginStatus, logout, user } = useAuth()
+  const { profile, setAvatarUrlOverride, clearAvatarUrlOverride, setHometown, clearHometown } =
+    useUserProfile()
   const { concerts } = useContext(ConcertsContext)
   const {
     session,
@@ -64,32 +64,25 @@ function UserProfilePage() {
   }
 
   useEffect(() => {
-    const uid = user?.uid
-    if (!uid) {
+    if (!user?.uid) {
       setAvatarOverride('')
       setAvatarDraft('')
       setHometownDraft('')
       setHometownError('')
       return
     }
+  }, [user?.uid])
 
-    const saved = normalizeString(localStorage.getItem(`${AVATAR_STORAGE_PREFIX}${uid}`))
+  useEffect(() => {
+    const saved = normalizeString(profile?.avatarUrlOverride)
     setAvatarOverride(saved)
     setAvatarDraft(saved)
+  }, [profile?.avatarUrlOverride])
 
-    try {
-      const raw = localStorage.getItem(`${HOMETOWN_STORAGE_PREFIX}${uid}`)
-      if (!raw) {
-        setHometownDraft('')
-        return
-      }
-      const parsed = JSON.parse(raw)
-      const label = typeof parsed?.label === 'string' ? parsed.label.trim() : ''
-      setHometownDraft(label)
-    } catch {
-      setHometownDraft('')
-    }
-  }, [user?.uid])
+  useEffect(() => {
+    const label = normalizeString(profile?.hometown?.label)
+    setHometownDraft(label)
+  }, [profile?.hometown])
 
   const stats = (() => {
     const totalShows = concerts?.length ?? 0
@@ -165,8 +158,6 @@ function UserProfilePage() {
 
   const label = loginStatus.username ?? 'User'
   const initials = createInitials(label)
-  const avatarStorageKey = user?.uid ? `${AVATAR_STORAGE_PREFIX}${user.uid}` : ''
-  const hometownStorageKey = user?.uid ? `${HOMETOWN_STORAGE_PREFIX}${user.uid}` : ''
   const photoFromAuth = normalizeString(user?.photoURL)
   const avatarUrl = avatarOverride || photoFromAuth
 
@@ -188,28 +179,19 @@ function UserProfilePage() {
 
   function handleSaveAvatar(event) {
     event.preventDefault()
-    if (!avatarStorageKey) return
 
     const clean = normalizeString(avatarDraft)
     if (!clean) return
 
-    localStorage.setItem(avatarStorageKey, clean)
-    setAvatarOverride(clean)
-    setAvatarDraft(clean)
-    window.dispatchEvent(new Event('avatarUpdated'))
+    setAvatarUrlOverride(clean)
   }
 
   function handleClearAvatar() {
-    if (!avatarStorageKey) return
-    localStorage.removeItem(avatarStorageKey)
-    setAvatarOverride('')
-    setAvatarDraft('')
-    window.dispatchEvent(new Event('avatarUpdated'))
+    clearAvatarUrlOverride()
   }
 
   async function handleSaveHometown(event) {
     event.preventDefault()
-    if (!hometownStorageKey) return
 
     const clean = normalizeString(hometownDraft)
     if (!clean) return
@@ -224,20 +206,13 @@ function UserProfilePage() {
       return
     }
 
-    localStorage.setItem(
-      hometownStorageKey,
-      JSON.stringify({ label: clean, coords }),
-    )
-    setHometownDraft(clean)
-    window.dispatchEvent(new Event('hometownUpdated'))
+    await setHometown({ label: clean, coords })
   }
 
   function handleClearHometown() {
-    if (!hometownStorageKey) return
-    localStorage.removeItem(hometownStorageKey)
     setHometownDraft('')
     setHometownError('')
-    window.dispatchEvent(new Event('hometownUpdated'))
+    clearHometown()
   }
 
   async function handleSpotifyConnect() {
