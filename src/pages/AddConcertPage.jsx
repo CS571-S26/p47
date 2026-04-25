@@ -155,18 +155,18 @@ function AddConcertPage() {
   function handleSelectSetlist(setlistResult) {
     setImportError('')
 
-    const titles = extractSongTitles(setlistResult)
-    if (!titles.length) {
-      setImportError('That setlist was found, but it contained no songs.')
-      setSetlistSearchResults([])
-      return
-    }
-
     const details = extractSetlistConcertDetails(setlistResult)
     if (details.artist) setArtist(details.artist)
     if (details.venue) setVenue(details.venue)
     if (details.date) setDate(details.date)
     if (details.city) setCity(details.city)
+
+    const titles = extractSongTitles(setlistResult)
+    if (!titles.length) {
+      setImportError('Concert details imported. No songs are listed on setlist.fm yet.')
+      setSetlistSearchResults([])
+      return
+    }
 
     setSetlist(titles)
     setSetlistSearchResults([])

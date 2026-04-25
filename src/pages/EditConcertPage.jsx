@@ -201,21 +201,21 @@ function EditConcertPage() {
     if (details?.venue) setVenue(details.venue)
     if (details?.date) setDate(details.date)
     if (details?.city) setCity(details.city)
-    setSetlist(titles)
+    if (Array.isArray(titles)) setSetlist(titles)
   }
 
   function handleSelectSetlist(setlistResult) {
     setImportError('')
 
-    const titles = extractSongTitles(setlistResult)
-    if (!titles.length) {
-      setImportError('That setlist was found, but it contained no songs.')
-      setSetlistSearchResults([])
-      return
-    }
-
     const details = extractSetlistConcertDetails(setlistResult)
     setSetlistSearchResults([])
+
+    const titles = extractSongTitles(setlistResult)
+    if (!titles.length) {
+      applySetlistImport(null, details)
+      setImportError('Concert details imported. No songs are listed on setlist.fm yet.')
+      return
+    }
 
     const current = normalizeSetlist(setlist)
     if (current.length > 0) {
