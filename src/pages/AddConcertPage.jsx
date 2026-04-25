@@ -1,13 +1,14 @@
 import { useContext, useState } from 'react'
 import { Row, Col, Button, Card, Form, Alert, Spinner, InputGroup, ListGroup } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Plus, ArrowDown, ArrowUp, Trash } from 'lucide-react'
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
 import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js'
 import SectionCard from '../components/SectionCard'
 import { MessageDialog } from '../components/ConfirmDialog.jsx'
-import { extractSongTitles, searchFirstSetlist } from '../utils/setlistfm.js'
+import SetlistSearchDialog from '../components/SetlistSearchDialog.jsx'
+import { extractSetlistConcertDetails, extractSongTitles, searchSetlists } from '../utils/setlistfm.js'
 import {
   CITY_STATE_PATTERN,
   formatCityState,
@@ -25,23 +26,27 @@ function AddConcertPage() {
   const { loginStatus } = useAuth()
   const navigate = useNavigate()
 
-  const [artist, setArtist] = useState('')
+  const location = useLocation()
+  const liveConcert = location.state?.liveConcert
+
+  const [artist, setArtist] = useState(liveConcert?.artist ?? '')
   const [genre, setGenre] = useState('')
-  const [date, setDate] = useState('')
-  const [venue, setVenue] = useState('')
+  const [date, setDate] = useState(liveConcert?.date ?? '')
+  const [venue, setVenue] = useState(liveConcert?.venue ?? '')
   const [city, setCity] = useState('')
   const [rating, setRating] = useState(5)
   const [attended, setAttended] = useState(true)
   const [favorite, setFavorite] = useState(false)
   const [image, setImage] = useState('')
   const [notes, setNotes] = useState('')
-  const [setlist, setSetlist] = useState([])
+  const [setlist, setSetlist] = useState(liveConcert?.setlist ?? [''])
   const [newSongTitle, setNewSongTitle] = useState('')
 
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState('')
   const [importingSetlist, setImportingSetlist] = useState(false)
   const [importError, setImportError] = useState('')
+  const [setlistSearchResults, setSetlistSearchResults] = useState([])
   const [geocodeNoticeOpen, setGeocodeNoticeOpen] = useState(false)
 
   const stars = [1, 2, 3, 4, 5]
@@ -114,41 +119,57 @@ function AddConcertPage() {
     navigate('/')
   }
 
-  const canImportFromSetlistFm = !!(artist.trim() && venue.trim() && date.trim())
+  const canImportFromSetlistFm = !!(artist.trim() || venue.trim() || city.trim() || date.trim())
 
   async function handleImportFromSetlistFm() {
     setImportError('')
 
     if (!canImportFromSetlistFm) {
-      setImportError('Enter an artist, venue, and date before importing from setlist.fm.')
+      setImportError('Enter an artist, venue, city, or date before importing from setlist.fm.')
       return
     }
 
     setImportingSetlist(true)
     try {
-      const first = await searchFirstSetlist({
+      const results = await searchSetlists({
         artistName: artist,
         venueName: venue,
+        cityState: city,
         date,
+        limit: 5,
       })
 
-      if (!first) {
-        setImportError(`No setlists found for "${artist.trim()}" at "${venue.trim()}" on ${date.trim()}.`)
+      if (!results.length) {
+        setImportError('No setlists found for those details.')
         return
       }
 
-      const titles = extractSongTitles(first)
-      if (!titles.length) {
-        setImportError('A matching setlist was found, but it contained no songs.')
-        return
-      }
-
-      setSetlist(titles)
+      setSetlistSearchResults(results)
     } catch (err) {
       setImportError(err instanceof Error ? err.message : 'Failed to import setlist from setlist.fm.')
     } finally {
       setImportingSetlist(false)
     }
+  }
+
+  function handleSelectSetlist(setlistResult) {
+    setImportError('')
+
+    const titles = extractSongTitles(setlistResult)
+    if (!titles.length) {
+      setImportError('That setlist was found, but it contained no songs.')
+      setSetlistSearchResults([])
+      return
+    }
+
+    const details = extractSetlistConcertDetails(setlistResult)
+    if (details.artist) setArtist(details.artist)
+    if (details.venue) setVenue(details.venue)
+    if (details.date) setDate(details.date)
+    if (details.city) setCity(details.city)
+
+    setSetlist(titles)
+    setSetlistSearchResults([])
   }
 
   function handleAddSong() {
@@ -248,6 +269,12 @@ function AddConcertPage() {
       >
         {GEOCODE_LOOKUP_FAILED_MESSAGE}
       </MessageDialog>
+      <SetlistSearchDialog
+        show={setlistSearchResults.length > 0}
+        results={setlistSearchResults}
+        onHide={() => setSetlistSearchResults([])}
+        onSelect={handleSelectSetlist}
+      />
       <Card
         style={{
           width: '100%',

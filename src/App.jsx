@@ -11,6 +11,7 @@ import { AuthProvider } from './contexts/AuthProvider.jsx'
 import { SpotifyProvider } from './contexts/SpotifyProvider.jsx'
 import ConcertDetailPage from './pages/ConcertDetailPage.jsx'
 import EditConcertPage from './pages/EditConcertPage.jsx'
+import LiveSetlistPage from './pages/LiveSetlistPage.jsx'
 import { ConcertsProvider } from './contexts/ConcertsProvider.jsx'
 import { useAuth } from './contexts/authContext.js'
 
@@ -24,6 +25,7 @@ function documentTitleForPath(pathname) {
   if (pathname === '/user-profile') return `${base} — Profile`
   if (pathname === '/login') return `${base} — Log in`
   if (pathname === '/register') return `${base} — Register`
+  if (pathname === '/live-setlist') return `${base} — Live Setlist`
   if (pathname.startsWith('/concerts/') && pathname.endsWith('/edit')) {
     return `${base} — Edit concert`
   }
@@ -56,6 +58,7 @@ function AppShell({ theme, setTheme }) {
           <Route path="/user-profile" element={<UserProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/live-setlist" element={<LiveSetlistPage />} />
         </Routes>
       </main>
     </ConcertsProvider>

@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { Map, CirclePlus, List, Moon, Sun, UserPlus, Search } from 'lucide-react'
+import { Map, CirclePlus, List, Moon, Sun, UserPlus, Search, Radio } from 'lucide-react'
 
 import logo from '../assets/setlog_logo.png'
 import { useAuth } from '../contexts/authContext.js'
@@ -266,6 +266,10 @@ function NavBar({ theme, setTheme }) {
 
             <Nav.Link as={NavLink} onClick={() => setExpanded(false)} to="/add-concert">
               <CirclePlus size={18} /> Log Concert
+            </Nav.Link>
+
+            <Nav.Link as={NavLink} onClick={() => setExpanded(false)} to="/live-setlist">
+              <Radio size={18} /> Live Setlist
             </Nav.Link>
           </Nav>
 

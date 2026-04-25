@@ -8,7 +8,8 @@ import { useAuth } from '../contexts/authContext.js'
 import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js'
 import SectionCard from '../components/SectionCard'
 import { ConfirmDialog, MessageDialog } from '../components/ConfirmDialog.jsx'
-import { extractSongTitles, searchFirstSetlist } from '../utils/setlistfm.js'
+import SetlistSearchDialog from '../components/SetlistSearchDialog.jsx'
+import { extractSetlistConcertDetails, extractSongTitles, searchSetlists } from '../utils/setlistfm.js'
 import {
   CITY_STATE_PATTERN,
   formatCityState,
@@ -44,6 +45,8 @@ function EditConcertPage() {
   const [importingSetlist, setImportingSetlist] = useState(false)
   const [importError, setImportError] = useState('')
   const [pendingImportTitles, setPendingImportTitles] = useState(null)
+  const [pendingImportDetails, setPendingImportDetails] = useState(null)
+  const [setlistSearchResults, setSetlistSearchResults] = useState([])
   const [geocodeNoticeOpen, setGeocodeNoticeOpen] = useState(false)
 
   const stars = [1, 2, 3, 4, 5]
@@ -160,47 +163,68 @@ function EditConcertPage() {
     }
   }
 
-  const canImportFromSetlistFm = !!(artist.trim() && venue.trim() && date.trim())
+  const canImportFromSetlistFm = !!(artist.trim() || venue.trim() || city.trim() || date.trim())
 
   async function handleImportFromSetlistFm() {
     setImportError('')
 
     if (!canImportFromSetlistFm) {
-      setImportError('Enter an artist, venue, and date before importing from setlist.fm.')
+      setImportError('Enter an artist, venue, city, or date before importing from setlist.fm.')
       return
     }
 
     setImportingSetlist(true)
     try {
-      const first = await searchFirstSetlist({
+      const results = await searchSetlists({
         artistName: artist,
         venueName: venue,
+        cityState: city,
         date,
+        limit: 5,
       })
 
-      if (!first) {
-        setImportError(`No setlists found for "${artist.trim()}" at "${venue.trim()}" on ${date.trim()}.`)
+      if (!results.length) {
+        setImportError('No setlists found for those details.')
         return
       }
 
-      const titles = extractSongTitles(first)
-      if (!titles.length) {
-        setImportError('A matching setlist was found, but it contained no songs.')
-        return
-      }
-
-      const current = normalizeSetlist(setlist)
-      if (current.length > 0) {
-        setPendingImportTitles(titles)
-        return
-      }
-
-      setSetlist(titles)
+      setSetlistSearchResults(results)
     } catch (err) {
       setImportError(err instanceof Error ? err.message : 'Failed to import setlist from setlist.fm.')
     } finally {
       setImportingSetlist(false)
     }
+  }
+
+  function applySetlistImport(titles, details) {
+    if (details?.artist) setArtist(details.artist)
+    if (details?.venue) setVenue(details.venue)
+    if (details?.date) setDate(details.date)
+    if (details?.city) setCity(details.city)
+    setSetlist(titles)
+  }
+
+  function handleSelectSetlist(setlistResult) {
+    setImportError('')
+
+    const titles = extractSongTitles(setlistResult)
+    if (!titles.length) {
+      setImportError('That setlist was found, but it contained no songs.')
+      setSetlistSearchResults([])
+      return
+    }
+
+    const details = extractSetlistConcertDetails(setlistResult)
+    setSetlistSearchResults([])
+
+    const current = normalizeSetlist(setlist)
+    if (current.length > 0) {
+      setPendingImportTitles(titles)
+      setPendingImportDetails(details)
+      return
+    }
+
+    applySetlistImport(titles, details)
   }
 
   function handleAddSong() {
@@ -382,14 +406,18 @@ function EditConcertPage() {
     >
       <ConfirmDialog
         show={pendingImportTitles != null}
-        onHide={() => setPendingImportTitles(null)}
+        onHide={() => {
+          setPendingImportTitles(null)
+          setPendingImportDetails(null)
+        }}
         title="Replace setlist?"
         confirmLabel="Replace"
         cancelLabel="Cancel"
         confirmVariant="primary"
         onConfirm={() => {
-          setSetlist(pendingImportTitles)
+          applySetlistImport(pendingImportTitles, pendingImportDetails)
           setPendingImportTitles(null)
+          setPendingImportDetails(null)
         }}
       >
         Replace the current setlist with the imported one?
@@ -401,6 +429,12 @@ function EditConcertPage() {
       >
         {GEOCODE_LOOKUP_FAILED_MESSAGE}
       </MessageDialog>
+      <SetlistSearchDialog
+        show={setlistSearchResults.length > 0}
+        results={setlistSearchResults}
+        onHide={() => setSetlistSearchResults([])}
+        onSelect={handleSelectSetlist}
+      />
       <Card
         style={{
           width: '100%',
