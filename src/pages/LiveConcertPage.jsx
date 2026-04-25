@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Form, Spinner, Alert, Col, Row } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import { RefreshCw, MapPin } from 'lucide-react'
 
 import SectionCard from '../components/SectionCard'
@@ -40,6 +41,8 @@ function LiveConcertPage() {
     const [loading, setLoading] = useState(false)
     const [lastChecked, setLastChecked] = useState(null)
     const [message, setMessage] = useState('')
+
+    const navigate = useNavigate()
 
     const styles = {
         formLabel: {
@@ -85,6 +88,19 @@ function LiveConcertPage() {
         } finally {
             setLoading(false)
         }
+    }
+
+    function saveToLogConcert() {
+        navigate('/add-concert', {
+            state: {
+                liveConcert: {
+                    artist,
+                    venue,
+                    date,
+                    setlist: songs,
+                },
+            },
+        })
     }
 
     useEffect(() => {
@@ -288,15 +304,21 @@ function LiveConcertPage() {
                                     Check Now
                                 </Button>
 
-                                {tracking ? (
-                                    <Button
-                                        type="button"
-                                        variant="outline-danger"
-                                        onClick={() => setTracking(false)}
-                                    >
-                                        Stop Tracking
-                                    </Button>
-                                ) : null}
+                                <Button
+                                    type="button"
+                                    variant="outline-danger"
+                                    onClick={() => setTracking(false)}
+                                >
+                                    Stop Tracking
+                                </Button>
+
+                                <Button
+                                    type="button"
+                                    onClick={saveToLogConcert}
+                                    disabled={!artist.trim() || !venue.trim()}
+                                >
+                                    Save to Concert Log
+                                </Button>
                             </div>
                         </SectionCard>
                     )}

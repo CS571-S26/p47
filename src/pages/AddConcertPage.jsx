@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { Row, Col, Button, Card, Form, Alert, Spinner, InputGroup, ListGroup } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Plus, ArrowDown, ArrowUp, Trash } from 'lucide-react'
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
@@ -25,17 +25,20 @@ function AddConcertPage() {
   const { loginStatus } = useAuth()
   const navigate = useNavigate()
 
-  const [artist, setArtist] = useState('')
+  const location = useLocation()
+  const liveConcert = location.state?.liveConcert
+
+  const [artist, setArtist] = useState(liveConcert?.artist ?? '')
   const [genre, setGenre] = useState('')
-  const [date, setDate] = useState('')
-  const [venue, setVenue] = useState('')
+  const [date, setDate] = useState(liveConcert?.date ?? '')
+  const [venue, setVenue] = useState(liveConcert?.venue ?? '')
   const [city, setCity] = useState('')
   const [rating, setRating] = useState(5)
   const [attended, setAttended] = useState(true)
   const [favorite, setFavorite] = useState(false)
   const [image, setImage] = useState('')
   const [notes, setNotes] = useState('')
-  const [setlist, setSetlist] = useState([])
+  const [setlist, setSetlist] = useState(liveConcert?.setlist ?? [''])
   const [newSongTitle, setNewSongTitle] = useState('')
 
   const [saving, setSaving] = useState(false)
