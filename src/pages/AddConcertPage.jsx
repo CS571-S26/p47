@@ -48,6 +48,7 @@ function AddConcertPage() {
   const [importError, setImportError] = useState('')
   const [setlistSearchResults, setSetlistSearchResults] = useState([])
   const [geocodeNoticeOpen, setGeocodeNoticeOpen] = useState(false)
+  const [showImportTip, setShowImportTip] = useState(false)
 
   const stars = [1, 2, 3, 4, 5]
   const normalizedSetlist = normalizeSetlist(setlist)
@@ -534,28 +535,38 @@ function AddConcertPage() {
                                   }}
                                 >
                                   {importingSetlist ? (
-                                    <>Import from setlist.fm
+                                    <>
                                       <Spinner animation="border" size="sm" style={{ marginRight: '0.5rem' }} />
                                       Importing...
                                     </>
                                   ) : (
-                                    'Import from setlist.fm'
+                                    'Import Setlist'
                                   )}
                                 </Button>
                                 <OverlayTrigger
                                   placement="top"
-                                  overlay={(
-                                    <Tooltip id="setlist-import-tip">
+                                  show={showImportTip}
+                                  overlay={
+                                    <Tooltip id="setlist-reimport-tip">
                                       Enter an artist name to search setlist.fm. Adding a date helps find the right show.
                                       Importing can fill the date, venue, city, and setlist for you.
                                     </Tooltip>
-                                  )}
+                                  }
                                 >
                                   <Button
                                     type="button"
                                     variant="outline-secondary"
                                     aria-label="setlist.fm import tip"
-                                    style={{ borderRadius: '10px', paddingLeft: '10px', paddingRight: '10px' }}
+                                    onClick={() => setShowImportTip((prev) => !prev)}
+                                    onBlur={() => setShowImportTip(false)}
+                                    style={{
+                                      borderRadius: '10px',
+                                      paddingLeft: '10px',
+                                      paddingRight: '10px',
+                                      borderColor: 'var(--setlog-card-border)',
+                                      color: 'var(--setlog-card-text)',
+                                      backgroundColor: 'var(--setlog-card-bg)',
+                                    }}
                                   >
                                     <Info size={16} />
                                   </Button>
