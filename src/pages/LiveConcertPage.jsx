@@ -370,7 +370,7 @@ function LiveConcertPage() {
                                                 style={{
                                                     fontSize: '1rem',
                                                     fontWeight: 800,
-                                                    color: section.encore ? '#ef4444' : 'var(--setlog-primary)',
+                                                    color: 'var(--setlog-primary)',
                                                     margin: 0,
                                                 }}
                                             >
