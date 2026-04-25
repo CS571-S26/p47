@@ -59,7 +59,7 @@ export function MessageDialog({
   buttonLabel = 'OK',
 }) {
   return (
-    <Modal show={show} onHide={onHide} centered backdrop="static" keyboard>
+    <Modal show={show} onHide={onHide} centered backdrop="static" keyboard={false}>
       <Modal.Header
         style={{
           backgroundColor: 'var(--setlog-card-bg)',
