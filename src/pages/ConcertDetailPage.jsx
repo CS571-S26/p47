@@ -19,6 +19,7 @@ import {
   clearStoredSpotifyPendingAction,
   readStoredSpotifyPendingAction,
 } from '../utils/spotifyAuth.js'
+import { getFlattenedSongs, getSetlistSections } from '../utils/setlistHelpers.js'
 
 function ConcertDetailPage() {
   const { concerts, deleteConcert, updateConcert } = useContext(ConcertsContext)
@@ -39,11 +40,8 @@ function ConcertDetailPage() {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
 
   const concert = concerts.find((c) => c.id === id)
-  const setlistSongs = Array.isArray(concert?.setlist)
-    ? concert.setlist
-      .map((song) => (typeof song === 'string' ? song.trim() : ''))
-      .filter(Boolean)
-    : []
+  const setlistSongs = concert ? getFlattenedSongs(concert) : []
+  const setlistSectionsDisplay = concert ? getSetlistSections(concert) : []
 
   const backLabel = location.state?.backLabel || 'Back to Timeline'
   const backTo = typeof location.state?.from === 'string' ? location.state.from : '/'
@@ -567,7 +565,7 @@ function ConcertDetailPage() {
                   <div style={styles.detailStat}>
                     <Music size={22} color="var(--setlog-primary)" />
                     <div>
-                      <div style={styles.detailStatValue}>{concert.songCount}</div>
+                      <div style={styles.detailStatValue}>{setlistSongs.length}</div>
                       <div style={styles.detailStatLabel}>Songs</div>
                     </div>
                   </div>
@@ -725,33 +723,52 @@ function ConcertDetailPage() {
                     </Alert>
                   ) : null}
 
-                  {Array.isArray(concert.setlist) && concert.setlist.length > 0 ? (
-                    <ListGroup variant="flush">
-                      {concert.setlist.map((song, idx) => (
-                        <ListGroup.Item
-                          key={`${song}-${idx}`}
-                          style={{
-                            padding: '8px 0',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            background: 'var(--setlog-card-bg-secondary)',
-                            fontSize: '0.85rem',
-                          }}
-                        >
-                          <span
-                            style={{
-                              width: '22px',
-                              color: 'var(--setlog-card-text-secondary)',
-                              fontWeight: 700,
-                            }}
-                          >
-                            {idx + 1}
-                          </span>
-                          <span style={{ color: 'var(--setlog-card-text)' }}>{song}</span>
-                        </ListGroup.Item>
+                  {setlistSongs.length > 0 ? (
+                    <div>
+                      {setlistSectionsDisplay.map((sec, si) => (
+                        <div key={`${sec.name}-${si}`} style={{ marginBottom: si < setlistSectionsDisplay.length - 1 ? '1rem' : 0 }}>
+                          {setlistSectionsDisplay.length > 1 || (sec.name && sec.name !== 'Setlist') ? (
+                            <div
+                              style={{
+                                fontSize: '0.8rem',
+                                fontWeight: 800,
+                                color: 'var(--setlog-primary)',
+                                marginBottom: '0.35rem',
+                                letterSpacing: '0.04em',
+                              }}
+                            >
+                              {sec.name}
+                            </div>
+                          ) : null}
+                          <ListGroup variant="flush">
+                            {sec.songs.map((song, idx) => (
+                              <ListGroup.Item
+                                key={`${si}-${song}-${idx}`}
+                                style={{
+                                  padding: '8px 0',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '10px',
+                                  background: 'var(--setlog-card-bg-secondary)',
+                                  fontSize: '0.85rem',
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    width: '22px',
+                                    color: 'var(--setlog-card-text-secondary)',
+                                    fontWeight: 700,
+                                  }}
+                                >
+                                  {idx + 1}
+                                </span>
+                                <span style={{ color: 'var(--setlog-card-text)' }}>{song}</span>
+                              </ListGroup.Item>
+                            ))}
+                          </ListGroup>
+                        </div>
                       ))}
-                    </ListGroup>
+                    </div>
                   ) : (
                     <div style={{ color: 'var(--setlog-card-text-secondary)' }}>No setlist available.</div>
                   )}

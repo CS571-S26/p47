@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/authContext.js'
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useSpotify } from '../contexts/spotifyContext.js'
 import { parseConcertCalendarDate } from '../utils/concertForm.js'
+import { getFlattenedSongs } from '../utils/setlistHelpers.js'
 import {
   geocodePlace,
   HOMETOWN_GEOCODE_FAILED_MESSAGE,
@@ -116,9 +117,9 @@ function UserProfilePage() {
       : 'n/a'
 
     const songTotal = (concerts ?? []).reduce((sum, c) => {
-      const setlistCount = Array.isArray(c?.setlist) ? c.setlist.length : 0
+      const flat = getFlattenedSongs(c)
       const fallbackCount = Number.isFinite(Number(c?.songCount)) ? Number(c.songCount) : 0
-      const count = setlistCount > 0 ? setlistCount : fallbackCount
+      const count = flat.length > 0 ? flat.length : fallbackCount
       return sum + (count > 0 ? count : 0)
     }, 0)
 
