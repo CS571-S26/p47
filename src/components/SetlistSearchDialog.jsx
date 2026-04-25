@@ -105,7 +105,7 @@ function SetlistSearchDialog({ show, results, onHide, onSelect }) {
                   onClick={() => onSelect(setlist)}
                   style={{
                     textAlign: 'left',
-                    background: 'var(--setlog-card-bg)',
+                    background: 'var(--setlog-card-bg-secondary)',
                     borderColor: 'var(--setlog-card-border)',
                     color: 'var(--setlog-card-text)',
                     padding: '0.9rem',
