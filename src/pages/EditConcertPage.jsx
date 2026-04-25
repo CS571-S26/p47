@@ -7,9 +7,9 @@ import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
 import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js'
 import SectionCard from '../components/SectionCard'
-import { ConfirmDialog, MessageDialog } from '../components/ConfirmDialog.jsx'
+import { ConfirmDialog } from '../components/ConfirmDialog.jsx'
 import SetlistSearchDialog from '../components/SetlistSearchDialog.jsx'
-import { extractSetlistConcertDetails, extractSongTitles, searchSetlists } from '../utils/setlistfm.js'
+import { extractSetlistConcertDetails, extractSetlistSections, searchSetlists } from '../utils/setlistfm.js'
 import {
   CITY_STATE_PATTERN,
   formatCityState,
@@ -17,6 +17,11 @@ import {
   normalizeSetlist,
   toTitleCase,
 } from '../utils/concertForm.js'
+import {
+  buildSetlistPersistenceFields,
+  getSetlistSections,
+  normalizeSetlistSectionsForForm,
+} from '../utils/setlistHelpers.js'
 
 function EditConcertPage() {
   const { id } = useParams()
@@ -37,21 +42,23 @@ function EditConcertPage() {
   const [favorite, setFavorite] = useState(false)
   const [image, setImage] = useState('')
   const [notes, setNotes] = useState('')
-  const [setlist, setSetlist] = useState([])
+  const [sections, setSections] = useState([])
   const [newSongTitle, setNewSongTitle] = useState('')
+  const [newSongSectionIndex, setNewSongSectionIndex] = useState(0)
 
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState('')
   const [importingSetlist, setImportingSetlist] = useState(false)
   const [importError, setImportError] = useState('')
-  const [pendingImportTitles, setPendingImportTitles] = useState(null)
-  const [pendingImportDetails, setPendingImportDetails] = useState(null)
+  const [pendingImportSetlistResult, setPendingImportSetlistResult] = useState(null)
   const [setlistSearchResults, setSetlistSearchResults] = useState([])
   const [geocodeNoticeOpen, setGeocodeNoticeOpen] = useState(false)
   const [showImportTip, setShowImportTip] = useState(false)
+  const [pendingPatch, setPendingPatch] = useState(null)
 
   const stars = [1, 2, 3, 4, 5]
-  const normalizedSetlist = normalizeSetlist(setlist)
+  const songCountDisplay = sections.reduce((n, s) => n + normalizeSetlist(s.songs).length, 0)
+  const selectedNewSongSectionIndex = Math.min(newSongSectionIndex, Math.max(sections.length - 1, 0))
 
   useEffect(() => {
     hydratedIdRef.current = null
@@ -75,8 +82,9 @@ function EditConcertPage() {
     setFavorite(!!c.favorite)
     setImage(typeof c.image === 'string' ? c.image : '')
     setNotes(typeof c.notes === 'string' ? c.notes : '')
-    setSetlist(Array.isArray(c.setlist) ? c.setlist.filter((s) => typeof s === 'string') : [])
+    setSections(normalizeSetlistSectionsForForm(getSetlistSections(c)))
     setNewSongTitle('')
+    setNewSongSectionIndex(0)
 
     hydratedIdRef.current = id
     setFormReady(true)
@@ -114,7 +122,7 @@ function EditConcertPage() {
     }
 
     if (!CITY_STATE_PATTERN.test(cleanedCity)) {
-      setFormError('City must be in the format City, ST (for example: San Francisco, CA).')
+      setFormError('City must include a region: City, ST or City, Country (e.g. San Francisco, CA or London, England).')
       return
     }
 
@@ -132,11 +140,7 @@ function EditConcertPage() {
       coords = null
     }
 
-    if (!coords) {
-      setGeocodeNoticeOpen(true)
-    }
-
-    const nextSetlist = normalizeSetlist(setlist)
+    const setlistParts = buildSetlistPersistenceFields(sections, { previousConcert: existing })
     const patch = {
       date: date.trim(),
       artist: artist.trim(),
@@ -144,8 +148,11 @@ function EditConcertPage() {
       city: cleanedCity,
       genre: toTitleCase(genre.trim()),
       rating,
-      setlist: nextSetlist,
-      songCount: nextSetlist.length,
+      setlist: setlistParts.setlist,
+      songCount: setlistParts.songCount,
+      ...(Object.prototype.hasOwnProperty.call(setlistParts, 'setlistSections')
+        ? { setlistSections: setlistParts.setlistSections }
+        : {}),
       duration: typeof existing.duration === 'string' ? existing.duration : '',
       image: image.trim(),
       notes: notes.trim(),
@@ -154,8 +161,20 @@ function EditConcertPage() {
       ...(coords ? { coords } : {}),
     }
 
+    if (!coords) {
+      setPendingPatch(patch)
+      setGeocodeNoticeOpen(true)
+      setSaving(false)
+      return
+    }
+
+    await savePatch(patch)
+  }
+
+  async function savePatch(patch) {
     try {
       await updateConcert(id, patch)
+      setPendingPatch(null)
       navigate(`/concerts/${id}`)
     } catch (err) {
       setFormError(err instanceof Error ? err.message : 'Failed to save changes.')
@@ -228,7 +247,7 @@ function EditConcertPage() {
     }
   }
 
-  function applySetlistImport(titles, details) {
+  function applySetlistImportDetails(details) {
     let filledGenreFromHistory = false
     if (details?.artist) setArtist(details.artist)
     if (details?.venue) setVenue(details.venue)
@@ -242,8 +261,13 @@ function EditConcertPage() {
         filledGenreFromHistory = true
       }
     }
-    if (Array.isArray(titles)) setSetlist(titles)
     return !genre.trim() && !filledGenreFromHistory
+  }
+
+  function applySetlistImportSections(importedSections, details) {
+    const needsGenre = applySetlistImportDetails(details)
+    setSections(normalizeSetlistSectionsForForm(importedSections))
+    return needsGenre
   }
 
   function handleSelectSetlist(setlistResult) {
@@ -252,21 +276,20 @@ function EditConcertPage() {
     const details = extractSetlistConcertDetails(setlistResult)
     setSetlistSearchResults([])
 
-    const titles = extractSongTitles(setlistResult)
-    if (!titles.length) {
-      applySetlistImport(null, details)
+    const importedSections = extractSetlistSections(setlistResult)
+    if (!importedSections.length) {
+      applySetlistImportDetails(details)
       setImportError('Concert details imported. No songs are listed on setlist.fm yet.')
       return
     }
 
-    const current = normalizeSetlist(setlist)
-    if (current.length > 0) {
-      setPendingImportTitles(titles)
-      setPendingImportDetails(details)
+    const hasSongs = sections.some((s) => normalizeSetlist(s.songs).length > 0)
+    if (hasSongs) {
+      setPendingImportSetlistResult(setlistResult)
       return
     }
 
-    const needsGenre = applySetlistImport(titles, details)
+    const needsGenre = applySetlistImportSections(importedSections, details)
     if (needsGenre) {
       setImportError('Imported details from setlist.fm. Add a music genre to save this concert.')
     }
@@ -275,34 +298,91 @@ function EditConcertPage() {
   function handleAddSong() {
     const t = newSongTitle.trim()
     if (!t) return
-    setSetlist((prev) => {
-      const base = Array.isArray(prev) ? prev : []
-      return [...base, t]
+    setSections((prev) => {
+      const next = prev.map((s) => ({ ...s, songs: [...s.songs] }))
+      const targetIndex = Math.min(Math.max(newSongSectionIndex, 0), next.length - 1)
+      const target = next[targetIndex]
+      if (!target) return prev
+      target.songs = [...normalizeSetlist(target.songs), t]
+      return normalizeSetlistSectionsForForm(next)
     })
     setNewSongTitle('')
   }
 
-  function handleRemoveSong(index) {
-    setSetlist((prev) => {
-      const base = Array.isArray(prev) ? prev : []
-      const next = []
-      for (let i = 0; i < base.length; i++) {
-        if (i !== index) next.push(base[i])
-      }
-      return next
+  function handleRemoveSong(sectionIndex, songIndex) {
+    setSections((prev) => {
+      const next = prev.map((s) => ({ ...s, songs: [...s.songs] }))
+      const songs = next[sectionIndex]?.songs
+      if (!songs) return prev
+      songs.splice(songIndex, 1)
+      if (songs.length === 0) songs.push('')
+      return normalizeSetlistSectionsForForm(next)
     })
   }
 
-  function handleMoveSong(index, dir) {
-    setSetlist((prev) => {
-      const arr = Array.isArray(prev) ? [...prev] : []
-      const nextIndex = index + dir
-      if (index < 0 || index >= arr.length) return arr
-      if (nextIndex < 0 || nextIndex >= arr.length) return arr
-      const tmp = arr[index]
-      arr[index] = arr[nextIndex]
-      arr[nextIndex] = tmp
-      return arr
+  function handleMoveSong(sectionIndex, songIndex, dir) {
+    setSections((prev) => {
+      const next = prev.map((s) => ({ ...s, songs: normalizeSetlist(s.songs) }))
+      const songs = next[sectionIndex]?.songs
+      if (!songs) return prev
+      if (songIndex < 0 || songIndex >= songs.length) return prev
+      const [song] = songs.splice(songIndex, 1)
+      if (!song) return prev
+
+      if (dir < 0) {
+        if (songIndex > 0) {
+          songs.splice(songIndex - 1, 0, song)
+        } else if (sectionIndex > 0) {
+          next[sectionIndex - 1].songs.push(song)
+        } else {
+          songs.unshift(song)
+        }
+      } else if (songIndex < songs.length) {
+        songs.splice(songIndex + 1, 0, song)
+      } else if (sectionIndex < next.length - 1) {
+        next[sectionIndex + 1].songs.unshift(song)
+      } else {
+        songs.push(song)
+      }
+
+      next.forEach((sec) => {
+        if (sec.songs.length === 0) sec.songs = ['']
+      })
+      return normalizeSetlistSectionsForForm(next)
+    })
+  }
+
+  function handleSectionNameChange(sectionIndex, name) {
+    setSections((prev) => {
+      const next = prev.map((s, i) => (i === sectionIndex ? { ...s, name } : s))
+      return normalizeSetlistSectionsForForm(next)
+    })
+  }
+
+  function handleAddSet() {
+    const nextSectionIndex = sections.length
+    setNewSongSectionIndex(nextSectionIndex)
+    setSections((prev) => {
+      const n = prev.length + 1
+      return normalizeSetlistSectionsForForm([...prev.map((s) => ({ ...s, songs: [...s.songs] })), { name: `Set ${n}`, songs: [''] }])
+    })
+  }
+
+  function handleRemoveSet(sectionIndex) {
+    setSections((prev) => {
+      if (prev.length <= 1) return prev
+      const next = prev.map((s) => ({ ...s, songs: [...s.songs] }))
+      const removed = next[sectionIndex]
+      const removedSongs = removed?.songs || []
+      if (sectionIndex > 0) {
+        const into = next[sectionIndex - 1].songs
+        next[sectionIndex - 1].songs = [...into, ...removedSongs].length ? [...into, ...removedSongs] : ['']
+      } else {
+        const into = next[1].songs
+        next[1].songs = [...removedSongs, ...into].length ? [...removedSongs, ...into] : ['']
+      }
+      next.splice(sectionIndex, 1)
+      return normalizeSetlistSectionsForForm(next)
     })
   }
 
@@ -450,19 +530,21 @@ function EditConcertPage() {
       }}
     >
       <ConfirmDialog
-        show={pendingImportTitles != null}
+        show={pendingImportSetlistResult != null}
         onHide={() => {
-          setPendingImportTitles(null)
-          setPendingImportDetails(null)
+          setPendingImportSetlistResult(null)
         }}
         title="Replace setlist?"
         confirmLabel="Replace"
         cancelLabel="Cancel"
         confirmVariant="primary"
         onConfirm={() => {
-          const needsGenre = applySetlistImport(pendingImportTitles, pendingImportDetails)
-          setPendingImportTitles(null)
-          setPendingImportDetails(null)
+          const r = pendingImportSetlistResult
+          setPendingImportSetlistResult(null)
+          if (!r) return
+          const details = extractSetlistConcertDetails(r)
+          const importedSections = extractSetlistSections(r)
+          const needsGenre = applySetlistImportSections(importedSections, details)
           if (needsGenre) {
             setImportError('Imported details from setlist.fm. Add a music genre to save this concert.')
           }
@@ -470,13 +552,25 @@ function EditConcertPage() {
       >
         Replace the current setlist with the imported one?
       </ConfirmDialog>
-      <MessageDialog
+      <ConfirmDialog
         show={geocodeNoticeOpen}
-        onHide={() => setGeocodeNoticeOpen(false)}
+        onHide={() => {
+          setGeocodeNoticeOpen(false)
+          setPendingPatch(null)
+        }}
         title="Could not look up location"
+        confirmLabel="Save Anyway"
+        cancelLabel="Cancel"
+        confirmVariant="primary"
+        onConfirm={() => {
+          setGeocodeNoticeOpen(false)
+          if (pendingPatch) {
+            void savePatch(pendingPatch)
+          }
+        }}
       >
         {GEOCODE_LOOKUP_FAILED_MESSAGE}
-      </MessageDialog>
+      </ConfirmDialog>
       <SetlistSearchDialog
         show={setlistSearchResults.length > 0}
         results={setlistSearchResults}
@@ -597,14 +691,14 @@ function EditConcertPage() {
                         <Form.Control
                           id="concert-city"
                           type="text"
-                          placeholder="e.g., San Francisco, CA"
+                          placeholder="e.g., San Francisco, CA or London, England"
                           style={styles.formControl}
                           value={city}
                           onChange={(ev) => setCity(ev.target.value)}
                           isInvalid={!!city.trim() && !CITY_STATE_PATTERN.test(city.trim())}
                         />
                         <Form.Control.Feedback type="invalid">
-                          Use Format: City, ST
+                          City, then region (state, province, or country)
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Col>
@@ -656,7 +750,7 @@ function EditConcertPage() {
                                 height: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                justifyContent: 'space-between'
+                                gap: '0.45rem',
                               }}
                             >
                               <InputGroup>
@@ -686,7 +780,20 @@ function EditConcertPage() {
                                 </Button>
                               </InputGroup>
 
-                              <div style={{ marginTop: '0.45rem', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                              <Form.Select
+                                aria-label="Choose set for new song"
+                                value={selectedNewSongSectionIndex}
+                                onChange={(ev) => setNewSongSectionIndex(Number(ev.target.value))}
+                                style={{ ...styles.formControl, marginTop: '0.45rem' }}
+                              >
+                                {sections.map((sec, si) => (
+                                  <option key={`song-target-${si}`} value={si}>
+                                    Add to {sec.name || `Set ${si + 1}`}
+                                  </option>
+                                ))}
+                              </Form.Select>
+
+                              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                 <Button
                                   type="button"
                                   variant="success"
@@ -757,68 +864,112 @@ function EditConcertPage() {
                               }}
                             >
                               <div style={{ fontWeight: 600, color: 'var(--setlog-card-text)', marginBottom: '8px', fontSize: '0.95rem' }}>
-                                Current setlist ({normalizedSetlist.length})
+                                Current setlist ({songCountDisplay})
                               </div>
-                              {normalizedSetlist.length ? (
-                                <div style={{ maxHeight: '190px', overflowY: 'auto', scrollbarWidth: 'thin' }}>
-                                  <ListGroup>
-                                    {normalizedSetlist.map((title, idx) => (
-                                      <ListGroup.Item
-                                        key={`${title}-${idx}`}
+                              {songCountDisplay > 0 || sections.length > 1 ? (
+                                <div style={{ maxHeight: '240px', overflowY: 'auto', scrollbarWidth: 'thin' }}>
+                                  {sections.map((sec, si) => (
+                                    <div key={`sec-${si}`} style={{ marginBottom: si < sections.length - 1 ? '0.85rem' : 0 }}>
+                                      <div
                                         style={{
                                           display: 'flex',
                                           alignItems: 'center',
-                                          justifyContent: 'space-between',
-                                          gap: '10px',
-                                          background: 'var(--setlog-card-bg)',
-                                          border: '1px solid var(--setlog-card-border)',
-                                          paddingTop: '0.55rem',
-                                          paddingBottom: '0.55rem',
+                                          gap: '8px',
+                                          marginBottom: '6px',
+                                          flexWrap: 'wrap',
                                         }}
                                       >
-                                        <div
-                                          style={{
-                                            fontWeight: 500,
-                                            fontSize: '0.95rem',
-                                            color: 'var(--setlog-card-text)'
-                                          }}
-                                        >
-                                          {idx + 1}. {title}
-                                        </div>
-                                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
-                                          <Button
-                                            type="button"
-                                            size="sm"
-                                            variant="secondary"
-                                            onClick={() => handleMoveSong(idx, -1)}
-                                            disabled={idx === 0}
-                                            aria-label={`Move "${title}" up`}
-                                          >
-                                            <ArrowUp size={14} />
-                                          </Button>
-                                          <Button
-                                            type="button"
-                                            size="sm"
-                                            variant="secondary"
-                                            onClick={() => handleMoveSong(idx, 1)}
-                                            disabled={idx === normalizedSetlist.length - 1}
-                                            aria-label={`Move "${title}" down`}
-                                          >
-                                            <ArrowDown size={14} />
-                                          </Button>
+                                        <Form.Control
+                                          type="text"
+                                          aria-label={`Set ${si + 1} name`}
+                                          value={sec.name}
+                                          onChange={(ev) => handleSectionNameChange(si, ev.target.value)}
+                                          style={{ ...styles.formControl, maxWidth: '220px', flex: '1 1 140px' }}
+                                        />
+                                        {sections.length > 1 ? (
                                           <Button
                                             type="button"
                                             size="sm"
                                             variant="outline-danger"
-                                            onClick={() => handleRemoveSong(idx)}
-                                            aria-label={`Remove "${title}"`}
+                                            onClick={() => handleRemoveSet(si)}
+                                            aria-label={`Remove set ${si + 1}`}
                                           >
-                                            <Trash size={16} />
+                                            Remove set
                                           </Button>
-                                        </div>
-                                      </ListGroup.Item>
-                                    ))}
-                                  </ListGroup>
+                                        ) : null}
+                                      </div>
+                                      <ListGroup>
+                                        {sec.songs
+                                          .map((title, idx) => ({ title, idx }))
+                                          .filter(({ title }) => typeof title === 'string' && title.trim() !== '')
+                                          .map(({ title, idx }, displayIdx, visibleSongs) => (
+                                          <ListGroup.Item
+                                            key={`${si}-${idx}-${title}`}
+                                            style={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              justifyContent: 'space-between',
+                                              gap: '10px',
+                                              background: 'var(--setlog-card-bg)',
+                                              border: '1px solid var(--setlog-card-border)',
+                                              paddingTop: '0.55rem',
+                                              paddingBottom: '0.55rem',
+                                            }}
+                                          >
+                                            <div
+                                              style={{
+                                                fontWeight: 500,
+                                                fontSize: '0.95rem',
+                                                color: 'var(--setlog-card-text)',
+                                              }}
+                                            >
+                                              {displayIdx + 1}. {typeof title === 'string' ? title : ''}
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
+                                              <Button
+                                                type="button"
+                                                size="sm"
+                                                variant="secondary"
+                                                onClick={() => handleMoveSong(si, displayIdx, -1)}
+                                                disabled={si === 0 && displayIdx === 0}
+                                                aria-label="Move song up"
+                                              >
+                                                <ArrowUp size={14} />
+                                              </Button>
+                                              <Button
+                                                type="button"
+                                                size="sm"
+                                                variant="secondary"
+                                                onClick={() => handleMoveSong(si, displayIdx, 1)}
+                                                disabled={si === sections.length - 1 && displayIdx === visibleSongs.length - 1}
+                                                aria-label="Move song down"
+                                              >
+                                                <ArrowDown size={14} />
+                                              </Button>
+                                              <Button
+                                                type="button"
+                                                size="sm"
+                                                variant="outline-danger"
+                                                onClick={() => handleRemoveSong(si, idx)}
+                                                aria-label="Remove song"
+                                              >
+                                                <Trash size={16} />
+                                              </Button>
+                                            </div>
+                                          </ListGroup.Item>
+                                        ))}
+                                      </ListGroup>
+                                    </div>
+                                  ))}
+                                  <Button
+                                    type="button"
+                                    variant="outline-secondary"
+                                    size="sm"
+                                    className="mt-2"
+                                    onClick={handleAddSet}
+                                  >
+                                    Add set
+                                  </Button>
                                 </div>
                               ) : (
                                 <div style={{ marginTop: '0.45rem', color: 'var(--setlog-card-text-secondary)', fontSize: '0.85rem' }}>

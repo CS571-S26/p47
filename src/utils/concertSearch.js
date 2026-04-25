@@ -1,3 +1,5 @@
+import { getFlattenedSongs } from './setlistHelpers.js'
+
 function asLowerString(value) {
   if (value == null) return ''
   return String(value).trim().toLowerCase()
@@ -13,14 +15,8 @@ function haystackForConcert(concert) {
     concert.date,
   ].map(asLowerString)
 
-  if (Array.isArray(concert.setlist)) {
-    for (const song of concert.setlist) {
-      if (song != null && typeof song === 'object' && typeof song.title === 'string') {
-        parts.push(song.title.trim().toLowerCase())
-      } else if (typeof song === 'string') {
-        parts.push(song.trim().toLowerCase())
-      }
-    }
+  for (const song of getFlattenedSongs(concert)) {
+    if (typeof song === 'string') parts.push(song.trim().toLowerCase())
   }
 
   return parts.filter(Boolean).join('\u0000')

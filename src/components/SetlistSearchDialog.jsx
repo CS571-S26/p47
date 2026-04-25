@@ -150,7 +150,7 @@ function SetlistSearchDialog({ show, results, onHide, onSelect }) {
           borderTop: '1px solid var(--setlog-card-border)',
         }}
       >
-        <Button variant="outline-secondary" onClick={onHide}>
+        <Button variant="outline-danger" onClick={onHide}>
           Cancel
         </Button>
       </Modal.Footer>
