@@ -126,7 +126,7 @@ function LiveConcertPage() {
 
         const interval = setInterval(() => {
             loadSetlist()
-        }, 15000)
+        }, 30000)
 
         return () => clearInterval(interval)
     }, [tracking])
@@ -145,7 +145,7 @@ function LiveConcertPage() {
             </h1>
 
             <p style={{ color: 'var(--setlog-secondary-text)', marginBottom: '1rem' }}>
-                Track an ongoing show and refresh the setlist automatically every 15 seconds.
+                Track an ongoing show and refresh the setlist automatically every 30 seconds.
             </p>
 
             <Row>
