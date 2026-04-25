@@ -120,6 +120,18 @@ function AddConcertPage() {
   }
 
   const canImportFromSetlistFm = !!(artist.trim() || venue.trim() || city.trim() || date.trim())
+  const canSearchImages = !!(artist.trim() || date.trim() || venue.trim())
+
+  function handleSearchImages() {
+    const queryParts = []
+    if (artist.trim()) queryParts.push(artist.trim())
+    if (date.trim()) queryParts.push(date.trim())
+    if (venue.trim()) queryParts.push(venue.trim())
+
+    const query = encodeURIComponent(queryParts.join(' '))
+    const searchWindow = window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank')
+    if (searchWindow) searchWindow.opener = null
+  }
 
   async function handleImportFromSetlistFm() {
     setImportError('')
@@ -404,14 +416,25 @@ function AddConcertPage() {
                     <Col md={6}>
                       <Form.Group controlId="concert-image" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>Cover image URL</Form.Label>
-                        <Form.Control
-                          id="concert-image"
-                          type="url"
-                          placeholder="https://…"
-                          style={styles.formControl}
-                          value={image}
-                          onChange={(ev) => setImage(ev.target.value)}
-                        />
+                        <InputGroup>
+                          <Form.Control
+                            id="concert-image"
+                            type="url"
+                            placeholder="https://…"
+                            style={styles.formControl}
+                            value={image}
+                            onChange={(ev) => setImage(ev.target.value)}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline-secondary"
+                            onClick={handleSearchImages}
+                            disabled={!canSearchImages}
+                            style={{ borderRadius: '10px', fontSize: '0.9rem' }}
+                          >
+                            Search images
+                          </Button>
+                        </InputGroup>
                       </Form.Group>
                     </Col>
                   </Row>
