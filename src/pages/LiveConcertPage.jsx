@@ -3,7 +3,7 @@ import { Button, Form, Spinner, Alert, Col, Row } from 'react-bootstrap'
 import { RefreshCw, MapPin } from 'lucide-react'
 
 import SectionCard from '../components/SectionCard'
-import { searchFirstSetlist, extractSongTitles } from '../utils/setlistfm.js'
+import { searchFirstSetlist, extractSongTitles, extractSetlistSections } from '../utils/setlistfm.js'
 
 import './LiveConcertPage.css'
 
@@ -36,6 +36,7 @@ function LiveConcertPage() {
     const [tracking, setTracking] = useState(savedLiveConcert.tracking)
 
     const [songs, setSongs] = useState([])
+    const [sections, setSections] = useState([])
     const [loading, setLoading] = useState(false)
     const [lastChecked, setLastChecked] = useState(null)
     const [message, setMessage] = useState('')
@@ -71,7 +72,10 @@ function LiveConcertPage() {
                 setMessage('No setlist found yet. It may appear once someone updates it.')
             } else {
                 const foundSongs = extractSongTitles(setlist)
+                const foundSections = extractSetlistSections(setlist)
+
                 setSongs(foundSongs)
+                setSections(foundSections)
                 setMessage('')
             }
 
@@ -296,7 +300,6 @@ function LiveConcertPage() {
                             </div>
                         </SectionCard>
                     )}
-
                 </Col>
 
                 <Col md={8}>
@@ -326,12 +329,31 @@ function LiveConcertPage() {
                             </p>
                         ) : null}
 
-                        {songs.length > 0 ? (
-                            <ol style={{ marginTop: '1rem', marginBottom: 0, color: "var(--setlog-secondary-text)" }}>
-                                {songs.map((song, index) => (
-                                    <li key={`${song}-${index}`}>{song}</li>
+                        {sections.length > 0 ? (
+                            <div style={{ marginTop: '1rem' }}>
+                                {sections.map((section, sectionIndex) => (
+                                    <div key={`${section.name}-${sectionIndex}`} style={{ marginBottom: '1.25rem' }}>
+                                        <h3
+                                            style={{
+                                                fontSize: '1rem',
+                                                fontWeight: 800,
+                                                color: 'var(--setlog-primary)',
+                                                borderBottom: '1px solid var(--setlog-card-border)',
+                                                paddingBottom: '0.35rem',
+                                                marginBottom: '0.65rem',
+                                            }}
+                                        >
+                                            {section.name}
+                                        </h3>
+
+                                        <ol style={{ marginBottom: 0, color: 'var(--setlog-secondary-text)' }}>
+                                            {section.songs.map((song, index) => (
+                                                <li key={`${song}-${index}`}>{song}</li>
+                                            ))}
+                                        </ol>
+                                    </div>
                                 ))}
-                            </ol>
+                            </div>
                         ) : null}
                     </SectionCard>
                 </Col>

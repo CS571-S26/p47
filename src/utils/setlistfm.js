@@ -63,6 +63,43 @@ async function fetchJson(url, { headers } = {}) {
   return bodyJson
 }
 
+export function extractSetlistSections(setlist) {
+  const sections = []
+  const sets = setlist?.sets?.set
+  const setArr = Array.isArray(sets) ? sets : []
+
+  for (let i = 0; i < setArr.length; i++) {
+    const oneSet = setArr[i]
+    const songs = Array.isArray(oneSet?.song) ? oneSet.song : []
+
+    const isEncore = oneSet?.encore === 1 || oneSet?.encore === true
+
+    const sectionName =
+      typeof oneSet?.name === 'string' && oneSet.name.trim()
+        ? oneSet.name.trim()
+        : isEncore
+          ? 'Encore'
+          : `Set ${i + 1}`
+
+    const titles = []
+
+    for (const song of songs) {
+      const name = typeof song?.name === 'string' ? song.name.trim() : ''
+      if (name) titles.push(name)
+    }
+
+    if (titles.length > 0) {
+      sections.push({
+        name: sectionName,
+        encore: isEncore,
+        songs: titles,
+      })
+    }
+  }
+
+  return sections
+}
+
 export async function searchFirstSetlist({ artistName, venueName, date }) {
   const proxyBase = import.meta.env.VITE_SETLISTFM_PROXY_URL
   const apiKey = import.meta.env.VITE_SETLISTFM_API_KEY
