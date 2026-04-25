@@ -333,18 +333,40 @@ function LiveConcertPage() {
                             <div style={{ marginTop: '1rem' }}>
                                 {sections.map((section, sectionIndex) => (
                                     <div key={`${section.name}-${sectionIndex}`} style={{ marginBottom: '1.25rem' }}>
-                                        <h3
+                                        <div
                                             style={{
-                                                fontSize: '1rem',
-                                                fontWeight: 800,
-                                                color: 'var(--setlog-primary)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                gap: '0.75rem',
                                                 borderBottom: '1px solid var(--setlog-card-border)',
                                                 paddingBottom: '0.35rem',
                                                 marginBottom: '0.65rem',
                                             }}
                                         >
-                                            {section.name}
-                                        </h3>
+                                            <h3
+                                                style={{
+                                                    fontSize: '1rem',
+                                                    fontWeight: 800,
+                                                    color: section.encore ? '#ef4444' : 'var(--setlog-primary)',
+                                                    margin: 0,
+                                                }}
+                                            >
+                                                {section.name}
+                                            </h3>
+
+                                            {sectionIndex === 0 ? (
+                                                <span
+                                                    style={{
+                                                        fontSize: '0.85rem',
+                                                        fontWeight: 700,
+                                                        color: 'var(--setlog-secondary-text)',
+                                                    }}
+                                                >
+                                                    {songs.length} song{songs.length === 1 ? '' : 's'}
+                                                </span>
+                                            ) : null}
+                                        </div>
 
                                         <ol style={{ marginBottom: 0, color: 'var(--setlog-secondary-text)' }}>
                                             {section.songs.map((song, index) => (
