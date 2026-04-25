@@ -628,7 +628,7 @@ function EditConcertPage() {
                             disabled={!canSearchImages}
                             style={{ borderRadius: '10px', fontSize: '0.9rem' }}
                           >
-                            Search images
+                            Search
                           </Button>
                         </InputGroup>
                       </Form.Group>
