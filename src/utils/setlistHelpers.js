@@ -111,7 +111,7 @@ export function getFlattenedSongs(concert) {
 export function normalizeSetlistSectionsForForm(sections) {
   const base = Array.isArray(sections) && sections.length > 0 ? sections : [{ name: DEFAULT_SECTION_NAME, songs: [''] }]
   const mapped = base.map((sec) => {
-    const name = typeof sec?.name === 'string' && sec.name.trim() ? sec.name.trim() : DEFAULT_SECTION_NAME
+    const name = typeof sec?.name === 'string' && sec.name.trim() ? sec.name : DEFAULT_SECTION_NAME
     const rawSongs = Array.isArray(sec?.songs) ? sec.songs : []
     const songs = rawSongs.length ? rawSongs : ['']
     const encore = sec?.encore === true || sec?.encore === 1

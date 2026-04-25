@@ -59,6 +59,7 @@ function AddConcertPage() {
   const [notes, setNotes] = useState('')
   const [sections, setSections] = useState(() => initialSectionsFromLive(liveConcert))
   const [newSongTitle, setNewSongTitle] = useState('')
+  const [newSongSectionIndex, setNewSongSectionIndex] = useState(0)
 
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState('')
@@ -71,6 +72,7 @@ function AddConcertPage() {
 
   const stars = [1, 2, 3, 4, 5]
   const songCountDisplay = sections.reduce((n, s) => n + normalizeSetlist(s.songs).length, 0)
+  const selectedNewSongSectionIndex = Math.min(newSongSectionIndex, Math.max(sections.length - 1, 0))
 
   const styles = {
     formControl: {
@@ -253,9 +255,10 @@ function AddConcertPage() {
     if (!t) return
     setSections((prev) => {
       const next = prev.map((s) => ({ ...s, songs: [...s.songs] }))
-      const last = next[next.length - 1]
-      if (!last) return prev
-      last.songs = [...last.songs, t]
+      const targetIndex = Math.min(Math.max(newSongSectionIndex, 0), next.length - 1)
+      const target = next[targetIndex]
+      if (!target) return prev
+      target.songs = [...normalizeSetlist(target.songs), t]
       return normalizeSetlistSectionsForForm(next)
     })
     setNewSongTitle('')
@@ -274,15 +277,32 @@ function AddConcertPage() {
 
   function handleMoveSong(sectionIndex, songIndex, dir) {
     setSections((prev) => {
-      const next = prev.map((s, i) => (i === sectionIndex ? { ...s, songs: [...s.songs] } : s))
+      const next = prev.map((s) => ({ ...s, songs: normalizeSetlist(s.songs) }))
       const songs = next[sectionIndex]?.songs
       if (!songs) return prev
-      const j = songIndex + dir
       if (songIndex < 0 || songIndex >= songs.length) return prev
-      if (j < 0 || j >= songs.length) return prev
-      const tmp = songs[songIndex]
-      songs[songIndex] = songs[j]
-      songs[j] = tmp
+      const [song] = songs.splice(songIndex, 1)
+      if (!song) return prev
+
+      if (dir < 0) {
+        if (songIndex > 0) {
+          songs.splice(songIndex - 1, 0, song)
+        } else if (sectionIndex > 0) {
+          next[sectionIndex - 1].songs.push(song)
+        } else {
+          songs.unshift(song)
+        }
+      } else if (songIndex < songs.length) {
+        songs.splice(songIndex + 1, 0, song)
+      } else if (sectionIndex < next.length - 1) {
+        next[sectionIndex + 1].songs.unshift(song)
+      } else {
+        songs.push(song)
+      }
+
+      next.forEach((sec) => {
+        if (sec.songs.length === 0) sec.songs = ['']
+      })
       return normalizeSetlistSectionsForForm(next)
     })
   }
@@ -295,6 +315,8 @@ function AddConcertPage() {
   }
 
   function handleAddSet() {
+    const nextSectionIndex = sections.length
+    setNewSongSectionIndex(nextSectionIndex)
     setSections((prev) => {
       const n = prev.length + 1
       return normalizeSetlistSectionsForForm([...prev.map((s) => ({ ...s, songs: [...s.songs] })), { name: `Set ${n}`, songs: [''] }])
@@ -571,7 +593,7 @@ function AddConcertPage() {
                                 height: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                justifyContent: 'space-between'
+                                gap: '0.45rem',
                               }}
                             >
                               <InputGroup>
@@ -601,7 +623,20 @@ function AddConcertPage() {
                                 </Button>
                               </InputGroup>
 
-                              <div style={{ marginTop: '0.45rem', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                              <Form.Select
+                                aria-label="Choose set for new song"
+                                value={selectedNewSongSectionIndex}
+                                onChange={(ev) => setNewSongSectionIndex(Number(ev.target.value))}
+                                style={{ ...styles.formControl, marginTop: '0.45rem' }}
+                              >
+                                {sections.map((sec, si) => (
+                                  <option key={`song-target-${si}`} value={si}>
+                                    Add to {sec.name || `Set ${si + 1}`}
+                                  </option>
+                                ))}
+                              </Form.Select>
+
+                              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
                                 <Button
                                   type="button"
                                   variant="success"
@@ -707,7 +742,10 @@ function AddConcertPage() {
                                         ) : null}
                                       </div>
                                       <ListGroup>
-                                        {sec.songs.map((title, idx) => (
+                                        {sec.songs
+                                          .map((title, idx) => ({ title, idx }))
+                                          .filter(({ title }) => typeof title === 'string' && title.trim() !== '')
+                                          .map(({ title, idx }, displayIdx, visibleSongs) => (
                                           <ListGroup.Item
                                             key={`${si}-${idx}-${title}`}
                                             style={{
@@ -728,15 +766,15 @@ function AddConcertPage() {
                                                 color: 'var(--setlog-card-text)',
                                               }}
                                             >
-                                              {idx + 1}. {typeof title === 'string' ? title : ''}
+                                              {displayIdx + 1}. {typeof title === 'string' ? title : ''}
                                             </div>
                                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
                                               <Button
                                                 type="button"
                                                 size="sm"
                                                 variant="secondary"
-                                                onClick={() => handleMoveSong(si, idx, -1)}
-                                                disabled={idx === 0}
+                                                onClick={() => handleMoveSong(si, displayIdx, -1)}
+                                                disabled={si === 0 && displayIdx === 0}
                                                 aria-label="Move song up"
                                               >
                                                 <ArrowUp size={14} />
@@ -745,8 +783,8 @@ function AddConcertPage() {
                                                 type="button"
                                                 size="sm"
                                                 variant="secondary"
-                                                onClick={() => handleMoveSong(si, idx, 1)}
-                                                disabled={idx === sec.songs.length - 1}
+                                                onClick={() => handleMoveSong(si, displayIdx, 1)}
+                                                disabled={si === sections.length - 1 && displayIdx === visibleSongs.length - 1}
                                                 aria-label="Move song down"
                                               >
                                                 <ArrowDown size={14} />
