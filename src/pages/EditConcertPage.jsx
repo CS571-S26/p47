@@ -171,6 +171,8 @@ function EditConcertPage() {
     const queryParts = []
     if (artist.trim()) queryParts.push(artist.trim())
     if (venue.trim()) queryParts.push(venue.trim())
+    const cleanedCity = formatCityState(city)
+    if (CITY_STATE_PATTERN.test(cleanedCity)) queryParts.push(cleanedCity)
 
     const query = encodeURIComponent(queryParts.join(' '))
     const searchWindow = window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank')
