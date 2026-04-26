@@ -458,17 +458,59 @@ function ConcertDetailPage() {
                     maxWidth: '360px',
                     height: '290px',
                     borderRadius: '12px',
-                    background: "var(--setlog-card-bg-secondary)",
+                    background: 'var(--setlog-no-image-bg)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    flexDirection: 'column',
                     border: '1px solid var(--setlog-card-border)',
-                    color: "var(--setlog-card-text-secondary)",
+                    color: 'var(--white)',
                     fontSize: "13px",
-                    fontWeight: 700,
+                    fontWeight: 800,
                   }}
                 >
-                  No image
+                  <div
+                    style={{
+                      fontSize: '0.95rem',
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      opacity: 0.85,
+                      marginBottom: '0.25rem',
+                    }}
+                  >
+                    SetLog
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize: '2rem',
+                      lineHeight: 1.15,
+                      maxWidth: '90%',
+                      overflow: 'hidden',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                    }}
+                  >
+                    {concert.artist || 'Unknown Artist'}
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize: '1.4rem',
+                      fontWeight: 600,
+                      lineHeight: 1.2,
+                      maxWidth: '85%',
+                      opacity: 0.85,
+                      marginTop: '0.5rem',
+                      overflow: 'hidden',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                    }}
+                  >
+                    {concert.venue || 'Unknown Venue'}
+                  </div>
                 </div>
               )}
             </Col>

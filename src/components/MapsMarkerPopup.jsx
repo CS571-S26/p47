@@ -76,22 +76,61 @@ function MapsMarkerPopup({ concerts }) {
       ) : (
         <div
           aria-hidden
+          className="timeline-concert-image"
           style={{
-            width: "100%",
-            height: "120px",
-            borderRadius: "0.5rem",
-            marginBottom: "0.5rem",
-            background: "var(--setlog-card-bg-secondary)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "var(--setlog-card-text-secondary)",
+            background: 'var(--setlog-no-image-bg)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
             border: '1px solid var(--setlog-card-border)',
-            fontSize: "12px",
-            fontWeight: 600,
+            color: 'var(--white)',
+            fontWeight: 800,
           }}
         >
-          No image
+          <div
+            style={{
+              fontSize: '0.72rem',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              opacity: 0.85,
+              marginBottom: '0.25rem',
+            }}
+          >
+            SetLog
+          </div>
+
+          <div
+            style={{
+              fontSize: '1.15rem',
+              lineHeight: 1.15,
+              maxWidth: '90%',
+              overflow: 'hidden',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
+            {concert.artist || 'Unknown Artist'}
+          </div>
+
+          <div
+            style={{
+              fontSize: '1rem',
+              fontWeight: 600,
+              lineHeight: 1.2,
+              maxWidth: '85%',
+              opacity: 0.85,
+              marginTop: '0.5rem',
+              overflow: 'hidden',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
+            {concert.venue || 'Unknown Venue'}
+          </div>
         </div>
       )}
 

@@ -67,128 +67,180 @@ function TimelineConcert({ concert }) {
                 style={{ cursor: 'pointer' }}
                 onClick={handleViewDetails}
             >
-            { /* Date Card */}
-            <Col xs="auto" className="timeline-date-column">
-                <div className="timeline-date-card">
-                    <div className="timeline-date-month">{monthLabel}</div>
-                    <div className="timeline-date-day">{day}</div>
-                    <div className="timeline-date-year">{year}</div>
-                </div>
-            </Col>
-
-            { /* Concert Image */}
-            <Col xs="auto" className="timeline-image-column">
-                {imageUrl ? (
-                    <img
-                        src={imageUrl}
-                        alt=""
-                        className="timeline-concert-image"
-                    />
-                ) : (
-                    <div
-                        aria-hidden
-                        className="timeline-concert-image timeline-concert-image-placeholder"
-                    >
-                        No image
+                { /* Date Card */}
+                <Col xs="auto" className="timeline-date-column">
+                    <div className="timeline-date-card">
+                        <div className="timeline-date-month">{monthLabel}</div>
+                        <div className="timeline-date-day">{day}</div>
+                        <div className="timeline-date-year">{year}</div>
                     </div>
-                )}
-            </Col>
+                </Col>
 
-            { /* Concert Information */}
-            <Col className="timeline-details-column">
-                <div className="timeline-concert-title-row">
-                    <div className="timeline-concert-title">{concert.artist}</div>
-                    {countdownLabel && (
-                        <span className="timeline-concert-tag timeline-concert-tag-countdown timeline-concert-title-countdown">
-                            {countdownLabel}
-                        </span>
-                    )}
-                </div>
-                <div className="timeline-concert-venue">
-                    {concert.venue} • {concert.city}
-                </div>
-
-                { /* Rating Row */}
-                <Row className="timeline-rating-row">
-                    <Col xs="auto">
-                        <span
-                            className="timeline-rating-stars"
+                { /* Concert Image */}
+                <Col xs="auto" className="timeline-image-column">
+                    {imageUrl ? (
+                        <img
+                            src={imageUrl}
+                            alt=""
+                            className="timeline-concert-image"
+                        />
+                    ) : (
+                        <div
                             aria-hidden
-                        >
-                            <span style={{ color: 'var(--setlog-rating-filled)' }}>{'★'.repeat(concert.rating)}</span>
-                            {'☆'.repeat(5 - concert.rating)}
-                        </span>
-                    </Col>
-                    <Col>
-                        <span className="timeline-rating-value">
-                            {concert.rating}.0
-                        </span>
-                    </Col>
-
-                    <Col
-                        xs={12}
-                        md="auto"
-                        className="timeline-tags-column"
-                    >
-                        <span className="timeline-concert-tag timeline-concert-tag-genre">
-                            {concert.genre}
-                        </span>
-
-                        {concert.attended && (
-                            <span className="timeline-concert-tag timeline-concert-tag-attended">
-                                Attended
-                            </span>
-                        )}
-
-                        {concert.favorite && (
-                            <span className="timeline-concert-tag timeline-concert-tag-favorite">
-                                ★
-                            </span>
-                        )}
-                    </Col>
-
-
-                </Row>
-
-                { /* Song Count Row */}
-                <Row className="timeline-song-row">
-                    <Col xs="auto">
-                        <Clock size={16} style={{ color: 'var(--setlog-card-text)' }} aria-hidden />
-                    </Col>
-                    <Col xs="auto">
-                        <span className="timeline-song-count">{songCount} songs</span>
-                    </Col>
-
-                    <Col
-                        className="timeline-actions-column"
-                    >
-                        <Button
-                            type="button"
-                            className="timeline-action-button"
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                handleViewDetails()
+                            className="timeline-concert-image"
+                            style={{
+                                background: 'var(--setlog-no-image-bg)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                textAlign: 'center',
+                                border: '1px solid var(--setlog-card-border)',
+                                color: 'var(--white)',
+                                fontWeight: 800,
                             }}
                         >
-                            View Details
-                        </Button>
-                        {loginStatus.loggedIn && (
-                            <Button
-                                type="button"
-                                variant="outline-danger"
-                                className="timeline-action-button timeline-delete-button"
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    setDeleteConfirmOpen(true)
+                            <div
+                                style={{
+                                    fontSize: '0.72rem',
+                                    letterSpacing: '0.08em',
+                                    textTransform: 'uppercase',
+                                    opacity: 0.85,
+                                    marginBottom: '0.25rem',
                                 }}
                             >
-                                <Trash size={16} aria-hidden />
-                                Delete
-                            </Button>)}
-                    </Col>
+                                SetLog
+                            </div>
 
-                </Row>
-            </Col>
+                            <div
+                                style={{
+                                    fontSize: '1.15rem',
+                                    lineHeight: 1.15,
+                                    maxWidth: '90%',
+                                    overflow: 'hidden',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                }}
+                            >
+                                {concert.artist || 'Unknown Artist'}
+                            </div>
+
+                            <div
+                                style={{
+                                    fontSize: '1rem',
+                                    fontWeight: 600,
+                                    lineHeight: 1.2,
+                                    maxWidth: '85%',
+                                    opacity: 0.85,
+                                    marginTop: '0.5rem',
+                                    overflow: 'hidden',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                }}
+                            >
+                                {concert.venue || 'Unknown Venue'}
+                            </div>
+                        </div>
+                    )}
+                </Col>
+
+                { /* Concert Information */}
+                <Col className="timeline-details-column">
+                    <div className="timeline-concert-title-row">
+                        <div className="timeline-concert-title">{concert.artist}</div>
+                        {countdownLabel && (
+                            <span className="timeline-concert-tag timeline-concert-tag-countdown timeline-concert-title-countdown">
+                                {countdownLabel}
+                            </span>
+                        )}
+                    </div>
+                    <div className="timeline-concert-venue">
+                        {concert.venue} • {concert.city}
+                    </div>
+
+                    { /* Rating Row */}
+                    <Row className="timeline-rating-row">
+                        <Col xs="auto">
+                            <span
+                                className="timeline-rating-stars"
+                                aria-hidden
+                            >
+                                <span style={{ color: 'var(--setlog-rating-filled)' }}>{'★'.repeat(concert.rating)}</span>
+                                {'☆'.repeat(5 - concert.rating)}
+                            </span>
+                        </Col>
+                        <Col>
+                            <span className="timeline-rating-value">
+                                {concert.rating}.0
+                            </span>
+                        </Col>
+
+                        <Col
+                            xs={12}
+                            md="auto"
+                            className="timeline-tags-column"
+                        >
+                            <span className="timeline-concert-tag timeline-concert-tag-genre">
+                                {concert.genre}
+                            </span>
+
+                            {concert.attended && (
+                                <span className="timeline-concert-tag timeline-concert-tag-attended">
+                                    Attended
+                                </span>
+                            )}
+
+                            {concert.favorite && (
+                                <span className="timeline-concert-tag timeline-concert-tag-favorite">
+                                    ★
+                                </span>
+                            )}
+                        </Col>
+
+
+                    </Row>
+
+                    { /* Song Count Row */}
+                    <Row className="timeline-song-row">
+                        <Col xs="auto">
+                            <Clock size={16} style={{ color: 'var(--setlog-card-text)' }} aria-hidden />
+                        </Col>
+                        <Col xs="auto">
+                            <span className="timeline-song-count">{songCount} songs</span>
+                        </Col>
+
+                        <Col
+                            className="timeline-actions-column"
+                        >
+                            <Button
+                                type="button"
+                                className="timeline-action-button"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleViewDetails()
+                                }}
+                            >
+                                View Details
+                            </Button>
+                            {loginStatus.loggedIn && (
+                                <Button
+                                    type="button"
+                                    variant="outline-danger"
+                                    className="timeline-action-button timeline-delete-button"
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        setDeleteConfirmOpen(true)
+                                    }}
+                                >
+                                    <Trash size={16} aria-hidden />
+                                    Delete
+                                </Button>)}
+                        </Col>
+
+                    </Row>
+                </Col>
             </div>
         </>
     )

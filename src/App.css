@@ -12,6 +12,11 @@
       #e8d7cf 38%,
       #ead7ad 72%,
       #f6f4ef 100%);
+  --setlog-no-image-bg: linear-gradient(135deg,
+      #8b5cf6 0%,
+      #ec4899 35%,
+      #f97316 70%,
+      #facc15 100%);
   --setlog-primary-text: #000000;
   --setlog-secondary-text: #2a2630;
   --setlog-blue-text: #3730a3;
@@ -54,6 +59,11 @@
       #2a1f2b 38%,
       #332a24 72%,
       #121316 100%);
+  --setlog-no-image-bg: linear-gradient(135deg,
+      #312e81 0%,
+      #7f1d1d 38%,
+      #9a3412 72%,
+      #422006 100%);
   --setlog-primary-text: #ffffff;
   --setlog-secondary-text: #e2e8f0;
   --setlog-blue-text: #c4b5fd;
