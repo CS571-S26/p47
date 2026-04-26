@@ -1,8 +1,9 @@
 import { useContext } from 'react'
 import { Card } from 'react-bootstrap'
-import { Calendar, Users, MapPin, Star } from 'lucide-react'
+import { Calendar, Users, MapPin, Star, Clock } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
+import { daysUntilLocalDate } from '../utils/localDate.js'
 
 import StatRow from '../components/StatRow'
 
@@ -10,6 +11,11 @@ function TimelineStats({ compact = false }) {
   const { concerts } = useContext(ConcertsContext)
 
   const n = concerts.length
+  const today = new Date()
+  const upcomingShows = concerts.filter((c) => {
+    const daysUntil = daysUntilLocalDate(c?.date, today)
+    return daysUntil !== null && daysUntil > 0
+  }).length
   const artists = new Set(
     concerts
       .filter((c) => c.attended)
@@ -32,6 +38,7 @@ function TimelineStats({ compact = false }) {
 
   const stats = {
     showsLogged: n,
+    upcomingShows,
     artistsSeen: artists.size,
     citiesVisited: cities.size,
     avgRating: Math.round(avgRating * 10) / 10,
@@ -64,6 +71,13 @@ function TimelineStats({ compact = false }) {
         icon={<Calendar size={compact ? '15px' : '20px'} color="var(--setlog-card-text)" aria-hidden />}
         value={stats.showsLogged}
         label="Shows Logged"
+        compact={compact}
+      />
+
+      <StatRow
+        icon={<Clock size={compact ? '15px' : '20px'} color="var(--setlog-card-text)" aria-hidden />}
+        value={stats.upcomingShows}
+        label="Upcoming Shows"
         compact={compact}
       />
 

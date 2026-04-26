@@ -11,7 +11,7 @@ import {
   filterConcertsByQuery,
   normalizeConcertSearchQuery,
 } from '../utils/concertSearch.js'
-import { concertDateToDate } from '../utils/localDate.js'
+import { concertDateToDate, daysUntilLocalDate } from '../utils/localDate.js'
 
 function TimelinePage() {
   const { concerts, loading: concertsLoading } = useContext(ConcertsContext)
@@ -38,10 +38,12 @@ function TimelinePage() {
   }
 
   const strField = (v) => (typeof v === 'string' ? v.trim() : '')
+  const today = new Date()
   const dateMs = (c) => {
     const t = concertDateToDate(strField(c?.date)).getTime()
     return Number.isFinite(t) ? t : Number.NEGATIVE_INFINITY
   }
+  const daysUntil = (c) => daysUntilLocalDate(strField(c?.date), today)
 
   const cmpStringAsc = (field) => (a, b) =>
     strField(a?.[field]).localeCompare(strField(b?.[field]), undefined, {
@@ -60,6 +62,17 @@ function TimelinePage() {
       Number(Boolean(b?.favorite)) - Number(Boolean(a?.favorite)),
     attended_first: (a, b) =>
       Number(Boolean(b?.attended)) - Number(Boolean(a?.attended)),
+    upcoming_first: (a, b) => {
+      const aDays = daysUntil(a)
+      const bDays = daysUntil(b)
+      const aIsFuture = aDays !== null && aDays > 0
+      const bIsFuture = bDays !== null && bDays > 0
+
+      if (aIsFuture !== bIsFuture) return aIsFuture ? -1 : 1
+      if (aIsFuture && bIsFuture && aDays !== bDays) return aDays - bDays
+
+      return dateMs(b) - dateMs(a)
+    },
   }
 
   const filtered = filterConcertsByQuery(concerts, queryRaw)
@@ -241,6 +254,7 @@ function TimelinePage() {
               <option value="genre_asc">Genre: A → Z</option>
               <option value="favorites_first">Favorites first</option>
               <option value="attended_first">Attended first</option>
+              <option value="upcoming_first">Upcoming first</option>
               <option value="rating_desc">Rating: High → Low</option>
             </Form.Select>
           </div>

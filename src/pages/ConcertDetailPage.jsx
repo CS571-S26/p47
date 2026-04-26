@@ -20,6 +20,7 @@ import {
   readStoredSpotifyPendingAction,
 } from '../utils/spotifyAuth.js'
 import { getFlattenedSongs, getSetlistSections } from '../utils/setlistHelpers.js'
+import { concertDateToDate, daysUntilLocalDate } from '../utils/localDate.js'
 
 function ConcertDetailPage() {
   const { concerts, deleteConcert, updateConcert } = useContext(ConcertsContext)
@@ -243,18 +244,23 @@ function ConcertDetailPage() {
   }
   const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
-  const [year, month, day] = concert.date.split('-').map(Number)
-  const monthLabel = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+  const concertDate = concertDateToDate(concert.date)
+  const hasValidDate = !Number.isNaN(concertDate.getTime())
+  const year = hasValidDate ? concertDate.getFullYear() : ''
+  const day = hasValidDate ? concertDate.getDate() : ''
+  const monthLabel = hasValidDate ? concertDate.toLocaleDateString('en-US', {
     month: 'short',
-  }).toUpperCase()
-  const fullDateLabel = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+  }).toUpperCase() : ''
+  const fullDateLabel = hasValidDate ? concertDate.toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
-  })
-  const dayOfWeek = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+  }) : 'Date unavailable'
+  const dayOfWeek = hasValidDate ? concertDate.toLocaleDateString('en-US', {
     weekday: 'long',
-  })
+  }) : 'Unknown'
+  const daysUntil = daysUntilLocalDate(concert.date)
+  const countdownLabel = daysUntil > 0 ? `In ${daysUntil} day${daysUntil === 1 ? '' : 's'}` : ''
 
   const styles = {
     topButton: {
@@ -337,6 +343,17 @@ function ConcertDetailPage() {
       color: 'var(--setlog-card-text-secondary)',
       textTransform: 'uppercase',
       letterSpacing: '0.04em',
+    },
+    detailCountdown: {
+      display: 'inline-flex',
+      width: 'fit-content',
+      marginTop: '5px',
+      padding: '3px 8px',
+      borderRadius: '999px',
+      background: 'var(--tag-countdown-bg)',
+      color: 'var(--tag-countdown-text)',
+      fontSize: '0.75rem',
+      fontWeight: 800,
     }
   }
 
@@ -546,6 +563,11 @@ function ConcertDetailPage() {
                 <div style={styles.dateMonth}>{monthLabel}</div>
                 <div style={styles.dateDay}>{day}</div>
                 <div style={styles.dateYear}>{year}</div>
+                {countdownLabel ? (
+                  <div style={{ ...styles.detailCountdown, margin: '0 auto 8px' }}>
+                    {countdownLabel}
+                  </div>
+                ) : null}
               </div>
             </Col>
           </Row>
@@ -568,6 +590,9 @@ function ConcertDetailPage() {
                     <div>
                       <div style={styles.detailStatValue}>{dayOfWeek}</div>
                       <div style={styles.detailStatLabel}>{fullDateLabel}</div>
+                      {countdownLabel ? (
+                        <div style={styles.detailCountdown}>{countdownLabel}</div>
+                      ) : null}
                     </div>
                   </div>
                 </Col>
