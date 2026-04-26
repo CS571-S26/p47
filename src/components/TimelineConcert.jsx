@@ -96,7 +96,14 @@ function TimelineConcert({ concert }) {
 
             { /* Concert Information */}
             <Col className="timeline-details-column">
-                <div className="timeline-concert-title">{concert.artist}</div>
+                <div className="timeline-concert-title-row">
+                    <div className="timeline-concert-title">{concert.artist}</div>
+                    {countdownLabel && (
+                        <span className="timeline-concert-tag timeline-concert-tag-countdown timeline-concert-title-countdown">
+                            {countdownLabel}
+                        </span>
+                    )}
+                </div>
                 <div className="timeline-concert-venue">
                     {concert.venue} • {concert.city}
                 </div>
@@ -130,12 +137,6 @@ function TimelineConcert({ concert }) {
                         {concert.attended && (
                             <span className="timeline-concert-tag timeline-concert-tag-attended">
                                 Attended
-                            </span>
-                        )}
-
-                        {countdownLabel && (
-                            <span className="timeline-concert-tag timeline-concert-tag-countdown">
-                                {countdownLabel}
                             </span>
                         )}
 
