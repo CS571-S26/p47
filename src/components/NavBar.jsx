@@ -186,12 +186,44 @@ function NavBar({ theme, setTheme }) {
 
         <div className="d-flex d-lg-none align-items-center gap-2">
           <Button
+            as={NavLink}
+            to="/add-concert"
+            variant="dark"
+            onClick={() => setExpanded(false)}
+            aria-label="Add concert"
+            style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '10px',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <CirclePlus size={iconSize} />
+          </Button>
+
+          <Button
             variant="dark"
             type="button"
             onClick={handleToggleTheme}
             aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
+            style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '10px',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            {theme === 'light' ? <Moon size={iconSize} aria-hidden /> : <Sun size={iconSize} aria-hidden />}
+            {theme === 'light' ? (
+              <Moon size={iconSize} aria-hidden />
+            ) : (
+              <Sun size={iconSize} aria-hidden />
+            )}
           </Button>
 
           {loginStatus.loggedIn ? (
@@ -205,13 +237,20 @@ function NavBar({ theme, setTheme }) {
                 borderRadius: '999px',
                 padding: 0,
                 overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               {avatarUrl ? (
                 <img
                   src={avatarUrl}
                   alt=""
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                  }}
                 />
               ) : (
                 <div
@@ -237,7 +276,14 @@ function NavBar({ theme, setTheme }) {
             accountButton('', '42px')
           )}
 
-          <Navbar.Toggle aria-controls={NAV_COLLAPSE_ID} />
+          <Navbar.Toggle
+            aria-controls={NAV_COLLAPSE_ID}
+            style={{
+              width: '42px',
+              height: '42px',
+              padding: 0,
+            }}
+          />
         </div>
 
 
