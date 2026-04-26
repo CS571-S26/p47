@@ -14,7 +14,7 @@ const LIVE_CONCERT_STORAGE_KEY = 'p47:liveConcert'
 function readLiveConcert() {
     try {
         const raw = localStorage.getItem(LIVE_CONCERT_STORAGE_KEY)
-        if (!raw) return { artist: '', venue: '', date: new Date().toISOString().slice(0, 10), tracking: false }
+        if (!raw) return { artist: '', venue: '', date: new Date().toISOString().slice(0, 10), tracking: false, notes: '' }
 
         const saved = JSON.parse(raw)
 
@@ -23,6 +23,7 @@ function readLiveConcert() {
             venue: typeof saved.venue === 'string' ? saved.venue : '',
             date: typeof saved.date === 'string' && saved.date ? saved.date : new Date().toISOString().slice(0, 10),
             tracking: saved.tracking === true,
+            notes: typeof saved.notes === 'string' ? saved.notes : '',
         }
     } catch {
         return { artist: '', venue: '', date: new Date().toISOString().slice(0, 10) }
@@ -34,6 +35,7 @@ function LiveSetlistPage() {
 
     const [artist, setArtist] = useState(savedLiveConcert.artist)
     const [venue, setVenue] = useState(savedLiveConcert.venue)
+    const [notes, setNotes] = useState(savedLiveConcert.notes)
     const [date, setDate] = useState(savedLiveConcert.date)
     const [tracking, setTracking] = useState(savedLiveConcert.tracking)
 
@@ -78,7 +80,7 @@ function LiveSetlistPage() {
                 const foundSections = extractSetlistSections(setlist)
                 const normalized = normalizeSetlistSections(foundSections)
                 const foundSongs =
-                  normalized.length > 0 ? flattenNormalizedSetlistSections(normalized) : []
+                    normalized.length > 0 ? flattenNormalizedSetlistSections(normalized) : []
 
                 setSongs(foundSongs)
                 setSections(foundSections)
@@ -100,6 +102,7 @@ function LiveSetlistPage() {
                     artist,
                     venue,
                     date,
+                    notes,
                     setlist: songs,
                     setlistSections: sections,
                 },
@@ -118,10 +121,11 @@ function LiveSetlistPage() {
             venue,
             date,
             tracking,
+            notes
         }
 
         localStorage.setItem(LIVE_CONCERT_STORAGE_KEY, JSON.stringify(liveConcert))
-    }, [artist, venue, date, tracking])
+    }, [artist, venue, date, tracking, notes])
 
     useEffect(() => {
         if (!tracking) return undefined
@@ -208,103 +212,123 @@ function LiveSetlistPage() {
                             </Form>
                         </SectionCard>
                     ) : (
-                        <SectionCard title="Current Tracking Show">
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '0.75rem',
-                                }}
-                            >
-                                <div>
-                                    <p
-                                        style={{
-                                            margin: 0,
-                                            marginBottom: '0.25rem',
-                                            fontSize: '0.8rem',
-                                            fontWeight: 700,
-                                            letterSpacing: '0.08em',
-                                            textTransform: 'uppercase',
-                                            color: 'var(--setlog-primary)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.45rem',
-                                        }}
-                                    >
-                                        <span className="live-dot"></span>
-                                        Now Tracking
-                                    </p>
-
-                                    <h2
-                                        style={{
-                                            fontSize: 'clamp(1.9rem, 6vw, 2.75rem)',
-                                            fontWeight: 800,
-                                            margin: 0,
-                                            color: 'var(--setlog-card-text)',
-                                            lineHeight: 1.05,
-                                        }}
-                                    >
-                                        {artist}
-                                    </h2>
-                                </div>
-
+                        <>
+                            <SectionCard title="Current Tracking Show">
                                 <div
                                     style={{
                                         display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.6rem',
-                                        color: 'var(--setlog-card-text)',
+                                        flexDirection: 'column',
+                                        gap: '0.75rem',
                                     }}
                                 >
-                                    <MapPin
-                                        size={22}
-                                        color="var(--setlog-primary)"
-                                        style={{ flexShrink: 0 }}
-                                    />
+                                    <div>
+                                        <p
+                                            style={{
+                                                margin: 0,
+                                                marginBottom: '0.25rem',
+                                                fontSize: '0.8rem',
+                                                fontWeight: 700,
+                                                letterSpacing: '0.08em',
+                                                textTransform: 'uppercase',
+                                                color: 'var(--setlog-primary)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.45rem',
+                                            }}
+                                        >
+                                            <span className="live-dot"></span>
+                                            Now Tracking
+                                        </p>
 
-                                    <span
+                                        <h2
+                                            style={{
+                                                fontSize: 'clamp(1.9rem, 6vw, 2.75rem)',
+                                                fontWeight: 800,
+                                                margin: 0,
+                                                color: 'var(--setlog-card-text)',
+                                                lineHeight: 1.05,
+                                            }}
+                                        >
+                                            {artist}
+                                        </h2>
+                                    </div>
+
+                                    <div
                                         style={{
-                                            fontSize: '1.05rem',
-                                            fontWeight: 600,
-                                            lineHeight: 1.25,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.6rem',
+                                            color: 'var(--setlog-card-text)',
                                         }}
                                     >
-                                        {venue}
-                                    </span>
+                                        <MapPin
+                                            size={22}
+                                            color="var(--setlog-primary)"
+                                            style={{ flexShrink: 0 }}
+                                        />
+
+                                        <span
+                                            style={{
+                                                fontSize: '1.05rem',
+                                                fontWeight: 600,
+                                                lineHeight: 1.25,
+                                            }}
+                                        >
+                                            {venue}
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            display: 'inline-flex',
+                                            alignSelf: 'flex-start',
+                                            borderRadius: '999px',
+                                            padding: '0.35rem 0.7rem',
+                                            backgroundColor: 'var(--setlog-card-bg-secondary)',
+                                            color: 'var(--setlog-secondary-text)',
+                                            fontSize: '0.9rem',
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        {date}
+                                    </div>
+
+                                    <Button
+                                        type="button"
+                                        variant="outline-danger"
+                                        onClick={() => setTracking(false)}
+                                    >
+                                        Stop Tracking
+                                    </Button>
+
+                                    <Button
+                                        type="button"
+                                        onClick={saveToLogConcert}
+                                        disabled={!artist.trim() || !venue.trim()}
+                                    >
+                                        Save to Concert Log
+                                    </Button>
                                 </div>
+                            </SectionCard>
+                            <SectionCard title="Live Notes">
+                                <Form.Group>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={5}
+                                        value={notes}
+                                        onChange={(e) => setNotes(e.target.value)}
+                                        placeholder="Write notes as the concert happens..."
+                                        style={{
+                                            resize: 'vertical',
+                                            minHeight: '120px',
+                                        }}
+                                    />
+                                </Form.Group>
+                            </SectionCard>
 
-                                <div
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignSelf: 'flex-start',
-                                        borderRadius: '999px',
-                                        padding: '0.35rem 0.7rem',
-                                        backgroundColor: 'var(--setlog-card-bg-secondary)',
-                                        color: 'var(--setlog-secondary-text)',
-                                        fontSize: '0.9rem',
-                                        fontWeight: 600,
-                                    }}
-                                >
-                                    {date}
-                                </div>
+                        </>
 
-                                <Button
-                                    type="button"
-                                    variant="outline-danger"
-                                    onClick={() => setTracking(false)}
-                                >
-                                    Stop Tracking
-                                </Button>
 
-                                <Button
-                                    type="button"
-                                    onClick={saveToLogConcert}
-                                    disabled={!artist.trim() || !venue.trim()}
-                                >
-                                    Save to Concert Log
-                                </Button>
-                            </div>
-                        </SectionCard>
                     )}
                 </Col>
 

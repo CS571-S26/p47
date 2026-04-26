@@ -5,13 +5,18 @@
 
 /* Light Mode — primaries tuned for ≥4.5:1 with white button text (WCAG AA) */
 [data-theme='light'] {
-  --setlog-primary: #9a450c;
-  --setlog-primary-hover: #7a370a;
+  --setlog-primary: #d46318;
+  --setlog-primary-hover: #a94d12;
   --setlog-page-bg: linear-gradient(180deg,
       #d5cef3 0%,
       #e8d7cf 38%,
       #ead7ad 72%,
       #f6f4ef 100%);
+  --setlog-no-image-bg: linear-gradient(135deg,
+      #8b5cf6 0%,
+      #ec4899 35%,
+      #f97316 70%,
+      #facc15 100%);
   --setlog-primary-text: #000000;
   --setlog-secondary-text: #2a2630;
   --setlog-blue-text: #3730a3;
@@ -47,13 +52,18 @@
 
 /* Dark Mode — stronger text on fills; primary dark enough for white label text */
 [data-theme='dark'] {
-  --setlog-primary: #6f381a;
-  --setlog-primary-hover: #5c2e15;
+  --setlog-primary: #d46318;
+  --setlog-primary-hover: #b45309;
   --setlog-page-bg: linear-gradient(180deg,
       #2b263e 0%,
       #2a1f2b 38%,
       #332a24 72%,
       #121316 100%);
+  --setlog-no-image-bg: linear-gradient(135deg,
+      #312e81 0%,
+      #7f1d1d 38%,
+      #9a3412 72%,
+      #422006 100%);
   --setlog-primary-text: #ffffff;
   --setlog-secondary-text: #e2e8f0;
   --setlog-blue-text: #c4b5fd;
@@ -213,10 +223,17 @@ body {
   font-weight: 600;
 }
 
+.timeline-concert-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
 .timeline-concert-title {
   font-size: 24px;
   font-weight: 700;
-  margin-bottom: 2px;
   color: var(--setlog-card-text);
 }
 
@@ -276,6 +293,12 @@ body {
 .timeline-concert-tag-countdown {
   background: var(--tag-countdown-bg);
   color: var(--tag-countdown-text);
+}
+
+.timeline-concert-title-countdown {
+  font-size: 13px;
+  line-height: 1;
+  padding: 5px 10px;
 }
 
 .timeline-concert-tag-favorite {
@@ -357,10 +380,20 @@ body {
     max-width: 100%;
   }
 
+  .timeline-concert-title-row {
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 3px;
+  }
+
   .timeline-concert-title {
     font-size: 21px;
     line-height: 1.12;
-    margin-top: 3px;
+  }
+
+  .timeline-concert-title-countdown {
+    font-size: 12px;
+    padding: 4px 8px;
   }
 
   .timeline-concert-venue {
@@ -519,15 +552,15 @@ body {
 }
 
 [data-theme='light'] .form-switch .form-check-input {
-  border-color: var(--setlog-primary) !important;
-  background-color: var(--setlog-card-bg-secondary) !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%239a450c'/%3e%3c/svg%3e") !important;
+  border-color: var(--setlog-card-border) !important;
+  background-color: #f8fafc !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23cbd5e1'/%3e%3c/svg%3e") !important;
 }
 
 [data-theme='dark'] .form-switch .form-check-input {
-  border-color: var(--setlog-primary) !important;
-  background-color: var(--setlog-card-bg-secondary) !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%236f381a'/%3e%3c/svg%3e") !important;
+  border-color: var(--setlog-card-border) !important;
+  background-color: #2b2740 !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%2394a3b8'/%3e%3c/svg%3e") !important;
 }
 
 .form-switch .form-check-input:checked {
