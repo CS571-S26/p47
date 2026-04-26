@@ -7,6 +7,7 @@ import { ConcertsContext } from '../contexts/concertsContext.js'
 import { getFlattenedSongs } from '../utils/setlistHelpers.js'
 import { useAuth } from '../contexts/authContext.js'
 import { ConfirmDialog } from './ConfirmDialog.jsx'
+import { concertDateToDate, daysUntilLocalDate } from '../utils/localDate.js'
 
 function TimelineConcert({ concert }) {
     const { deleteConcert } = useContext(ConcertsContext)
@@ -30,16 +31,21 @@ function TimelineConcert({ concert }) {
     const songCount = flat.length > 0 ? flat.length : (Number.isFinite(Number(concert.songCount)) ? Number(concert.songCount) : 0)
     const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
-    const [year, month, day] = concert.date.split('-').map(Number)
-    const dateLabel = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    const concertDate = concertDateToDate(concert.date)
+    const hasValidDate = !Number.isNaN(concertDate.getTime())
+    const year = hasValidDate ? concertDate.getFullYear() : ''
+    const day = hasValidDate ? concertDate.getDate() : ''
+    const dateLabel = hasValidDate ? concertDate.toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric',
         year: 'numeric',
-    })
-    const cardAriaLabel = `View details for ${concert.artist}, ${dateLabel}`
-    const monthLabel = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    }) : 'date unavailable'
+    const daysUntil = daysUntilLocalDate(concert.date)
+    const countdownLabel = daysUntil > 0 ? `In ${daysUntil} day${daysUntil === 1 ? '' : 's'}` : ''
+    const cardAriaLabel = `View details for ${concert.artist}, ${dateLabel}${countdownLabel ? `, ${countdownLabel}` : ''}`
+    const monthLabel = hasValidDate ? concertDate.toLocaleDateString('en-US', {
         month: 'short',
-    }).toUpperCase()
+    }).toUpperCase() : ''
 
     return (
         <>
@@ -124,6 +130,12 @@ function TimelineConcert({ concert }) {
                         {concert.attended && (
                             <span className="timeline-concert-tag timeline-concert-tag-attended">
                                 Attended
+                            </span>
+                        )}
+
+                        {countdownLabel && (
+                            <span className="timeline-concert-tag timeline-concert-tag-countdown">
+                                {countdownLabel}
                             </span>
                         )}
 

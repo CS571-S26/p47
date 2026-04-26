@@ -33,6 +33,9 @@
   --tag-favorite-bg: #fef3c7;
   --tag-favorite-text: #78350f;
 
+  --tag-countdown-bg: #dbeafe;
+  --tag-countdown-text: #1e3a8a;
+
   --setlog-rating-filled: #b45309;
   --setlog-rating-empty: #64748b;
 
@@ -73,6 +76,9 @@
   --setlog-rating-filled: #fbbf24;
   --setlog-rating-empty: #94a3b8;
   --tag-favorite-text: #fde68a;
+
+  --tag-countdown-bg: #1e3a5f;
+  --tag-countdown-text: #bfdbfe;
 
   --setlog-required-indicator: #fca5a5;
   --setlog-disabled-btn-bg: #2b2740;
@@ -265,6 +271,11 @@ body {
 .timeline-concert-tag-attended {
   background: var(--tag-attended-bg);
   color: var(--tag-attended-text);
+}
+
+.timeline-concert-tag-countdown {
+  background: var(--tag-countdown-bg);
+  color: var(--tag-countdown-text);
 }
 
 .timeline-concert-tag-favorite {
