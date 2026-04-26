@@ -88,6 +88,8 @@ function NavBar({ theme, setTheme }) {
   function handleSearchSubmit(e) {
     e.preventDefault()
     setShowDropdown(false)
+    setExpanded(false)
+
     const sp = new URLSearchParams()
     if (searchInput.trim() !== '') sp.set('q', searchInput)
     navigate({ pathname: '/', search: sp.toString() ? `?${sp.toString()}` : '' })
@@ -95,12 +97,15 @@ function NavBar({ theme, setTheme }) {
 
   function handleDropdownItemClick(concertId) {
     setShowDropdown(false)
+    setExpanded(false)
     navigate(`/concerts/${concertId}`)
   }
 
   function handleSeeAllClick(e) {
     e.preventDefault()
     setShowDropdown(false)
+    setExpanded(false)
+    
     const sp = new URLSearchParams()
     if (searchInput.trim() !== '') sp.set('q', searchInput)
     navigate({ pathname: '/', search: sp.toString() ? `?${sp.toString()}` : '' })
