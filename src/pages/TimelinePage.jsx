@@ -11,6 +11,7 @@ import {
   filterConcertsByQuery,
   normalizeConcertSearchQuery,
 } from '../utils/concertSearch.js'
+import { concertDateToDate } from '../utils/localDate.js'
 
 function TimelinePage() {
   const { concerts, loading: concertsLoading } = useContext(ConcertsContext)
@@ -38,7 +39,7 @@ function TimelinePage() {
 
   const strField = (v) => (typeof v === 'string' ? v.trim() : '')
   const dateMs = (c) => {
-    const t = new Date(strField(c?.date)).getTime()
+    const t = concertDateToDate(strField(c?.date)).getTime()
     return Number.isFinite(t) ? t : Number.NEGATIVE_INFINITY
   }
 

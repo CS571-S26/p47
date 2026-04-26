@@ -13,6 +13,7 @@ import {
   getMapFilterOptions,
   isStaleMapFilter,
 } from '../utils/mapFilters.js'
+import { concertDateToDate } from '../utils/localDate.js'
 import './MapsPage.css'
 import MapsMarkerPopup from '../components/MapsMarkerPopup'
 
@@ -283,7 +284,7 @@ function MapsPage({ theme }) {
 
           {Object.entries(grouped).map(([key, shows]) => {
             const sortedShows = [...shows].sort(
-              (a, b) => new Date(a.date) - new Date(b.date)
+              (a, b) => concertDateToDate(a.date) - concertDateToDate(b.date)
             )
             return (
               <ZoomMarker key={key} position={sortedShows[0].coords} icon={concertIcon}>

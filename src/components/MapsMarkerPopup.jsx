@@ -1,24 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, Button, Row, Col } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
+
+import { concertDateToDate } from '../utils/localDate.js'
 
 function MapsMarkerPopup({ concerts }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const navigate = useNavigate()
 
-  const concert = concerts[currentIndex]
+  const safeConcerts = Array.isArray(concerts) ? concerts : []
+
+  useEffect(() => {
+    setCurrentIndex(0)
+  }, [concerts])
+
+  useEffect(() => {
+    setCurrentIndex((prev) => {
+      if (safeConcerts.length === 0) return 0
+      return Math.max(0, Math.min(prev, safeConcerts.length - 1))
+    })
+  }, [safeConcerts.length])
+
+  const concert = safeConcerts[currentIndex]
+  if (!concert) return null
   const imageUrl = typeof concert.image === 'string' ? concert.image.trim() : ''
 
   function handlePrev() {
     setCurrentIndex((prev) =>
-      prev === 0 ? concerts.length - 1 : prev - 1
+      prev === 0 ? safeConcerts.length - 1 : prev - 1
     )
   }
 
   function handleNext() {
     setCurrentIndex((prev) =>
-      prev === concerts.length - 1 ? 0 : prev + 1
+      prev === safeConcerts.length - 1 ? 0 : prev + 1
     )
   }
 
@@ -81,7 +97,7 @@ function MapsMarkerPopup({ concerts }) {
 
       {/* Formatted Date */}
       <span style={{ fontSize: "0.9rem", color: "var(--setlog-card-text-secondary)" }}>
-        {new Date(concert.date).toLocaleDateString("en-US", {
+        {concertDateToDate(concert.date).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
           year: "numeric",
@@ -130,7 +146,7 @@ function MapsMarkerPopup({ concerts }) {
       </Row>
 
       {/* Navigation & View Show Buttons */}
-      {concerts.length > 1 ? (
+      {safeConcerts.length > 1 ? (
         <>
           <Row className="align-items-center">
 
@@ -173,9 +189,9 @@ function MapsMarkerPopup({ concerts }) {
 
           </Row>
 
-          {concerts.length > 1 && (
+          {safeConcerts.length > 1 && (
             <span style={{ fontSize: "15px", fontWeight: "600", textAlign: "center", color: "var(--setlog-card-text-secondary)" }}>
-              Show {currentIndex + 1} of {concerts.length}
+              Show {currentIndex + 1} of {safeConcerts.length}
             </span>
           )}
         </>
