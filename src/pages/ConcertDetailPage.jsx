@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { Alert, Card, Row, Col, Button, ListGroup, Spinner } from 'react-bootstrap'
-import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info } from 'lucide-react'
+import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info, Clock } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
@@ -606,9 +606,23 @@ function ConcertDetailPage() {
                 <div style={styles.dateDay}>{day}</div>
                 <div style={styles.dateYear}>{year}</div>
                 {countdownLabel ? (
-                  <div style={{ ...styles.detailCountdown, margin: '0 auto 8px' }}>
+                  <span
+                    className="timeline-concert-tag timeline-concert-tag-countdown timeline-concert-title-countdown"
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                      padding: '6px 10px',
+                      borderRadius: '999px',
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                    }}
+                  >
+                    <Clock size={12} style={{ opacity: 0.8 }} />
                     {countdownLabel}
-                  </div>
+                  </span>
                 ) : null}
               </div>
             </Col>
@@ -633,7 +647,23 @@ function ConcertDetailPage() {
                       <div style={styles.detailStatValue}>{dayOfWeek}</div>
                       <div style={styles.detailStatLabel}>{fullDateLabel}</div>
                       {countdownLabel ? (
-                        <div style={styles.detailCountdown}>{countdownLabel}</div>
+                        <span
+                          className="timeline-concert-tag timeline-concert-tag-countdown timeline-concert-title-countdown"
+                          style={{
+                            fontSize: '0.75rem',
+                            fontWeight: 800,
+                            padding: '6px 10px',
+                            borderRadius: '999px',
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                          }}
+                        >
+                          <Clock size={12} style={{ opacity: 0.8 }} />
+                          {countdownLabel}
+                        </span>
                       ) : null}
                     </div>
                   </div>

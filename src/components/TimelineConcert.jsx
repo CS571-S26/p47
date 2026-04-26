@@ -151,7 +151,21 @@ function TimelineConcert({ concert }) {
                     <div className="timeline-concert-title-row">
                         <div className="timeline-concert-title">{concert.artist}</div>
                         {countdownLabel && (
-                            <span className="timeline-concert-tag timeline-concert-tag-countdown timeline-concert-title-countdown">
+                            <span
+                                className="timeline-concert-tag timeline-concert-tag-countdown timeline-concert-title-countdown"
+                                style={{
+                                    fontSize: '0.75rem',
+                                    fontWeight: 800,
+                                    padding: '6px 10px',
+                                    borderRadius: '999px',
+                                    letterSpacing: '0.04em',
+                                    textTransform: 'uppercase',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                }}
+                            >
+                                <Clock size={12} style={{ opacity: 0.8 }} />
                                 {countdownLabel}
                             </span>
                         )}
