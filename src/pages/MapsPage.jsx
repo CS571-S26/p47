@@ -158,7 +158,7 @@ function MapsPage({ theme }) {
 
   return (
     <div className="maps-page-shell">
-      <h1 style={{ fontSize: 'clamp(32px, 8vw, 48px)', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>Concert Map</h1>
+      {/*<h1 style={{ fontSize: 'clamp(32px, 8vw, 48px)', fontWeight: '700', color: 'var(--setlog-primary-text)', margin: 0 }}>Concert Map</h1>*/}
 
       {!authLoading && !loginStatus.loggedIn ? (
         <p className="mb-2" style={{ fontSize: '15px', color: 'var(--setlog-secondary-text)' }}>
