@@ -77,6 +77,9 @@ function AddConcertPage() {
   const styles = {
     formControl: {
       height: '40px',
+      border: '1px solid var(--setlog-card-border)',
+      backgroundColor: 'var(--setlog-card-bg-secondary)',
+      color: 'var(--setlog-card-text)',
       borderRadius: '10px',
       fontSize: '0.95rem',
     },
@@ -589,7 +592,7 @@ function AddConcertPage() {
                                 border: '1px solid var(--setlog-card-border)',
                                 borderRadius: '10px',
                                 padding: '10px',
-                                background: 'var(--setlog-card-bg-secondary)',
+                                background: 'var(--setlog-card-bg)',
                                 height: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
