@@ -56,7 +56,7 @@ function AddConcertPage() {
   const [attended, setAttended] = useState(true)
   const [favorite, setFavorite] = useState(false)
   const [image, setImage] = useState('')
-  const [notes, setNotes] = useState('')
+  const [notes, setNotes] = useState(liveConcert?.notes || '')
   const [sections, setSections] = useState(() => initialSectionsFromLive(liveConcert))
   const [newSongTitle, setNewSongTitle] = useState('')
   const [newSongSectionIndex, setNewSongSectionIndex] = useState(0)
@@ -746,61 +746,61 @@ function AddConcertPage() {
                                           .map((title, idx) => ({ title, idx }))
                                           .filter(({ title }) => typeof title === 'string' && title.trim() !== '')
                                           .map(({ title, idx }, displayIdx, visibleSongs) => (
-                                          <ListGroup.Item
-                                            key={`${si}-${idx}-${title}`}
-                                            style={{
-                                              display: 'flex',
-                                              alignItems: 'center',
-                                              justifyContent: 'space-between',
-                                              gap: '10px',
-                                              background: 'var(--setlog-card-bg)',
-                                              border: '1px solid var(--setlog-card-border)',
-                                              paddingTop: '0.55rem',
-                                              paddingBottom: '0.55rem',
-                                            }}
-                                          >
-                                            <div
+                                            <ListGroup.Item
+                                              key={`${si}-${idx}-${title}`}
                                               style={{
-                                                fontWeight: 500,
-                                                fontSize: '0.95rem',
-                                                color: 'var(--setlog-card-text)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                gap: '10px',
+                                                background: 'var(--setlog-card-bg)',
+                                                border: '1px solid var(--setlog-card-border)',
+                                                paddingTop: '0.55rem',
+                                                paddingBottom: '0.55rem',
                                               }}
                                             >
-                                              {displayIdx + 1}. {typeof title === 'string' ? title : ''}
-                                            </div>
-                                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
-                                              <Button
-                                                type="button"
-                                                size="sm"
-                                                variant="secondary"
-                                                onClick={() => handleMoveSong(si, displayIdx, -1)}
-                                                disabled={si === 0 && displayIdx === 0}
-                                                aria-label="Move song up"
+                                              <div
+                                                style={{
+                                                  fontWeight: 500,
+                                                  fontSize: '0.95rem',
+                                                  color: 'var(--setlog-card-text)',
+                                                }}
                                               >
-                                                <ArrowUp size={14} />
-                                              </Button>
-                                              <Button
-                                                type="button"
-                                                size="sm"
-                                                variant="secondary"
-                                                onClick={() => handleMoveSong(si, displayIdx, 1)}
-                                                disabled={si === sections.length - 1 && displayIdx === visibleSongs.length - 1}
-                                                aria-label="Move song down"
-                                              >
-                                                <ArrowDown size={14} />
-                                              </Button>
-                                              <Button
-                                                type="button"
-                                                size="sm"
-                                                variant="outline-danger"
-                                                onClick={() => handleRemoveSong(si, idx)}
-                                                aria-label="Remove song"
-                                              >
-                                                <Trash size={16} />
-                                              </Button>
-                                            </div>
-                                          </ListGroup.Item>
-                                        ))}
+                                                {displayIdx + 1}. {typeof title === 'string' ? title : ''}
+                                              </div>
+                                              <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', flexShrink: 0 }}>
+                                                <Button
+                                                  type="button"
+                                                  size="sm"
+                                                  variant="secondary"
+                                                  onClick={() => handleMoveSong(si, displayIdx, -1)}
+                                                  disabled={si === 0 && displayIdx === 0}
+                                                  aria-label="Move song up"
+                                                >
+                                                  <ArrowUp size={14} />
+                                                </Button>
+                                                <Button
+                                                  type="button"
+                                                  size="sm"
+                                                  variant="secondary"
+                                                  onClick={() => handleMoveSong(si, displayIdx, 1)}
+                                                  disabled={si === sections.length - 1 && displayIdx === visibleSongs.length - 1}
+                                                  aria-label="Move song down"
+                                                >
+                                                  <ArrowDown size={14} />
+                                                </Button>
+                                                <Button
+                                                  type="button"
+                                                  size="sm"
+                                                  variant="outline-danger"
+                                                  onClick={() => handleRemoveSong(si, idx)}
+                                                  aria-label="Remove song"
+                                                >
+                                                  <Trash size={16} />
+                                                </Button>
+                                              </div>
+                                            </ListGroup.Item>
+                                          ))}
                                       </ListGroup>
                                     </div>
                                   ))}
