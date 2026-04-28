@@ -30,6 +30,7 @@ function ConcertDetailPage() {
   const { loginStatus } = useAuth()
   const {
     ensureAccessToken,
+    isConnected: spotifyConnected,
     loading: spotifyLoading,
     authenticating: spotifyAuthenticating,
   } = useSpotify()
@@ -768,34 +769,38 @@ function ConcertDetailPage() {
                       <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--setlog-card-text-secondary)', marginLeft: 'auto' }}>
                         {setlistSongs.length} songs
                       </span>
-                      <Button
-                        variant="outline-success"
-                        size="sm"
-                        onClick={() => void exportSetlistToSpotify()}
-                        disabled={playlistStatus.busy || spotifyLoading || spotifyAuthenticating || setlistSongs.length === 0}
-                        style={{ fontWeight: 700 }}
-                      >
-                        {playlistStatus.busy || spotifyAuthenticating ? (
-                          <>
-                            <Spinner animation="border" size="sm" style={{ marginRight: '0.4rem' }} />
-                            Creating...
-                          </>
-                        ) : (
-                          currentPlaylistUrl ? 'Recreate Spotify Playlist' : 'Create Spotify Playlist'
-                        )}
-                      </Button>
-                      {currentPlaylistUrl ? (
-                        <Button
-                          as="a"
-                          href={currentPlaylistUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          variant="success"
-                          size="sm"
-                          style={{ fontWeight: 700 }}
-                        >
-                          Open Playlist
-                        </Button>
+                      {spotifyConnected ? (
+                        <>
+                          <Button
+                            variant="outline-success"
+                            size="sm"
+                            onClick={() => void exportSetlistToSpotify()}
+                            disabled={playlistStatus.busy || spotifyLoading || spotifyAuthenticating || setlistSongs.length === 0}
+                            style={{ fontWeight: 700 }}
+                          >
+                            {playlistStatus.busy || spotifyAuthenticating ? (
+                              <>
+                                <Spinner animation="border" size="sm" style={{ marginRight: '0.4rem' }} />
+                                Creating...
+                              </>
+                            ) : (
+                              currentPlaylistUrl ? 'Recreate Spotify Playlist' : 'Create Spotify Playlist'
+                            )}
+                          </Button>
+                          {currentPlaylistUrl ? (
+                            <Button
+                              as="a"
+                              href={currentPlaylistUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              variant="success"
+                              size="sm"
+                              style={{ fontWeight: 700 }}
+                            >
+                              Open Playlist
+                            </Button>
+                          ) : null}
+                        </>
                       ) : null}
                     </div>
                   }
