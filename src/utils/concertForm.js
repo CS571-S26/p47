@@ -2,7 +2,7 @@
  * City plus region: US state (2 letters), spelled-out state, or country/region
  * (e.g. "San Francisco, CA", "London, England", "Toronto, ON" for Canada if entered as 2 letters).
  */
-export const CITY_LOCATION_PATTERN = /^[A-Za-z0-9 .'-]+,\s[A-Za-z0-9 .'-]{2,}$/
+export const CITY_LOCATION_PATTERN = /^[\p{L}0-9 .'-]+,\s[\p{L}0-9 .'-]{2,}$/u
 
 /** @deprecated Use CITY_LOCATION_PATTERN — name kept for older imports. */
 export const CITY_STATE_PATTERN = CITY_LOCATION_PATTERN
