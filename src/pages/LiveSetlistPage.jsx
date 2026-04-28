@@ -52,7 +52,7 @@ function LiveSetlistPage() {
             fontWeight: '600',
             marginBottom: '0.4rem',
             marginTop: '0rem',
-            color: 'var(--setlog-primary-text)',
+            color: 'var(--setlog-primary-orange-text)',
             fontSize: '0.95rem',
         }
     }
@@ -230,7 +230,7 @@ function LiveSetlistPage() {
                                                 fontWeight: 700,
                                                 letterSpacing: '0.08em',
                                                 textTransform: 'uppercase',
-                                                color: 'var(--setlog-primary)',
+                                                color: 'var(--setlog-primary-orange-text)',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 gap: '0.45rem',
@@ -263,7 +263,7 @@ function LiveSetlistPage() {
                                     >
                                         <MapPin
                                             size={22}
-                                            color="var(--setlog-primary)"
+                                            color="var(--setlog-primary-orange-text)"
                                             style={{ flexShrink: 0 }}
                                         />
 
@@ -417,7 +417,7 @@ function LiveSetlistPage() {
                                                 style={{
                                                     fontSize: '1rem',
                                                     fontWeight: 800,
-                                                    color: 'var(--setlog-primary)',
+                                                    color: 'var(--setlog-primary-orange-text)',
                                                     margin: 0,
                                                 }}
                                             >

@@ -19,6 +19,7 @@
       #facc15 100%);
   --setlog-primary-text: #000000;
   --setlog-secondary-text: #2a2630;
+  --setlog-primary-orange-text: #9a450c;
   --setlog-blue-text: #3730a3;
   --setlog-card-bg: #fffaf5;
   --setlog-card-bg-secondary: #f1f5f9;
@@ -66,6 +67,7 @@
       #422006 100%);
   --setlog-primary-text: #ffffff;
   --setlog-secondary-text: #e2e8f0;
+  --setlog-primary-orange-text: hsl(22, 100%, 58%);
   --setlog-blue-text: #c4b5fd;
   --setlog-card-bg: #1f1b2e;
   --setlog-card-bg-secondary: #2b2740;
