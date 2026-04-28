@@ -311,8 +311,10 @@ function LiveSetlistPage() {
                                 </div>
                             </SectionCard>
                             <SectionCard title="Live Notes">
-                                <Form.Group>
+                                <Form.Group controlId="concert-notes" style={{ marginBottom: '0.8rem' }}>
+                                    <Form.Label style={styles.formLabel}>Notes</Form.Label>
                                     <Form.Control
+                                        id="concert-notes"
                                         as="textarea"
                                         rows={5}
                                         value={notes}
