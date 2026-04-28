@@ -939,7 +939,7 @@ function ConcertDetailPage() {
                   <div style={styles.infoLabel}>Venue</div>
                   <div style={styles.infoValue}>{concert.venue}</div>
 
-                  <div style={styles.infoLabel}>City, State</div>
+                  <div style={styles.infoLabel}>City, State/Country</div>
                   <div style={styles.infoValue}>{concert.city}</div>
 
                   <div style={styles.infoLabel}>Genre</div>
