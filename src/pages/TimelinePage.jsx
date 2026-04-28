@@ -1,9 +1,9 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import TimelineConcert from '../components/TimelineConcert'
 import TimelineStats from '../components/TimelineStats'
 import { Container, Row, Col, Button, Spinner, Dropdown } from 'react-bootstrap'
 import { Plus, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react'
-import { NavLink, useSearchParams } from 'react-router-dom'
+import { NavLink, useLocation, useSearchParams } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
@@ -22,6 +22,7 @@ function TimelinePage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const queryRaw = searchParams.get('q') ?? ''
   const hasActiveQuery = normalizeConcertSearchQuery(queryRaw) !== ''
+  const location = useLocation()
 
   const sortRaw =
     searchParams.get('sort') ??
@@ -57,6 +58,17 @@ function TimelinePage() {
       padding: '0.55rem 0.75rem',
     },
   }
+
+  useEffect(() => {
+    const y = Number(location.state?.restoreScrollY)
+    if (!Number.isFinite(y) || y <= 0) return
+
+    const timeout = setTimeout(() => {
+      window.scrollTo(0, y)
+    }, 0)
+
+    return () => clearTimeout(timeout)
+  }, [location.state, concerts.length])
 
   const strField = (v) => (typeof v === 'string' ? v.trim() : '')
   const today = new Date()
