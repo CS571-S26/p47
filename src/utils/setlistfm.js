@@ -170,10 +170,17 @@ export function extractSetlistConcertDetails(setlist) {
 
   let cityField = ''
   if (cityName) {
-    if (stateCode) cityField = `${cityName}, ${stateCode}`
-    else if (stateName) cityField = `${cityName}, ${stateName}`
-    else if (countryName) cityField = `${cityName}, ${countryName}`
-    else cityField = cityName
+    if (countryName && countryName.toLowerCase() !== 'united states') {
+      cityField = `${cityName}, ${countryName}`
+    } else if (stateCode) {
+      cityField = `${cityName}, ${stateCode}`
+    } else if (stateName) {
+      cityField = `${cityName}, ${stateName}`
+    } else if (countryName) {
+      cityField = `${cityName}, ${countryName}`
+    } else {
+      cityField = cityName
+    }
   }
 
   return {

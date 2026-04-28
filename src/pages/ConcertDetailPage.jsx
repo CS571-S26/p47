@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { Alert, Card, Row, Col, Button, ListGroup, Spinner } from 'react-bootstrap'
-import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info, Clock } from 'lucide-react'
+import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info, Clock, Sparkles } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
@@ -43,6 +43,7 @@ function ConcertDetailPage() {
   const concert = concerts.find((c) => c.id === id)
   const setlistSongs = concert ? getFlattenedSongs(concert) : []
   const setlistSectionsDisplay = concert ? getSetlistSections(concert) : []
+  const normalizeSongTitle = (title) => String(title ?? '').trim().toLowerCase()
 
   const backLabel = location.state?.backLabel || 'Back to Timeline'
   const backTo = typeof location.state?.from === 'string' ? location.state.from : '/'
@@ -84,6 +85,31 @@ function ConcertDetailPage() {
     }
 
     return clean
+  }
+
+  function isFirstTimeSeeingSong(songTitle) {
+    if (!concert.attended) return false
+
+    const cleanTitle = normalizeSongTitle(songTitle)
+    const currentDate = concertDateToDate(concert.date).getTime()
+
+    if (!cleanTitle || !Number.isFinite(currentDate)) return false
+
+    const earliestDate = concerts.reduce((earliest, otherConcert) => {
+      const otherDate = concertDateToDate(otherConcert.date).getTime()
+      if (!Number.isFinite(otherDate)) return earliest
+
+      if (!otherConcert.attended) return earliest
+
+      const songs = getFlattenedSongs(otherConcert)
+      const hasSong = songs.some((song) => normalizeSongTitle(song.title ?? song) === cleanTitle)
+
+      if (!hasSong) return earliest
+
+      return Math.min(earliest, otherDate)
+    }, Infinity)
+
+    return currentDate === earliestDate
   }
 
   useEffect(() => {
@@ -486,6 +512,8 @@ function ConcertDetailPage() {
                       fontSize: '2rem',
                       lineHeight: 1.15,
                       maxWidth: '90%',
+                      textAlign: 'center',
+                      margin: '0 auto',
                       overflow: 'hidden',
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
@@ -501,8 +529,9 @@ function ConcertDetailPage() {
                       fontWeight: 600,
                       lineHeight: 1.2,
                       maxWidth: '85%',
+                      textAlign: 'center',
+                      margin: '0.5rem auto 0',
                       opacity: 0.85,
-                      marginTop: '0.5rem',
                       overflow: 'hidden',
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
@@ -850,7 +879,39 @@ function ConcertDetailPage() {
                                 >
                                   {idx + 1}
                                 </span>
-                                <span style={{ color: 'var(--setlog-card-text)' }}>{song}</span>
+                                <span
+                                  style={{
+                                    color: 'var(--setlog-card-text)',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    flexWrap: 'wrap',
+                                  }}
+                                >
+                                  {song}
+
+                                  {isFirstTimeSeeingSong(song) ? (
+                                    <span
+                                      title="First time seen live"
+                                      style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                        padding: '2px 7px',
+                                        borderRadius: '999px',
+                                        background: 'var(--tag-favorite-bg)',
+                                        color: 'var(--tag-favorite-text)',
+                                        fontSize: '0.7rem',
+                                        fontWeight: 800,
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.04em',
+                                      }}
+                                    >
+                                      <Sparkles size={12} />
+                                      First time
+                                    </span>
+                                  ) : null}
+                                </span>
                               </ListGroup.Item>
                             ))}
                           </ListGroup>
@@ -881,7 +942,7 @@ function ConcertDetailPage() {
                   <div style={styles.infoLabel}>Venue</div>
                   <div style={styles.infoValue}>{concert.venue}</div>
 
-                  <div style={styles.infoLabel}>City, State</div>
+                  <div style={styles.infoLabel}>City, State/Country</div>
                   <div style={styles.infoValue}>{concert.city}</div>
 
                   <div style={styles.infoLabel}>Genre</div>

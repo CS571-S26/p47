@@ -106,3 +106,26 @@
     border-radius: 16px;
   }
 }
+
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--setlog-card-text) !important;
+  background: var(--setlog-card-bg-secondary);
+  border: 1px solid var(--setlog-card-border);
+  border-radius: 999px;
+  width: 24px;
+  height: 24px;
+  line-height: 21px;
+  top: 8px;
+  right: 8px;
+  font-size: 20px;
+  font-weight: 800;
+  opacity: 1;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+  color: var(--setlog-primary-text) !important;
+  background: var(--setlog-primary);
+  border-color: var(--setlog-primary);
+  outline: none;
+}

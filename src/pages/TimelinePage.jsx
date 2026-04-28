@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react'
 import TimelineConcert from '../components/TimelineConcert'
 import TimelineStats from '../components/TimelineStats'
-import { Container, Row, Col, Button, Spinner, Form } from 'react-bootstrap'
-import { Plus } from 'lucide-react'
+import { Container, Row, Col, Button, Spinner, Dropdown } from 'react-bootstrap'
+import { Plus, ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react'
 import { NavLink, useSearchParams } from 'react-router-dom'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
@@ -13,6 +13,8 @@ import {
 } from '../utils/concertSearch.js'
 import { concertDateToDate, daysUntilLocalDate } from '../utils/localDate.js'
 
+const TIMELINE_SORT_KEY = 'setlog:timelineSort'
+
 function TimelinePage() {
   const { concerts, loading: concertsLoading } = useContext(ConcertsContext)
   const [showMobileStats, setShowMobileStats] = useState(false)
@@ -21,19 +23,38 @@ function TimelinePage() {
   const queryRaw = searchParams.get('q') ?? ''
   const hasActiveQuery = normalizeConcertSearchQuery(queryRaw) !== ''
 
-  const sortRaw = searchParams.get('sort') ?? ''
+  const sortRaw =
+    searchParams.get('sort') ??
+    localStorage.getItem(TIMELINE_SORT_KEY) ??
+    ''
+
   const sortKey = sortRaw.trim() === '' ? 'date_desc' : sortRaw.trim()
 
   const styles = {
-    sortSelect: {
-      width: 'min(270px, 100%)',
+    sortToggle: {
+      minWidth: '260px',
       borderRadius: '999px',
       border: '1px solid var(--setlog-card-border)',
       backgroundColor: 'var(--setlog-card-bg-secondary)',
       color: 'var(--setlog-card-text)',
       fontSize: '14px',
-      fontWeight: 600,
+      fontWeight: 700,
       boxShadow: 'none',
+      padding: '8px 14px',
+      textAlign: 'left',
+    },
+    sortMenu: {
+      borderRadius: '14px',
+      border: '1px solid var(--setlog-card-border)',
+      backgroundColor: 'var(--setlog-card-bg)',
+      padding: '0.4rem',
+    },
+    sortItem: {
+      color: 'var(--setlog-card-text)',
+      fontSize: '14px',
+      fontWeight: 600,
+      borderRadius: '10px',
+      padding: '0.55rem 0.75rem',
     },
   }
 
@@ -51,17 +72,34 @@ function TimelinePage() {
     })
 
   const sortComparators = {
-    date_desc: (a, b) => dateMs(b) - dateMs(a),
     date_asc: (a, b) => dateMs(a) - dateMs(b),
+    date_desc: (a, b) => dateMs(b) - dateMs(a),
+
     artist_asc: cmpStringAsc('artist'),
+    artist_desc: (a, b) => cmpStringAsc('artist')(b, a),
+
     venue_asc: cmpStringAsc('venue'),
+    venue_desc: (a, b) => cmpStringAsc('venue')(b, a),
+
     city_asc: cmpStringAsc('city'),
+    city_desc: (a, b) => cmpStringAsc('city')(b, a),
+
     genre_asc: cmpStringAsc('genre'),
+    genre_desc: (a, b) => cmpStringAsc('genre')(b, a),
+
+    rating_asc: (a, b) => (Number(a?.rating) || 0) - (Number(b?.rating) || 0),
     rating_desc: (a, b) => (Number(b?.rating) || 0) - (Number(a?.rating) || 0),
+
     favorites_first: (a, b) =>
       Number(Boolean(b?.favorite)) - Number(Boolean(a?.favorite)),
+    favorites_last: (a, b) =>
+      Number(Boolean(a?.favorite)) - Number(Boolean(b?.favorite)),
+
     attended_first: (a, b) =>
       Number(Boolean(b?.attended)) - Number(Boolean(a?.attended)),
+    attended_last: (a, b) =>
+      Number(Boolean(a?.attended)) - Number(Boolean(b?.attended)),
+
     upcoming_first: (a, b) => {
       const aDays = daysUntil(a)
       const bDays = daysUntil(b)
@@ -69,6 +107,18 @@ function TimelinePage() {
       const bIsFuture = bDays !== null && bDays > 0
 
       if (aIsFuture !== bIsFuture) return aIsFuture ? -1 : 1
+      if (aIsFuture && bIsFuture && aDays !== bDays) return aDays - bDays
+
+      return dateMs(b) - dateMs(a)
+    },
+
+    upcoming_last: (a, b) => {
+      const aDays = daysUntil(a)
+      const bDays = daysUntil(b)
+      const aIsFuture = aDays !== null && aDays > 0
+      const bIsFuture = bDays !== null && bDays > 0
+
+      if (aIsFuture !== bIsFuture) return aIsFuture ? 1 : -1
       if (aIsFuture && bIsFuture && aDays !== bDays) return aDays - bDays
 
       return dateMs(b) - dateMs(a)
@@ -88,14 +138,85 @@ function TimelinePage() {
     return strField(a?.id).localeCompare(strField(b?.id))
   })
 
-  const onChangeSort = (e) => {
-    const next = String(e.target.value ?? '').trim()
+  const sortDirections = {
+    date: ['date_desc', 'date_asc'],
+    artist: ['artist_asc', 'artist_desc'],
+    venue: ['venue_asc', 'venue_desc'],
+    city: ['city_asc', 'city_desc'],
+    genre: ['genre_asc', 'genre_desc'],
+    rating: ['rating_desc', 'rating_asc'],
+    favorites: ['favorites_first', 'favorites_last'],
+    attended: ['attended_first', 'attended_last'],
+    upcoming: ['upcoming_first', 'upcoming_last'],
+  }
+
+  const getSortBase = (key) => {
+    if (key.startsWith('date_')) return 'date'
+    if (key.startsWith('artist_')) return 'artist'
+    if (key.startsWith('venue_')) return 'venue'
+    if (key.startsWith('city_')) return 'city'
+    if (key.startsWith('genre_')) return 'genre'
+    if (key.startsWith('rating_')) return 'rating'
+    if (key.startsWith('favorites_')) return 'favorites'
+    if (key.startsWith('attended_')) return 'attended'
+    if (key.startsWith('upcoming_')) return 'upcoming'
+    return key
+  }
+
+  const getSortLabel = (key) => {
+    const iconStyle = { marginLeft: '6px', verticalAlign: 'middle' }
+
+    const map = {
+      date_desc: <>Concert date <ArrowDown size={14} style={iconStyle} /></>,
+      date_asc: <>Concert date <ArrowUp size={14} style={iconStyle} /></>,
+
+      artist_asc: <>Artist <ArrowUp size={14} style={iconStyle} /></>,
+      artist_desc: <>Artist <ArrowDown size={14} style={iconStyle} /></>,
+
+      venue_asc: <>Venue <ArrowUp size={14} style={iconStyle} /></>,
+      venue_desc: <>Venue <ArrowDown size={14} style={iconStyle} /></>,
+
+      city_asc: <>City <ArrowUp size={14} style={iconStyle} /></>,
+      city_desc: <>City <ArrowDown size={14} style={iconStyle} /></>,
+
+      genre_asc: <>Genre <ArrowUp size={14} style={iconStyle} /></>,
+      genre_desc: <>Genre <ArrowDown size={14} style={iconStyle} /></>,
+
+      rating_desc: <>Rating <ArrowDown size={14} style={iconStyle} /></>,
+      rating_asc: <>Rating <ArrowUp size={14} style={iconStyle} /></>,
+
+      favorites_first: <>Favorites <ArrowUp size={14} style={iconStyle} /></>,
+      favorites_last: <>Favorites <ArrowDown size={14} style={iconStyle} /></>,
+
+      attended_first: <>Attended <ArrowUp size={14} style={iconStyle} /></>,
+      attended_last: <>Attended <ArrowDown size={14} style={iconStyle} /></>,
+
+      upcoming_first: <>Upcoming <ArrowUp size={14} style={iconStyle} /></>,
+      upcoming_last: <>Upcoming <ArrowDown size={14} style={iconStyle} /></>,
+    }
+
+    return map[key] ?? <>Concert date <ArrowUpDown size={14} style={iconStyle} /></>
+  }
+
+  const onClickSort = (selectedBase) => {
+    const currentBase = getSortBase(sortKey)
+
+    let next = selectedBase
+
+    if (sortDirections[selectedBase]) {
+      const [normal, reversed] = sortDirections[selectedBase]
+      next = currentBase === selectedBase && sortKey === normal ? reversed : normal
+    }
+
+    localStorage.setItem(TIMELINE_SORT_KEY, next || 'date_desc')
+
     const nextParams = new URLSearchParams(searchParams)
-    if (next === '' || next === 'date_desc') {
+    if (next === 'date_desc') {
       nextParams.delete('sort')
     } else {
       nextParams.set('sort', next)
     }
+
     setSearchParams(nextParams)
   }
 
@@ -168,7 +289,7 @@ function TimelinePage() {
                 width: '100%',
                 fontWeight: '700',
                 marginBottom: showMobileStats ? '0.75rem' : '0.75rem',
-                marginTop: showMobileStats ? '0.75rem' : '0.75rem', 
+                marginTop: showMobileStats ? '0.75rem' : '0.75rem',
               }}
             >
               {showMobileStats ? 'Hide Stats' : 'Show Stats'}
@@ -240,23 +361,52 @@ function TimelinePage() {
               alignItems: 'center',
             }}
           >
-            <Form.Select
-              aria-label="Sort timeline"
-              value={sortKey}
-              onChange={onChangeSort}
-              style={styles.sortSelect}
-            >
-              <option value="date_desc">Concert date: Newest → Oldest</option>
-              <option value="date_asc">Concert date: Oldest → Newest</option>
-              <option value="artist_asc">Artist: A → Z</option>
-              <option value="venue_asc">Venue: A → Z</option>
-              <option value="city_asc">City: A → Z</option>
-              <option value="genre_asc">Genre: A → Z</option>
-              <option value="favorites_first">Favorites first</option>
-              <option value="attended_first">Attended first</option>
-              <option value="upcoming_first">Upcoming first</option>
-              <option value="rating_desc">Rating: High → Low</option>
-            </Form.Select>
+            <Dropdown>
+              <Dropdown.Toggle
+                variant="outline-primary"
+                style={styles.sortToggle}
+              >
+                Sort: {getSortLabel(sortKey)}
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu className="timeline-sort-menu" style={styles.sortMenu}>
+                <Dropdown.Item style={styles.sortItem} onClick={() => onClickSort('date')}>
+                  {getSortBase(sortKey) === 'date' ? getSortLabel(sortKey) : 'Concert date'}
+                </Dropdown.Item>
+
+                <Dropdown.Item style={styles.sortItem} onClick={() => onClickSort('artist')}>
+                  {getSortBase(sortKey) === 'artist' ? getSortLabel(sortKey) : 'Artist'}
+                </Dropdown.Item>
+
+                <Dropdown.Item style={styles.sortItem} onClick={() => onClickSort('venue')}>
+                  {getSortBase(sortKey) === 'venue' ? getSortLabel(sortKey) : 'Venue'}
+                </Dropdown.Item>
+
+                <Dropdown.Item style={styles.sortItem} onClick={() => onClickSort('city')}>
+                  {getSortBase(sortKey) === 'city' ? getSortLabel(sortKey) : 'City'}
+                </Dropdown.Item>
+
+                <Dropdown.Item style={styles.sortItem} onClick={() => onClickSort('genre')}>
+                  {getSortBase(sortKey) === 'genre' ? getSortLabel(sortKey) : 'Genre'}
+                </Dropdown.Item>
+
+                <Dropdown.Item style={styles.sortItem} onClick={() => onClickSort('favorites')}>
+                  {getSortBase(sortKey) === 'favorites' ? getSortLabel(sortKey) : 'Favorites'}
+                </Dropdown.Item>
+
+                <Dropdown.Item style={styles.sortItem} onClick={() => onClickSort('attended')}>
+                  {getSortBase(sortKey) === 'attended' ? getSortLabel(sortKey) : 'Attended'}
+                </Dropdown.Item>
+
+                <Dropdown.Item style={styles.sortItem} onClick={() => onClickSort('upcoming')}>
+                  {getSortBase(sortKey) === 'upcoming' ? getSortLabel(sortKey) : 'Upcoming'}
+                </Dropdown.Item>
+
+                <Dropdown.Item style={styles.sortItem} onClick={() => onClickSort('rating')}>
+                  {getSortBase(sortKey) === 'rating' ? getSortLabel(sortKey) : 'Rating'}
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
 
           {hasActiveQuery ? (

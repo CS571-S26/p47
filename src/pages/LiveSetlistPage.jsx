@@ -52,7 +52,7 @@ function LiveSetlistPage() {
             fontWeight: '600',
             marginBottom: '0.4rem',
             marginTop: '0rem',
-            color: 'var(--setlog-primary-text)',
+            color: 'var(--setlog-primary-orange-text)',
             fontSize: '0.95rem',
         }
     }
@@ -161,27 +161,30 @@ function LiveSetlistPage() {
                     {!tracking ? (
                         <SectionCard title="Choose a Show">
                             <Form>
-                                <Form.Group className="mb-3">
+                                <Form.Group controlId="concert-artist" className="mb-3">
                                     <Form.Label style={styles.formLabel}>Artist</Form.Label>
                                     <Form.Control
+                                        id="concert-artist"
                                         value={artist}
                                         onChange={(e) => setArtist(e.target.value)}
                                         placeholder="e.g., Dead & Company"
                                     />
                                 </Form.Group>
 
-                                <Form.Group className="mb-3">
+                                <Form.Group controlId="concert-venue" className="mb-3">
                                     <Form.Label style={styles.formLabel}>Venue</Form.Label>
                                     <Form.Control
+                                        id="concert-venue"
                                         value={venue}
                                         onChange={(e) => setVenue(e.target.value)}
                                         placeholder="e.g., Sphere"
                                     />
                                 </Form.Group>
 
-                                <Form.Group className="mb-3">
+                                <Form.Group controlId="concert-date" className="mb-3">
                                     <Form.Label style={styles.formLabel}>Show Date</Form.Label>
                                     <Form.Control
+                                        id="concert-date"
                                         type="date"
                                         value={date}
                                         onChange={(e) => setDate(e.target.value)}
@@ -230,7 +233,7 @@ function LiveSetlistPage() {
                                                 fontWeight: 700,
                                                 letterSpacing: '0.08em',
                                                 textTransform: 'uppercase',
-                                                color: 'var(--setlog-primary)',
+                                                color: 'var(--setlog-primary-orange-text)',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 gap: '0.45rem',
@@ -263,7 +266,7 @@ function LiveSetlistPage() {
                                     >
                                         <MapPin
                                             size={22}
-                                            color="var(--setlog-primary)"
+                                            color="var(--setlog-primary-orange-text)"
                                             style={{ flexShrink: 0 }}
                                         />
 
@@ -311,8 +314,10 @@ function LiveSetlistPage() {
                                 </div>
                             </SectionCard>
                             <SectionCard title="Live Notes">
-                                <Form.Group>
+                                <Form.Group controlId="concert-notes" style={{ marginBottom: '0.8rem' }}>
+                                    <Form.Label style={styles.formLabel}>Notes</Form.Label>
                                     <Form.Control
+                                        id="concert-notes"
                                         as="textarea"
                                         rows={5}
                                         value={notes}
@@ -415,7 +420,7 @@ function LiveSetlistPage() {
                                                 style={{
                                                     fontSize: '1rem',
                                                     fontWeight: 800,
-                                                    color: 'var(--setlog-primary)',
+                                                    color: 'var(--setlog-primary-orange-text)',
                                                     margin: 0,
                                                 }}
                                             >

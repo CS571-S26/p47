@@ -532,7 +532,7 @@ function AddConcertPage() {
                     <Col md={6}>
                       <Form.Group controlId="concert-city" style={{ marginBottom: '0.8rem' }}>
                         <Form.Label style={styles.formLabel}>
-                          City, State <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
+                          City, State/Country <span style={{ color: 'var(--setlog-required-indicator)' }}>*</span>
                         </Form.Label>
                         <Form.Control
                           id="concert-city"
