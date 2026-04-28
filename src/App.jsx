@@ -43,6 +43,10 @@ function AppShell({ theme, setTheme }) {
     document.title = documentTitleForPath(location.pathname)
   }, [location.pathname])
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [location.pathname])
+
   return (
     <ConcertsProvider key={concertsKey}>
       <a href="#main-content" className="skip-to-main">

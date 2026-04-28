@@ -57,7 +57,11 @@ function ConcertDetailPage() {
     storedPlaylistName || playlistStatus.result?.playlistName || 'Spotify Playlist'
 
   function handleBack() {
-    navigate(backTo)
+    navigate(backTo, {
+      state: {
+        restoreScrollY: location.state?.timelineScrollY,
+      },
+    })
   }
 
   function confirmDelete() {

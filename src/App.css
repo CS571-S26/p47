@@ -104,6 +104,7 @@
  */
 html {
   background: var(--setlog-page-bg);
+  scroll-behavior: auto !important;
 }
 
 .skip-to-main {
