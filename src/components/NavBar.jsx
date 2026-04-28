@@ -12,7 +12,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { Map, CirclePlus, List, Moon, Sun, UserPlus, Search, Radio } from 'lucide-react'
 
-import logo from '../assets/setlog_logo.png'
+import logo from '../assets/setlog_tab_logo.png'
 import { useAuth } from '../contexts/authContext.js'
 import { useUserProfile } from '../contexts/userProfileContext.js'
 import { ConcertsContext } from '../contexts/concertsContext.js'
