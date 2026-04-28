@@ -88,6 +88,8 @@ function ConcertDetailPage() {
   }
 
   function isFirstTimeSeeingSong(songTitle) {
+    if (!concert.attended) return false
+
     const cleanTitle = normalizeSongTitle(songTitle)
     const currentDate = concertDateToDate(concert.date).getTime()
 
@@ -96,6 +98,8 @@ function ConcertDetailPage() {
     const earliestDate = concerts.reduce((earliest, otherConcert) => {
       const otherDate = concertDateToDate(otherConcert.date).getTime()
       if (!Number.isFinite(otherDate)) return earliest
+
+      if (!otherConcert.attended) return earliest
 
       const songs = getFlattenedSongs(otherConcert)
       const hasSong = songs.some((song) => normalizeSongTitle(song.title ?? song) === cleanTitle)
