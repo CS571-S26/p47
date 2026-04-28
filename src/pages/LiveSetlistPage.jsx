@@ -161,27 +161,30 @@ function LiveSetlistPage() {
                     {!tracking ? (
                         <SectionCard title="Choose a Show">
                             <Form>
-                                <Form.Group className="mb-3">
+                                <Form.Group controlId="concert-artist" className="mb-3">
                                     <Form.Label style={styles.formLabel}>Artist</Form.Label>
                                     <Form.Control
+                                        id="concert-artist"
                                         value={artist}
                                         onChange={(e) => setArtist(e.target.value)}
                                         placeholder="e.g., Dead & Company"
                                     />
                                 </Form.Group>
 
-                                <Form.Group className="mb-3">
+                                <Form.Group controlId="concert-venue" className="mb-3">
                                     <Form.Label style={styles.formLabel}>Venue</Form.Label>
                                     <Form.Control
+                                        id="concert-venue"
                                         value={venue}
                                         onChange={(e) => setVenue(e.target.value)}
                                         placeholder="e.g., Sphere"
                                     />
                                 </Form.Group>
 
-                                <Form.Group className="mb-3">
+                                <Form.Group controlId="concert-date" className="mb-3">
                                     <Form.Label style={styles.formLabel}>Show Date</Form.Label>
                                     <Form.Control
+                                        id="concert-date"
                                         type="date"
                                         value={date}
                                         onChange={(e) => setDate(e.target.value)}
