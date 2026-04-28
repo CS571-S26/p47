@@ -5,8 +5,8 @@
 
 /* Light Mode — primaries tuned for ≥4.5:1 with white button text (WCAG AA) */
 [data-theme='light'] {
-  --setlog-primary: #d46318;
-  --setlog-primary-hover: #a94d12;
+  --setlog-primary: #9a450c;
+  --setlog-primary-hover: #7a370a;
   --setlog-page-bg: linear-gradient(180deg,
       #d5cef3 0%,
       #e8d7cf 38%,
@@ -52,8 +52,8 @@
 
 /* Dark Mode — stronger text on fills; primary dark enough for white label text */
 [data-theme='dark'] {
-  --setlog-primary: #d46318;
-  --setlog-primary-hover: #b45309;
+  --setlog-primary: #6f381a;
+  --setlog-primary-hover: #5c2e15;
   --setlog-page-bg: linear-gradient(180deg,
       #2b263e 0%,
       #2a1f2b 38%,
