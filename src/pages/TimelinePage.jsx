@@ -13,6 +13,8 @@ import {
 } from '../utils/concertSearch.js'
 import { concertDateToDate, daysUntilLocalDate } from '../utils/localDate.js'
 
+const TIMELINE_SORT_KEY = 'setlog:timelineSort'
+
 function TimelinePage() {
   const { concerts, loading: concertsLoading } = useContext(ConcertsContext)
   const [showMobileStats, setShowMobileStats] = useState(false)
@@ -21,7 +23,11 @@ function TimelinePage() {
   const queryRaw = searchParams.get('q') ?? ''
   const hasActiveQuery = normalizeConcertSearchQuery(queryRaw) !== ''
 
-  const sortRaw = searchParams.get('sort') ?? ''
+  const sortRaw =
+    searchParams.get('sort') ??
+    localStorage.getItem(TIMELINE_SORT_KEY) ??
+    ''
+
   const sortKey = sortRaw.trim() === '' ? 'date_desc' : sortRaw.trim()
 
   const styles = {
@@ -90,6 +96,9 @@ function TimelinePage() {
 
   const onChangeSort = (e) => {
     const next = String(e.target.value ?? '').trim()
+
+    localStorage.setItem(TIMELINE_SORT_KEY, next || 'date_desc')
+
     const nextParams = new URLSearchParams(searchParams)
     if (next === '' || next === 'date_desc') {
       nextParams.delete('sort')
@@ -168,7 +177,7 @@ function TimelinePage() {
                 width: '100%',
                 fontWeight: '700',
                 marginBottom: showMobileStats ? '0.75rem' : '0.75rem',
-                marginTop: showMobileStats ? '0.75rem' : '0.75rem', 
+                marginTop: showMobileStats ? '0.75rem' : '0.75rem',
               }}
             >
               {showMobileStats ? 'Hide Stats' : 'Show Stats'}
