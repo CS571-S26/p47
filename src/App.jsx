@@ -12,6 +12,7 @@ import { SpotifyProvider } from './contexts/SpotifyProvider.jsx'
 import ConcertDetailPage from './pages/ConcertDetailPage.jsx'
 import EditConcertPage from './pages/EditConcertPage.jsx'
 import LiveSetlistPage from './pages/LiveSetlistPage.jsx'
+import SongDetailPage from './pages/SongDetailPage.jsx'
 import { ConcertsProvider } from './contexts/ConcertsProvider.jsx'
 import { useAuth } from './contexts/authContext.js'
 import { UserProfileProvider } from './contexts/UserProfileProvider.jsx'
@@ -27,6 +28,7 @@ function documentTitleForPath(pathname) {
   if (pathname === '/login') return `${base} — Log in`
   if (pathname === '/register') return `${base} — Register`
   if (pathname === '/live-setlist') return `${base} — Live Setlist`
+  if (pathname.startsWith('/songs/')) return `${base} — Song`
   if (pathname.startsWith('/concerts/') && pathname.endsWith('/edit')) {
     return `${base} — Edit concert`
   }
@@ -60,6 +62,7 @@ function AppShell({ theme, setTheme }) {
           <Route path="/add-concert" element={<AddConcertPage />} />
           <Route path="/concerts/:id/edit" element={<EditConcertPage />} />
           <Route path="/concerts/:id" element={<ConcertDetailPage />} />
+          <Route path="/songs/:artist/:title" element={<SongDetailPage />} />
           <Route path="/user-profile" element={<UserProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />

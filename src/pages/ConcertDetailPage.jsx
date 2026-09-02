@@ -75,6 +75,19 @@ function ConcertDetailPage() {
     })
   }
 
+  function handleOpenSong(songTitle) {
+    const cleanTitle = String(songTitle ?? '').trim()
+    const cleanArtist = String(concert?.artist ?? '').trim()
+    if (!cleanTitle || !cleanArtist) return
+
+    navigate(`/songs/${encodeURIComponent(cleanArtist)}/${encodeURIComponent(cleanTitle)}`, {
+      state: {
+        from: `/concerts/${concert.id}`,
+        backLabel: `Back to ${cleanArtist} - ${fullDateLabel}`,
+      },
+    })
+  }
+
   function confirmDelete() {
     deleteConcert(concert.id)
     setDeleteConfirmOpen(false)
@@ -1025,7 +1038,14 @@ function ConcertDetailPage() {
                                     flexWrap: 'wrap',
                                   }}
                                 >
-                                  {song}
+                                  <Button
+                                    type="button"
+                                    variant="link"
+                                    onClick={() => handleOpenSong(song)}
+                                    style={{ color: 'inherit', font: 'inherit', padding: 0, textAlign: 'left' }}
+                                  >
+                                    {song}
+                                  </Button>
 
                                   {isFirstTimeSeeingSong(song) ? (
                                     <span
