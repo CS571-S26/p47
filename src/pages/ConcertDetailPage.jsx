@@ -96,6 +96,7 @@ function ConcertDetailPage() {
     if (!concert.attended) return false
 
     const cleanTitle = normalizeSongTitle(songTitle)
+    const cleanArtist = normalizeSongTitle(concert.artist)
     const currentDate = concertDateToDate(concert.date).getTime()
 
     if (!cleanTitle || !Number.isFinite(currentDate)) return false
@@ -105,6 +106,9 @@ function ConcertDetailPage() {
       if (!Number.isFinite(otherDate)) return earliest
 
       if (!otherConcert.attended) return earliest
+
+      // A song title is only comparable within the same artist's catalog.
+      if (normalizeSongTitle(otherConcert.artist) !== cleanArtist) return earliest
 
       const songs = getFlattenedSongs(otherConcert)
       const hasSong = songs.some((song) => normalizeSongTitle(song.title ?? song) === cleanTitle)
