@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
-import { Calendar, Heart, MapPin, Music, Music2, Star, Users, LogOut } from 'lucide-react'
-import { Alert, Button, Col, Form, Row, Spinner } from 'react-bootstrap'
+import { Calendar, Heart, MapPin, Music, Music2, Star, Users, LogOut, Info } from 'lucide-react'
+import { Alert, Button, Col, Form, OverlayTrigger, Popover, Row, Spinner } from 'react-bootstrap'
 import { useNavigate, Link } from 'react-router-dom'
 
 import SectionCard from '../components/SectionCard'
@@ -10,6 +10,7 @@ import { useSpotify } from '../contexts/spotifyContext.js'
 import { useUserProfile } from '../contexts/userProfileContext.js'
 import { parseConcertCalendarDate } from '../utils/concertForm.js'
 import { getFlattenedSongs } from '../utils/setlistHelpers.js'
+import { DEFAULT_IMAGE_SEARCH_FORMAT } from '../utils/concertSearchFormat.js'
 import {
   geocodePlace,
   HOMETOWN_GEOCODE_FAILED_MESSAGE,
@@ -34,7 +35,7 @@ function statCard(icon, label, value, helpText = '') {
 
 function UserProfilePage() {
   const { loginStatus, logout, user } = useAuth()
-  const { profile, setAvatarUrlOverride, clearAvatarUrlOverride, setHometown, clearHometown } =
+  const { profile, setAvatarUrlOverride, clearAvatarUrlOverride, setHometown, clearHometown, setImageSearchFormat } =
     useUserProfile()
   const { concerts } = useContext(ConcertsContext)
   const {
@@ -54,6 +55,9 @@ function UserProfilePage() {
   const [hometownDraft, setHometownDraft] = useState('')
   const [hometownSaving, setHometownSaving] = useState(false)
   const [hometownError, setHometownError] = useState('')
+  const [imageSearchFormatDraft, setImageSearchFormatDraft] = useState(DEFAULT_IMAGE_SEARCH_FORMAT)
+  const [imageSearchFormatSaving, setImageSearchFormatSaving] = useState(false)
+  const [imageSearchFormatError, setImageSearchFormatError] = useState('')
   const navigate = useNavigate()
 
   const iconSize = window.innerWidth < 768 ? 22 : 28
@@ -69,6 +73,8 @@ function UserProfilePage() {
       setAvatarDraft('')
       setHometownDraft('')
       setHometownError('')
+      setImageSearchFormatDraft(DEFAULT_IMAGE_SEARCH_FORMAT)
+      setImageSearchFormatError('')
       return
     }
   }, [user?.uid])
@@ -83,6 +89,10 @@ function UserProfilePage() {
     const label = normalizeString(profile?.hometown?.label)
     setHometownDraft(label)
   }, [profile?.hometown])
+
+  useEffect(() => {
+    setImageSearchFormatDraft(profile?.imageSearchFormat || DEFAULT_IMAGE_SEARCH_FORMAT)
+  }, [profile?.imageSearchFormat])
 
   const stats = (() => {
     const totalShows = concerts?.length ?? 0
@@ -213,6 +223,25 @@ function UserProfilePage() {
     setHometownDraft('')
     setHometownError('')
     clearHometown()
+  }
+
+  async function handleSaveImageSearchFormat(event) {
+    event.preventDefault()
+    setImageSearchFormatSaving(true)
+    setImageSearchFormatError('')
+
+    try {
+      await setImageSearchFormat(imageSearchFormatDraft)
+    } catch (err) {
+      setImageSearchFormatError(err instanceof Error ? err.message : 'Could not save the search format.')
+    } finally {
+      setImageSearchFormatSaving(false)
+    }
+  }
+
+  function handleResetImageSearchFormat() {
+    setImageSearchFormatDraft(DEFAULT_IMAGE_SEARCH_FORMAT)
+    setImageSearchFormatError('')
   }
 
   async function handleSpotifyConnect() {
@@ -420,6 +449,71 @@ function UserProfilePage() {
               </Button>
             </div>
           </div>
+        </SectionCard>
+
+        <SectionCard
+          title="Image Search Format"
+          subtitle={
+            <>
+              Choose the details included when you search for a concert image.{' '}
+              <OverlayTrigger
+                trigger="click"
+                placement="bottom-start"
+                rootClose
+                overlay={
+                  <Popover>
+                    <Popover.Header as="h3">Available search tokens</Popover.Header>
+                    <Popover.Body>
+                      <div><code>{'{artist}'}</code> <code>{'{venue}'}</code> <code>{'{location}'}</code> <code>{'{city}'}</code> <code>{'{state}'}</code></div>
+                      <div style={{ marginTop: '0.35rem' }}><code>{'{date}'}</code> <code>{'{year}'}</code> <code>{'{month}'}</code> <code>{'{day}'}</code> <code>{'{genre}'}</code></div>
+                    </Popover.Body>
+                  </Popover>
+                }
+              >
+                <Button
+                  type="button"
+                  variant="link"
+                  style={{ padding: 0, display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: 'inherit', verticalAlign: 'baseline' }}
+                >
+                  <Info size={15} aria-hidden />
+                  Available tokens
+                </Button>
+              </OverlayTrigger>
+            </>
+          }
+        >
+          {imageSearchFormatError ? (
+            <Alert variant="danger" style={{ marginBottom: '0.75rem' }}>
+              {imageSearchFormatError}
+            </Alert>
+          ) : null}
+          <Form onSubmit={handleSaveImageSearchFormat}>
+            <Form.Group style={{ marginBottom: '0.65rem' }}>
+              <Form.Label style={{ fontWeight: 700, color: 'var(--setlog-card-text)' }}>
+                Search template
+              </Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={imageSearchFormatDraft}
+                onChange={(event) => setImageSearchFormatDraft(event.target.value)}
+                style={{ minHeight: '88px', resize: 'vertical' }}
+              />
+            </Form.Group>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <Button type="submit" variant="primary" disabled={imageSearchFormatSaving}>
+                {imageSearchFormatSaving ? 'Saving…' : 'Save search format'}
+              </Button>
+              <Button
+                type="button"
+                variant="outline-secondary"
+                onClick={handleResetImageSearchFormat}
+                disabled={imageSearchFormatSaving}
+              >
+                Restore default
+              </Button>
+            </div>
+          </Form>
         </SectionCard>
 
         <Row style={{ alignItems: 'stretch', rowGap: '16px' }}>
