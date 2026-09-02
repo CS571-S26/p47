@@ -41,6 +41,17 @@ function SongDetailPage() {
   const backTo = typeof location.state?.from === 'string' ? location.state.from : '/'
   const backLabel = location.state?.backLabel || 'Back to Timeline'
 
+  function handleBack() {
+    navigate(backTo, {
+      state: {
+        from: location.state?.returnTo,
+        backLabel: location.state?.returnBackLabel,
+        restoreScrollY: location.state?.returnScrollY,
+        returnScrollY: location.state?.returnToScrollY,
+      },
+    })
+  }
+
   const artistConcerts = concerts.filter(
     (concert) => normalizeSongIdentity(concert?.artist) === normalizedArtist,
   )
@@ -66,6 +77,7 @@ function SongDetailPage() {
       state: {
         from: songPagePath,
         backLabel: `Back to ${title}`,
+        returnScrollY: window.scrollY,
       },
     })
   }
@@ -76,7 +88,7 @@ function SongDetailPage() {
         <Button
           type="button"
           variant="link"
-          onClick={() => navigate(backTo)}
+          onClick={handleBack}
           style={{ padding: 0, marginBottom: '1rem', fontWeight: 700, textDecoration: 'none' }}
         >
           <ArrowLeft size={18} style={{ marginRight: '0.35rem' }} aria-hidden />

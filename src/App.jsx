@@ -46,8 +46,13 @@ function AppShell({ theme, setTheme }) {
   }, [location.pathname])
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  }, [location.pathname])
+    const restoreScrollY = Number(location.state?.restoreScrollY)
+    window.scrollTo({
+      top: Number.isFinite(restoreScrollY) && restoreScrollY > 0 ? restoreScrollY : 0,
+      left: 0,
+      behavior: 'auto',
+    })
+  }, [location.pathname, location.state?.restoreScrollY])
 
   return (
     <ConcertsProvider key={concertsKey}>

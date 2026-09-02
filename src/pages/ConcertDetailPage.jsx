@@ -59,7 +59,7 @@ function ConcertDetailPage() {
   function handleBack() {
     navigate(backTo, {
       state: {
-        restoreScrollY: location.state?.timelineScrollY,
+        restoreScrollY: location.state?.returnScrollY ?? location.state?.timelineScrollY,
       },
     })
   }
@@ -70,7 +70,7 @@ function ConcertDetailPage() {
       state: {
         from: backTo,
         backLabel,
-        timelineScrollY: location.state?.timelineScrollY,
+        returnScrollY: location.state?.returnScrollY ?? location.state?.timelineScrollY,
       },
     })
   }
@@ -84,6 +84,10 @@ function ConcertDetailPage() {
       state: {
         from: `/concerts/${concert.id}`,
         backLabel: `Back to ${cleanArtist} - ${fullDateLabel}`,
+        returnScrollY: window.scrollY,
+        returnTo: backTo,
+        returnBackLabel: backLabel,
+        returnToScrollY: location.state?.returnScrollY ?? location.state?.timelineScrollY,
       },
     })
   }
