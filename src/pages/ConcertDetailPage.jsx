@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { Alert, Card, Row, Col, Button, ListGroup, Spinner } from 'react-bootstrap'
-import { ArrowLeft, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info, Clock, Sparkles } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Trash, Edit, MapPin, FileText, Music, CalendarDays, ListMusic, Info, Clock, Sparkles } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
@@ -60,6 +60,17 @@ function ConcertDetailPage() {
     navigate(backTo, {
       state: {
         restoreScrollY: location.state?.timelineScrollY,
+      },
+    })
+  }
+
+  function handleNavigateToConcert(targetConcert) {
+    if (!targetConcert) return
+    navigate(`/concerts/${targetConcert.id}`, {
+      state: {
+        from: backTo,
+        backLabel,
+        timelineScrollY: location.state?.timelineScrollY,
       },
     })
   }
@@ -296,6 +307,20 @@ function ConcertDetailPage() {
   }) : 'Unknown'
   const daysUntil = daysUntilLocalDate(concert.date)
   const countdownLabel = daysUntil > 0 ? `In ${daysUntil} day${daysUntil === 1 ? '' : 's'}` : ''
+  const chronologicalConcerts = [...concerts].sort((a, b) => {
+    const aDate = concertDateToDate(a?.date).getTime()
+    const bDate = concertDateToDate(b?.date).getTime()
+    const aSortDate = Number.isFinite(aDate) ? aDate : Number.POSITIVE_INFINITY
+    const bSortDate = Number.isFinite(bDate) ? bDate : Number.POSITIVE_INFINITY
+
+    return aSortDate - bSortDate || String(a?.id ?? '').localeCompare(String(b?.id ?? ''))
+  })
+  const concertIndex = chronologicalConcerts.findIndex((item) => item.id === concert.id)
+  const previousConcert = concertIndex > 0 ? chronologicalConcerts[concertIndex - 1] : null
+  const nextConcert =
+    concertIndex >= 0 && concertIndex < chronologicalConcerts.length - 1
+      ? chronologicalConcerts[concertIndex + 1]
+      : null
 
   const styles = {
     topButton: {
@@ -428,8 +453,16 @@ function ConcertDetailPage() {
       >
         <Card.Body>
           { /* Top Buttons */}
-          <Row style={{ marginBottom: '0.7rem', alignItems: 'center' }}>
-            <Col>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'auto minmax(0, 1fr) auto',
+              alignItems: 'center',
+              columnGap: '0.75rem',
+              marginBottom: '0.7rem',
+            }}
+          >
+            <div>
               <Button
                 variant="link"
                 onClick={handleBack}
@@ -439,17 +472,62 @@ function ConcertDetailPage() {
                   fontWeight: 700,
                   color: 'var(--setlog-blue-text)',
                   fontSize: '0.9rem',
+                  whiteSpace: 'nowrap',
                 }}
               >
-                <ArrowLeft size={24} style={{ marginRight: '5px' }} />
-                <span className="d-none d-sm-inline" style={{ marginLeft: '5px' }}>{backLabel}</span>
+                <ArrowLeft size={18} style={{ marginRight: '5px' }} aria-hidden />
+                <span>{backLabel}</span>
               </Button>
-            </Col>
-            <Col xs="auto" style={{ display: 'flex', gap: '8px' }}>
+            </div>
+            <div
+              className="d-none d-md-flex"
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.4rem',
+              }}
+            >
+              {previousConcert || nextConcert ? (
+                <>
+                <span style={{ display: 'inline-flex', width: '36px', justifyContent: 'center' }}>
+                  {previousConcert ? (
+                    <Button
+                      type="button"
+                      variant="outline-secondary"
+                      onClick={() => handleNavigateToConcert(previousConcert)}
+                      aria-label={`Previous concert: ${previousConcert.artist || 'unknown artist'}`}
+                      title={`Previous concert: ${previousConcert.artist || 'Unknown artist'}`}
+                      style={{ padding: '5px 8px', lineHeight: 1 }}
+                    >
+                      <ArrowLeft size={18} aria-hidden />
+                    </Button>
+                  ) : null}
+                </span>
+                <span style={{ color: 'var(--setlog-card-text-secondary)', fontSize: '0.78rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                  Show {concertIndex + 1} of {chronologicalConcerts.length}
+                </span>
+                <span style={{ display: 'inline-flex', width: '36px', justifyContent: 'center' }}>
+                  {nextConcert ? (
+                    <Button
+                      type="button"
+                      variant="outline-secondary"
+                      onClick={() => handleNavigateToConcert(nextConcert)}
+                      aria-label={`Next concert: ${nextConcert.artist || 'unknown artist'}`}
+                      title={`Next concert: ${nextConcert.artist || 'Unknown artist'}`}
+                      style={{ padding: '5px 8px', lineHeight: 1 }}
+                    >
+                      <ArrowRight size={18} aria-hidden />
+                    </Button>
+                  ) : null}
+                </span>
+                </>
+              ) : null}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {loginStatus.loggedIn && (
                 <Button
                   variant="outline-primary"
-                  style={styles.topButton}
+                  style={{ ...styles.topButton, fontSize: '13px', whiteSpace: 'nowrap' }}
                   onClick={() => navigate(`/concerts/${concert.id}/edit`)}
                 >
                   <Edit size={13} />
@@ -466,8 +544,54 @@ function ConcertDetailPage() {
                   Delete
                 </Button>
               )}
-            </Col>
-          </Row>
+            </div>
+          </div>
+
+          {previousConcert || nextConcert ? (
+            <div
+              className="d-md-none"
+              aria-label="Concert navigation"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                marginBottom: '1rem',
+              }}
+            >
+              <span style={{ display: 'inline-flex', width: '36px', justifyContent: 'center' }}>
+                {previousConcert ? (
+                  <Button
+                    type="button"
+                    variant="outline-secondary"
+                    onClick={() => handleNavigateToConcert(previousConcert)}
+                    aria-label={`Previous concert: ${previousConcert.artist || 'unknown artist'}`}
+                    title={`Previous concert: ${previousConcert.artist || 'Unknown artist'}`}
+                    style={{ padding: '5px 8px', lineHeight: 1 }}
+                  >
+                    <ArrowLeft size={18} aria-hidden />
+                  </Button>
+                ) : null}
+              </span>
+              <span style={{ color: 'var(--setlog-card-text-secondary)', fontSize: '0.82rem', fontWeight: 700 }}>
+                Show {concertIndex + 1} of {chronologicalConcerts.length}
+              </span>
+              <span style={{ display: 'inline-flex', width: '36px', justifyContent: 'center' }}>
+                {nextConcert ? (
+                  <Button
+                    type="button"
+                    variant="outline-secondary"
+                    onClick={() => handleNavigateToConcert(nextConcert)}
+                    aria-label={`Next concert: ${nextConcert.artist || 'unknown artist'}`}
+                    title={`Next concert: ${nextConcert.artist || 'Unknown artist'}`}
+                    style={{ padding: '5px 8px', lineHeight: 1 }}
+                  >
+                    <ArrowRight size={18} aria-hidden />
+                  </Button>
+                ) : null}
+              </span>
+            </div>
+          ) : null}
 
           <Row>
             <Col lg={4}>
