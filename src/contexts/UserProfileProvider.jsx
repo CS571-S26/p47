@@ -4,6 +4,7 @@ import { doc, getDoc, onSnapshot, serverTimestamp, setDoc } from 'firebase/fires
 import { firestoreDb } from '../firebase.js'
 import { useAuth } from './authContext.js'
 import { UserProfileContext } from './userProfileContext.js'
+import { DEFAULT_IMAGE_SEARCH_FORMAT } from '../utils/concertSearchFormat.js'
 
 const AVATAR_STORAGE_PREFIX = 'p47:profileAvatar:'
 const HOMETOWN_STORAGE_PREFIX = 'p47:hometown:'
@@ -71,6 +72,7 @@ export function UserProfileProvider({ children }) {
         setProfile({
           avatarUrlOverride: normalizeString(data?.avatarUrlOverride),
           hometown: data?.hometown ?? null,
+          imageSearchFormat: normalizeString(data?.imageSearchFormat) || DEFAULT_IMAGE_SEARCH_FORMAT,
         })
         setLoading(false)
       },
@@ -187,6 +189,22 @@ export function UserProfileProvider({ children }) {
     )
   }, [cleanUid])
 
+  const setImageSearchFormat = useCallback(
+    async (imageSearchFormat) => {
+      if (!cleanUid) return
+      const profileRef = doc(firestoreDb, 'users', cleanUid)
+      await setDoc(
+        profileRef,
+        {
+          imageSearchFormat: normalizeString(imageSearchFormat) || DEFAULT_IMAGE_SEARCH_FORMAT,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      )
+    },
+    [cleanUid],
+  )
+
   return (
     <UserProfileContext.Provider
       value={{
@@ -197,10 +215,10 @@ export function UserProfileProvider({ children }) {
         clearAvatarUrlOverride,
         setHometown,
         clearHometown,
+        setImageSearchFormat,
       }}
     >
       {children}
     </UserProfileContext.Provider>
   )
 }
-

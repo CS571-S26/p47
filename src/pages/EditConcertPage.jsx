@@ -5,6 +5,7 @@ import { Plus, ArrowDown, ArrowUp, Trash, Info } from 'lucide-react'
 
 import { ConcertsContext } from '../contexts/concertsContext.js'
 import { useAuth } from '../contexts/authContext.js'
+import { useUserProfile } from '../contexts/userProfileContext.js'
 import { geocodeVenue, GEOCODE_LOOKUP_FAILED_MESSAGE } from '../utils/geocode.js'
 import SectionCard from '../components/SectionCard'
 import { ConfirmDialog } from '../components/ConfirmDialog.jsx'
@@ -22,11 +23,13 @@ import {
   getSetlistSections,
   normalizeSetlistSectionsForForm,
 } from '../utils/setlistHelpers.js'
+import { buildConcertImageSearchQuery } from '../utils/concertSearchFormat.js'
 
 function EditConcertPage() {
   const { id } = useParams()
   const { concerts, updateConcert, getConcert, loading } = useContext(ConcertsContext)
   const { loginStatus } = useAuth()
+  const { profile } = useUserProfile()
   const navigate = useNavigate()
 
   const hydratedIdRef = useRef(null)
@@ -184,16 +187,14 @@ function EditConcertPage() {
   }
 
   const canImportFromSetlistFm = !!(artist.trim() || venue.trim() || city.trim() || date.trim())
-  const canSearchImages = !!(artist.trim() || venue.trim())
+  const imageSearchQuery = buildConcertImageSearchQuery(
+    { artist, venue, city, date, genre },
+    profile?.imageSearchFormat,
+  )
+  const canSearchImages = !!imageSearchQuery
 
   function handleSearchImages() {
-    const queryParts = []
-    if (artist.trim()) queryParts.push(artist.trim())
-    if (venue.trim()) queryParts.push(venue.trim())
-    const cleanedCity = formatCityState(city)
-    if (CITY_STATE_PATTERN.test(cleanedCity)) queryParts.push(cleanedCity)
-
-    const query = encodeURIComponent(queryParts.join(' '))
+    const query = encodeURIComponent(imageSearchQuery)
     const searchWindow = window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank')
     if (searchWindow) searchWindow.opener = null
   }
